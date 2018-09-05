@@ -140,7 +140,8 @@ bool Board::moveRing(pair<int, int> newPosition, pair<int, int> currentPosition,
     }
 
     int playerRing = player ? positionStates::whiteRing : positionStates::blackRing;
-    setState(currentPosition, positionStates::empty);
+    int playerMarker = player ? positionStates::whiteMarker: positionStates::blackMarker;
+    setState(currentPosition, playerMarker);
     setState(newPosition, playerRing);
 
     if (newPosition.first == currentPosition.first)

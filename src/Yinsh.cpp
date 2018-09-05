@@ -15,9 +15,3 @@ Yinsh::Yinsh(int n, int m, int k, int l)
 
     board = new Board(n);
 }
-
-int main()
-{
-
-    return 0;
-}

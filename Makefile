@@ -1,5 +1,12 @@
- all: src/Board.cpp src/Yinsh.cpp
-	  g++ -o yinsh src/Board.cpp src/Yinsh.cpp
+SRC=src/Board.cpp src/Yinsh.cpp src/main.cpp
 
-debug: src/Board.cpp src/Yinsh.cpp
-	  g++ -g -o yinsh src/Board.cpp src/Yinsh.cpp
+all: $(SRC)
+	  g++ -o yinsh $(SRC)
+
+debug: $(SRC)
+	  g++ -g -o yinsh $(SRC)
+
+clean:
+	rm -rf build
+	rm -rf main
+	rm -rf yinsh
