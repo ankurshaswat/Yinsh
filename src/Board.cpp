@@ -1,14 +1,5 @@
 #include "Board.h"
 
-enum positionStates
-{
-    empty = 0,
-    whiteRing = 1,
-    blackRing = -1,
-    whiteMarker = 2,
-    blackMarker = -2
-};
-
 Board::Board() : Board(5) {}
 
 Board::Board(int n)
@@ -20,7 +11,7 @@ Board::Board(int n)
         board[i] = new int[2 * n + 1];
         for (int j = 0; j < 2 * n + 2; j++)
         {
-            board[i][j] = positionStates::empty;
+            board[i][j] = PositionStates::empty;
         }
     }
 }
@@ -47,7 +38,7 @@ bool Board::validPosition(pair<int, int> position)
 
 bool Board::validPlaceRing(pair<int, int> position)
 {
-    return (validPosition(position) && getPosition(position) == positionStates::empty);
+    return (validPosition(position) && getPosition(position) == PositionStates::empty);
 }
 
 bool Board::validMoveRing(pair<int, int> newPosition, pair<int, int> currentPosition, bool player)
@@ -67,7 +58,7 @@ bool Board::validMoveRing(pair<int, int> newPosition, pair<int, int> currentPosi
         return false;
     }
 
-    int opposingRingState = player ? positionStates::blackRing : positionStates::whiteRing;
+    int opposingRingState = player ? PositionStates::blackRing : PositionStates::whiteRing;
 
     if (newPosition.first == currentPosition.first)
     {
@@ -108,6 +99,16 @@ bool Board::validMoveRing(pair<int, int> newPosition, pair<int, int> currentPosi
     return true;
 }
 
+void Board::removeMarker(pair<int, int> position)
+{
+    setState(position, PositionStates::empty);
+}
+
+void Board::removeRing(pair<int, int> position)
+{
+    setState(position, PositionStates::empty);
+}
+
 void Board::setState(pair<int, int> position, int positionVal)
 {
     board[position.first + n][position.second + n] = positionVal;
@@ -121,7 +122,7 @@ void Board::invertState(int pos1, int pos2)
 bool Board::placeRing(pair<int, int> position, bool player)
 {
 
-    int playerRing = player ? positionStates::whiteRing : positionStates::blackRing;
+    int playerRing = player ? PositionStates::whiteRing : PositionStates::blackRing;
 
     if (validPlaceRing(position))
     {
@@ -139,8 +140,8 @@ bool Board::moveRing(pair<int, int> newPosition, pair<int, int> currentPosition,
         return false;
     }
 
-    int playerRing = player ? positionStates::whiteRing : positionStates::blackRing;
-    int playerMarker = player ? positionStates::whiteMarker: positionStates::blackMarker;
+    int playerRing = player ? PositionStates::whiteRing : PositionStates::blackRing;
+    int playerMarker = player ? PositionStates::whiteMarker : PositionStates::blackMarker;
     setState(currentPosition, playerMarker);
     setState(newPosition, playerRing);
 
@@ -173,4 +174,226 @@ bool Board::moveRing(pair<int, int> newPosition, pair<int, int> currentPosition,
     }
 
     return true;
+}
+
+pair<bool, pair<pair<int, int>, pair<int, int>>> Board::checkMarkersLocal(pair<int, int> position, pair<int, int> direction, bool player)
+{
+
+    int playerMarker = player ? PositionStates::whiteMarker : PositionStates::blackMarker;
+
+    if (getPosition(position) == playerMarker)
+    {
+        int count = 0;
+
+        pair<int, int> startMarker = position;
+        startMarker.first += direction.first;
+        startMarker.second += direction.second;
+
+        while (validPosition(startMarker))
+        {
+            count++;
+            if (getPosition(startMarker) != playerMarker)
+            {
+                count--;
+                break;
+            }
+
+            startMarker.first += direction.first;
+            startMarker.second += direction.second;
+        }
+        startMarker.first -= direction.first;
+        startMarker.second -= direction.second;
+
+        pair<int, int> endMarker = position;
+        endMarker.first -= direction.first;
+        endMarker.second -= direction.second;
+
+        while (validPosition(endMarker))
+        {
+            count++;
+            if (getPosition(endMarker) != playerMarker)
+            {
+                count--;
+                break;
+            }
+            endMarker.first -= direction.first;
+            endMarker.second -= direction.second;
+        }
+        endMarker.first += direction.first;
+        endMarker.second += direction.second;
+
+        if (count >= 5)
+        {
+            return make_pair(true, make_pair(startMarker, endMarker));
+        }
+    }
+
+    return make_pair(false, make_pair(position, position));
+}
+
+vector<pair<pair<int, int>, pair<int, int>>> Board::checkMarkersLine(pair<int, int> position, pair<int, int> direction, bool player)
+{
+    vector<pair<pair<int, int>, pair<int, int>>> combinationSequences;
+    int playerMarker = player ? PositionStates::whiteMarker : PositionStates::blackMarker;
+
+    int count = 0;
+
+    pair<int, int> startMarker = position;
+    startMarker.first -= direction.first;
+    startMarker.second -= direction.second;
+
+    while (validPosition(startMarker))
+    {
+        count++;
+        if (getPosition(startMarker) != playerMarker)
+        {
+            count--;
+            break;
+        }
+
+        startMarker.first -= direction.first;
+        startMarker.second -= direction.second;
+    }
+    startMarker.first += direction.first;
+    startMarker.second += direction.second;
+
+    pair<int, int> endMarker = position;
+    endMarker.first += direction.first;
+    endMarker.second += direction.second;
+
+    while (validPosition(endMarker))
+    {
+        count++;
+        if (getPosition(endMarker) != playerMarker)
+        {
+            count--;
+            break;
+        }
+        endMarker.first += direction.first;
+        endMarker.second += direction.second;
+    }
+    endMarker.first -= direction.first;
+    endMarker.second -= direction.second;
+
+    if (count >= 5)
+    {
+        combinationSequences.push_back(make_pair(startMarker, endMarker));
+    }
+
+    pair<int, int> newStartMarker = endMarker;
+    newStartMarker.first += 2 * direction.first;
+    newStartMarker.second += 2 * direction.second;
+
+    while (validPosition(newStartMarker))
+    {
+        if (getPosition(newStartMarker) != playerMarker)
+        {
+            newStartMarker.first += direction.first;
+            newStartMarker.second += direction.second;
+        }
+        else
+        {
+            int count = 1;
+            pair<int, int> startMarker = newStartMarker;
+            pair<int, int> endMarker = startMarker;
+            endMarker.first += direction.first;
+            endMarker.second += direction.second;
+            while (validPosition(endMarker))
+            {
+                count++;
+                if (getPosition(endMarker) != playerMarker)
+                {
+                    count--;
+                    break;
+                }
+                endMarker.first += direction.first;
+                endMarker.second += direction.second;
+            }
+
+            if (count >= 5)
+            {
+                combinationSequences.push_back(make_pair(startMarker, endMarker));
+            }
+
+            newStartMarker.first = endMarker.first + 2 * direction.first;
+            newStartMarker.second = endMarker.second + 2 * direction.second;
+        }
+    }
+
+    return combinationSequences;
+}
+
+vector<pair<pair<int, int>, pair<int, int>>> Board::checkMarkers(pair<int, int> newPosition, pair<int, int> oldPosition, bool player)
+{
+
+    vector<pair<pair<int, int>, pair<int, int>>> combinationSequences;
+
+    pair<bool, pair<pair<int, int>, pair<int, int>>> returnedSequence;
+
+    if (newPosition.first == oldPosition.first)
+    {
+        int increment = newPosition.second < oldPosition.second ? -1 : 1;
+
+        combinationSequences = checkMarkersLine(newPosition, make_pair(0, increment * 1), player);
+
+        for (int i = oldPosition.second + increment; i != newPosition.second; i += increment)
+        {
+            returnedSequence = checkMarkersLocal(make_pair(newPosition.first, i), make_pair(1, 0), player);
+            if (returnedSequence.first == true)
+            {
+                combinationSequences.push_back(returnedSequence.second);
+            }
+
+            returnedSequence = checkMarkersLocal(make_pair(newPosition.first, i), make_pair(1, 1), player);
+            if (returnedSequence.first == true)
+            {
+                combinationSequences.push_back(returnedSequence.second);
+            }
+        }
+    }
+
+    else if (newPosition.second == oldPosition.second)
+    {
+        int increment = newPosition.first < oldPosition.first ? -1 : 1;
+
+        combinationSequences = checkMarkersLine(newPosition, make_pair(increment * 1, 0), player);
+
+        for (int i = oldPosition.first + increment; i != newPosition.first; i += increment)
+        {
+            returnedSequence = checkMarkersLocal(make_pair(newPosition.first, i), make_pair(0, 1), player);
+            if (returnedSequence.first == true)
+            {
+                combinationSequences.push_back(returnedSequence.second);
+            }
+
+            returnedSequence = checkMarkersLocal(make_pair(newPosition.first, i), make_pair(1, 1), player);
+            if (returnedSequence.first == true)
+            {
+                combinationSequences.push_back(returnedSequence.second);
+            }
+        }
+    }
+    else
+    {
+        int increment = newPosition.second < oldPosition.second ? -1 : 1;
+
+        combinationSequences = checkMarkersLine(newPosition, make_pair(increment * 1, increment * 1), player);
+
+        for (int i1 = oldPosition.first + increment, i2 = oldPosition.second + increment; i1 != newPosition.first; i1 += increment, i2 += increment)
+        {
+            returnedSequence = checkMarkersLocal(make_pair(i1, i2), make_pair(0, 1), player);
+            if (returnedSequence.first == true)
+            {
+                combinationSequences.push_back(returnedSequence.second);
+            }
+
+            returnedSequence = checkMarkersLocal(make_pair(i1, i2), make_pair(1, 0), player);
+            if (returnedSequence.first == true)
+            {
+                combinationSequences.push_back(returnedSequence.second);
+            }
+        }
+    }
+
+    return combinationSequences;
 }

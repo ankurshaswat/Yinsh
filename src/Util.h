@@ -45,7 +45,12 @@ pair<int, int> axial2hex(pair<int, int> axialCoord)
 
     int hex, pos;
 
-    if (a <= 0 && b >= 0)
+    if (a == 0 && b == 0)
+    {
+        hex = 0;
+        pos = 0;
+    }
+    else if (a <= 0 && b >= 0)
     {
         hex = b - a;
         pos = (5 * hex + b) % (6 * hex);
