@@ -152,7 +152,7 @@ class Game:
 					rings_B+=1
 		return self.calculate_score(self.rings-rings_A, self.rings-rings_B, markers_A, markers_B, Error_state)[int(player_id)-1]
 
-	def getGameRep():
+	def getGameRep(self):
 		positions = list(self.driver.execute_script('return positions;'))
 		rings_A,rings_B,markers_A,markers_B=[],[],[],[]
 		# r_to_x={0:-1, 1:-2, 2:-3, 4:-4, 5:-4, 6:-5, 7:-5, 8:-5, 9:-5, 10:-4, 11:-4, 12:-3, 13:-2, 14:-1}
@@ -161,14 +161,16 @@ class Game:
 			for c,place in enumerate(row,-5):
 				piece = dict(place)['piece']
 				if piece == 2:
-					rings_A+=(r,c)
+					rings_B.append( (r,c))
 				elif piece == 1:
-					markers_A+=(r,c)
+					markers_B.append((r,c))
 				elif piece == -1:
-					markers_B+=(r,c)
+					markers_A.append((r,c))
 				elif piece == -2:
-					rings_B+=(r,c)
-		return {'ringsA':rings_A,'ringsB':rings_B,'markersA':markers_A,'markersB':markers_B}
+					rings_A.append((r,c))
+		gameRep={'ringsA':rings_A,'ringsB':rings_B,'markersA':markers_A,'markersB':markers_B}
+		print('# Game board:'+str(gameRep))
+		return gameRep
 		
 	
 	def check_won(self):
