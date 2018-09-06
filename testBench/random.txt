@@ -1,0 +1,45 @@
+GameState {activePlayer = W, turnMode = AddRing, board = Board {bmap = fromList [((1,2),Ring B)], ringsB = [(1,2)], ringsW = [], markersB = [], markersW = []}, pointsB = 0, pointsW = 0}
+
+GameState {activePlayer = B, turnMode = AddRing, board = Board {bmap = fromList [((0,0),Ring W),((1,2),Ring B)], ringsB = [(1,2)], ringsW = [(0,0)], markersB = [], markersW = []}, pointsB = 0, pointsW = 0}
+
+
+
+GameState {activePlayer = W, turnMode = AddRing, board = Board {bmap = fromList [((-2,1),Ring B),((0,0),Ring W),((1,2),Ring B)], ringsB = [(-2,1),(1,2)], ringsW = [(0,0)], markersB = [], markersW = []}, pointsB = 0, pointsW = 0}
+
+GameState {activePlayer = B, turnMode = AddRing, board = Board {bmap = fromList [((-2,1),Ring B),((-1,0),Ring W),((0,0),Ring W),((1,2),Ring B)], ringsB = [(-2,1),(1,2)], ringsW = [(-1,0),(0,0)], markersB = [], markersW = []}, pointsB = 0, pointsW = 0}
+
+
+...
+...
+...
+
+GameState {activePlayer = W, turnMode = AddRing, board = Board {bmap = fromList [((-2,1),Ring B),((-1,0),Ring W),((0,-1),Ring W),((0,0),Ring W),((0,1),Ring W),((0,3),Ring B),((1,2),Ring B),((2,4),Ring B),((3,2),Ring B)], ringsB = [(0,3),(3,2),(2,4),(-2,1),(1,2)], ringsW = [(0,1),(0,-1),(-1,0),(0,0)], markersB = [], markersW = []}, pointsB = 0, pointsW = 0}
+
+GameState {activePlayer = B, turnMode = AddMarker, board = Board {bmap = fromList [((-2,1),Ring B),((-1,0),Ring W),((0,-1),Ring W),((0,0),Ring W),((0,1),Ring W),((0,3),Ring B),((1,0),Ring W),((1,2),Ring B),((2,4),Ring B),((3,2),Ring B)], ringsB = [(0,3),(3,2),(2,4),(-2,1),(1,2)], ringsW = [(1,0),(0,1),(0,-1),(-1,0),(0,0)], markersB = [], markersW = []}, pointsB = 0, pointsW = 0}
+
+# Ring placement finished
+
+GameState {activePlayer = W, turnMode = AddMarker, board = Board {bmap = fromList [((-2,1),Ring B),((-1,0),Ring W),((0,-1),Ring W),((0,0),Ring W),((0,1),Ring W),((0,3),Ring B),((1,0),Ring W),((1,2),Ring B),((2,4),Ring B),((3,1),Ring B),((3,2),Marker B)], ringsB = [(3,1),(0,3),(2,4),(-2,1),(1,2)], ringsW = [(1,0),(0,1),(0,-1),(-1,0),(0,0)], markersB = [(3,2)], markersW = []}, pointsB = 0, pointsW = 0}
+
+GameState {activePlayer = B, turnMode = AddMarker, board = Board {bmap = fromList [((-2,1),Ring B),((-1,0),Ring W),((0,-1),Ring W),((0,0),Ring W),((0,1),Ring W),((0,3),Ring B),((1,0),Marker W),((1,2),Ring B),((2,4),Ring B),((3,1),Ring B),((3,2),Marker W),((4,3),Ring W)], ringsB = [(3,1),(0,3),(2,4),(-2,1),(1,2)], ringsW = [(4,3),(0,1),(0,-1),(-1,0),(0,0)], markersB = [], markersW = [(3,2),(1,0)]}, pointsB = 0, pointsW = 0}
+
+
+...
+...
+...
+
+After removing marker-
+GameState {activePlayer = B, turnMode = AddMarker, board = Board {bmap = fromList [((-4,-5),Marker B),((-4,-2),Marker B),((-4,1),Marker B),((-2,-5),Marker B),((-2,1),Ring B),((-1,4),Ring B),((0,-1),Ring W),((0,1),Marker W),((0,3),Ring B),((1,2),Ring B),((2,-1),Marker W),((2,1),Ring W),((2,2),Ring W),((2,4),Ring B),((3,1),Marker W),((3,2),Marker W),((4,1),Marker W),((4,3),Ring W)], ringsB = [(-1,4),(0,3),(2,4),(-2,1),(1,2)], ringsW = [(2,1),(2,2),(4,3),(0,-1)], markersB = [(-4,1),(-4,-2),(-4,-5),(-2,-5)], markersW = [(2,-1),(4,1),(3,1),(0,1),(3,2)]}, pointsB = 0, pointsW = 1}
+
+
+
+
+
+
+
+
+
+
+
+
+

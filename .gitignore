@@ -33,3 +33,7 @@
 
 # Compiled Files
 yinsh
+
+# Other
+*.pyc
+.vscode
