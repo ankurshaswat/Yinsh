@@ -27,6 +27,12 @@ class floydPlayer:
             position+=1
         return '{type} {hex} {pos}'.format(type=movetype, hex=hexagon, pos=position), len(self.RingPos)
 
+	def removeRing(self,ring_num):
+		movetype = 'X'
+		ring = self.RingPos[ring_num]
+		return '{type} {hex} {pos}'.format(type=movetype, hex=ring[0], pos=ring[1])
+
+
     def selectRing(self,ring_num):
         movetype = 'S'
         ring = self.RingPos[ring_num]
@@ -38,6 +44,17 @@ class floydPlayer:
             position+=1
         return '{type} {hex} {pos}'.format(type=movetype, hex=hexagon, pos=position)
 
+	def removeRowStart(self,hexagon,position):
+		movetype = 'RS'
+		if hexagon==self.n and position%self.n==0:
+			position+=1
+		return '{type} {hex} {pos}'.format(type=movetype, hex=hexagon, pos=position)
+
+	def removeRowEnd(self,hexagon,position):
+		movetype = 'RE'
+		if hexagon==self.n and position%self.n==0:
+			position+=1
+		return '{type} {hex} {pos}'.format(type=movetype, hex=hexagon, pos=position)
 
 
 
@@ -127,6 +144,7 @@ class floydPlayer:
             
         return (hex,pos)
 
+
     def convertToMoveSeq(self,nextGameRep, currGameRep, turnMode):
         ringsBefore=currGameRep['ringsA'] 
         ringsAfter=nextGameRep['ringsA']
@@ -161,9 +179,79 @@ class floydPlayer:
                 return [moveS,moveM]
             else:
                 # Row of 5 + ring removed
-                pass
 
-        return []
+                #Select ring
+
+                index=-1
+                for i in self.RingPos.keys():
+                    for j in ringsAfter:
+                        if(self.axial2hex(j)==self.RingPos[i]):
+                            break
+                    else:
+                        continue
+                    index=i
+                    break
+
+                moveS=self.selectRing(index)
+                self.game.execute_move(moveS)
+
+                #Move ring and remove row
+                markersA_removed, markersB_removed=[],[]
+                for i in currGameRep['markersA']:
+                    if i not in nextGameRep['markersA']:
+                        markersA_removed.append(i)
+                for i in currGameRep['markersB']:
+                    if i not in nextGameRep['markersB']:
+                        markersB_removed.append(i)
+
+                markers_removed=sorted(markersA_removed + markersB_removed)
+
+                marker_pos=markersB_removed[0]
+                
+                ring_prev_pos=(-1,-1)
+                for i in ringsBefore:
+                    if(axial2hex(i)==self.RingPos[index]):
+                        ring_prev_pos=i
+
+                occupied_positions=currGameRep['ringsA']+currGameRep['ringsB']+currGameRep['markersA']+currGameRep['markersB']
+                x1,y1=ring_prev_pos[0],ring_prev_pos[1]
+                x2,y2=marker_pos[0],marker_pos[1]
+                
+                while (x2,y2) in occupied_positions:
+                    if(x2<x1):
+                         x2-=1
+                    elif(x2>x1):
+                         x2+=1
+
+                    if(y2<y1):
+                         y2-=1
+                    elif(y2>y1):
+                         y2+=1
+
+                
+
+                hex,pos=self.axial2hex((x2,y2))
+                moveM=self.moveRing(hex,pos)
+
+                hex,pos=self.axial2hex(markers_removed[0])
+                moveRS=self.removeRowStart(hex,pos)
+                self.game.execute_move(moveRS)
+
+                hex,pos=self.axial2hex(markers_removed[-1])
+                moveRE=self.removeRowEnd(hex,pos)
+                self.game.execute_move(moveRE)
+                
+                #Remove ring
+
+                moveR=self.removeRing(index)
+                self.game.execute_move(moveR)
+                del self.RingPos[index]
+
+                return [moveS,moveM,moveRS,moveRE,moveR]
+
+
+
+        return 
 
     def play(self):
         move = sys.stdin.readline().strip()
