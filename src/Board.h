@@ -33,9 +33,9 @@ private:
   bool validPlaceRing(pair<int, int> position);
   bool validMoveRing(pair<int, int> newPosition, pair<int, int> currentPosition, bool player);
   void setState(pair<int, int> position, int positionVal);
+  void setState(int position1, int position2, int positionVal);
   void invertState(int pos1, int pos2);
   void removeMarker(pair<int, int> position);
-  void removeRing(pair<int, int> position);
   pair<bool, pair<pair<int, int>, pair<int, int>>> checkMarkersLocal(pair<int, int> position, pair<int, int> direction, bool player);
   vector<pair<pair<int, int>, pair<int, int>>> checkMarkersLine(pair<int, int> oldPosition, pair<int, int> newPosition, bool player);
 
@@ -43,6 +43,8 @@ public:
   Board();
   Board(int n);
 
+  void removeMarkers(pair<int, int> startPosition, pair<int, int> endPosition);
+  void removeRing(pair<int, int> position);
   bool placeRing(pair<int, int> position, bool player);
   bool moveRing(pair<int, int> newPosition, pair<int, int> currentPosition, bool player);
   vector<pair<pair<int, int>, pair<int, int>>> checkMarkers(pair<int, int> newPosition, pair<int, int> oldPosition, bool player);

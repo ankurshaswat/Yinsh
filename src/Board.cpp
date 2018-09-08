@@ -114,6 +114,11 @@ void Board::setState(pair<int, int> position, int positionVal)
     board[position.first + n][position.second + n] = positionVal;
 }
 
+void Board::setState(int position1, int position2, int positionVal)
+{
+    board[position1 + n][position2 + n] = positionVal;
+}
+
 void Board::invertState(int pos1, int pos2)
 {
     board[pos1 + n][pos2 + n] *= -1;
@@ -124,13 +129,13 @@ bool Board::placeRing(pair<int, int> position, bool player)
 
     int playerRing = player ? PositionStates::whiteRing : PositionStates::blackRing;
 
-    if (validPlaceRing(position))
-    {
-        setState(position, playerRing);
-        return true;
-    }
+    // if (validPlaceRing(position))
+    // {
+    setState(position, playerRing);
+    return true;
+    // }
 
-    return false;
+    // return false;
 }
 
 bool Board::moveRing(pair<int, int> newPosition, pair<int, int> currentPosition, bool player)
@@ -396,4 +401,35 @@ vector<pair<pair<int, int>, pair<int, int>>> Board::checkMarkers(pair<int, int> 
     }
 
     return combinationSequences;
+}
+
+void Board::removeMarkers(pair<int, int> startSeries, pair<int, int> endSeries)
+{
+    if (startSeries.first == endSeries.first)
+    {
+        int increment = startSeries.second < endSeries.second ? -1 : 1;
+
+        for (int i = endSeries.second + increment; i != startSeries.second; i += increment)
+        {
+            setState(endSeries.first, i, PositionStates::empty);
+        }
+    }
+    else if (startSeries.second == endSeries.second)
+    {
+        int increment = startSeries.first < endSeries.first ? -1 : 1;
+
+        for (int i = endSeries.first + increment; i != startSeries.first; i += increment)
+        {
+            setState(i, endSeries.second, PositionStates::empty);
+        }
+    }
+    else
+    {
+        int increment = startSeries.second < endSeries.second ? -1 : 1;
+
+        for (int i1 = endSeries.first + increment, i2 = endSeries.second + increment; i1 != startSeries.first; i1 += increment, i2 += increment)
+        {
+            setState(i1, i2, PositionStates::empty);
+        }
+    }
 }

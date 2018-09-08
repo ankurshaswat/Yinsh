@@ -14,7 +14,11 @@ using namespace std;
 pair<int, int> hex2axial(pair<int, int> hexCoord)
 {
 
+
     int c1 = hexCoord.first;
+    if(c1 == 0) {
+        return make_pair(0,0);
+    }
     int c2 = hexCoord.second % hexCoord.first;
     int branch = hexCoord.second / hexCoord.first;
 
@@ -33,7 +37,7 @@ pair<int, int> hex2axial(pair<int, int> hexCoord)
     case 5:
         return make_pair(c2 - c1, c2);
     default:
-        cout << "Unknown Case";
+        cout << "# Unknown Case";
         return make_pair(0, 0);
     }
 }
@@ -88,6 +92,26 @@ pair<int, int> axial2hex(pair<int, int> axialCoord)
     }
 
     return make_pair(hex, pos);
+}
+
+pair<int, pair<int, int>> extractCoordinates(string str, int startPosition)
+{
+
+    int i = startPosition;
+
+    int coord1 = 0;
+    while (str[i] != ' ')
+    {
+        coord1 = 10 * coord1 + str[i++] - '0';
+    }
+    i++;
+    int coord2 = 0;
+    while (str[i] != ' ' && i < str.length())
+    {
+        coord1 = 10 * coord1 + str[i++] - '0';
+    }
+
+    return make_pair(i, hex2axial(make_pair(coord1, coord2)));
 }
 
 #endif /* UTIL_H */
