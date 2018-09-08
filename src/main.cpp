@@ -4,10 +4,7 @@
  *
  */
 
-// #include <iostream>
 #include "Interface.h"
-// #include "Util.h"
-// #include "Yinsh.h"
 
 using namespace std;
 

@@ -30,8 +30,8 @@ void AI::playMoveSeq()
 
 pair<Move,int> AI::maxValue(int alpha, int beta, int depth, Board& board){
     // Check for win
-    if(board.is_win(!player)) return make_pair(Move(), INT_MIN);
-    else if(board.is_win(player)) return make_pair(Move(),INT_MAX);
+    if(board.isWin(!player)) return make_pair(Move(), INT_MIN);
+    else if(board.isWin(player)) return make_pair(Move(),INT_MAX);
 
     vector<Move> moves;
     board.getValidMoves(moves,player);
@@ -40,9 +40,9 @@ pair<Move,int> AI::maxValue(int alpha, int beta, int depth, Board& board){
     Move bestMove;
     int bestEval=INT_MIN;
     for(auto m: moves){
-        board.playMove(m);
+        board.playMove(m,player);
         int evaluation=minValue(alpha, beta, depth-1, board).second;
-        board.undoMove(m);
+        board.undoMove(m,player);
         if(evaluation>bestEval) {
             bestMove=m;
             bestEval=evaluation;
@@ -56,8 +56,8 @@ pair<Move,int> AI::maxValue(int alpha, int beta, int depth, Board& board){
 
 pair<Move,int> AI::minValue(int alpha, int beta, int depth, Board& board){
     // Check for win
-    if(board.is_win(!player)) return make_pair(Move(), INT_MIN);
-    else if(board.is_win(player)) return make_pair(Move(),INT_MAX);
+    if(board.isWin(!player)) return make_pair(Move(), INT_MIN);
+    else if(board.isWin(player)) return make_pair(Move(),INT_MAX);
 
     vector<Move> moves;
     board.getValidMoves(moves,player);
@@ -66,9 +66,9 @@ pair<Move,int> AI::minValue(int alpha, int beta, int depth, Board& board){
     Move bestMove;
     int bestEval=INT_MAX;
     for(auto m: moves){
-        board.playMove(m);
+        board.playMove(m,player);
         int evaluation=maxValue(alpha, beta, depth-1, board).second;
-        board.undoMove(m);
+        board.undoMove(m,player);
         if(evaluation<bestEval) {
             bestMove=m;
             bestEval=evaluation;
