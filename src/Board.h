@@ -15,15 +15,13 @@ using namespace std;
 enum class moveType{
     placeRing=0,
     moveRing=1,
-    removeRow=2
+    removeRow=2,
+    removeRing=3
 };
 struct Move{
   moveType m;
   pair<int,int> p1,p2;
-  Move(): m(moveType::placeRing), p1(make_pair(-9,-9)), p2(make_pair(-9,-9)){}
-  bool operator<(const Move& rhs){
-    return p1<rhs.p1;
-  } 
+  Move(): m(moveType::placeRing), p1(make_pair(-9,-9)), p2(make_pair(-9,-9)){}  
 };
 
 class Board
