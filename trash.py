@@ -33,6 +33,7 @@ def getResponseFromServer(gameRep, turnMode):
 	url='https://yinsh-backend.herokuapp.com/'
 
 	# payload={'gamestate':'GameState {activePlayer = W, turnMode = AddRing, board = Board {bmap = fromList [((1,2),Ring B)], ringsB = [(1,2)], ringsW = [], markersB = [], markersW = []}, pointsB = 0, pointsW = 0}'}
+	query_string='GameState {activePlayer = W, turnMode = AddMarker, board = Board {bmap = fromList [((-4, -2), Ring B), ((-3, -2), Ring B), ((-3, 0), Ring B), ((-2, 0), Ring B), ((-1, 0), Ring B), ((-1, 1), Ring W), ((0, -1), Ring W), ((0, 0), Ring W), ((1, 0), Ring W), ((2, 1), Ring W), ((-3, -1), Marker B), ((2, -2), Marker B), ((0, 1), Marker A)], ringsB =[(-4, -2), (-3, -2), (-3, 0), (-2, 0), (-1, 0)], ringsW = [(-1, 1), (0, -1), (0, 0), (1, 0), (2, 1)], markersB = [(-3, -1), (2, -2)], markersW = [(0, 1)]}, pointsB = 0, pointsW = 0}'
 	payload={'gamestate':query_string}
 	response=(requests.get(url,params=payload)).text
 

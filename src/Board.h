@@ -12,6 +12,20 @@
 
 using namespace std;
 
+enum class moveType{
+    placeRing=0,
+    moveRing=1,
+    removeRow=2
+};
+struct Move{
+  moveType m;
+  pair<int,int> p1,p2;
+  Move(): m(moveType::placeRing), p1(make_pair(-9,-9)), p2(make_pair(-9,-9)){}
+  bool operator<(const Move& rhs){
+    return p1<rhs.p1;
+  } 
+};
+
 class Board
 {
 private:
@@ -48,6 +62,21 @@ public:
   bool placeRing(pair<int, int> position, bool player);
   bool moveRing(pair<int, int> newPosition, pair<int, int> currentPosition, bool player);
   vector<pair<pair<int, int>, pair<int, int>>> checkMarkers(pair<int, int> newPosition, pair<int, int> oldPosition, bool player);
+
+  void playMove(Move m);
+  void undoMove(Move m);
+
+  /* Return valid moves for player (append to passed vector) */
+  void getValidMoves(vector<Move>& moves, bool player);
+
+  /* Return evaluation of board for player */
+  int evaluate(bool player);
+
+  /* Check if it is a win for player */
+  bool is_win(bool player);
+
 };
+
+
 
 #endif /* UTIL_H */

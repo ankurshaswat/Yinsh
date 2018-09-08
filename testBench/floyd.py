@@ -206,11 +206,11 @@ class floydPlayer:
 
                 markers_removed=sorted(markersA_removed + markersB_removed)
 
-                marker_pos=markersB_removed[0]
+                marker_pos=markersA_removed[0]
                 
                 ring_prev_pos=(-1,-1)
                 for i in ringsBefore:
-                    if(axial2hex(i)==self.RingPos[index]):
+                    if(self.axial2hex(i)==self.RingPos[index]):
                         ring_prev_pos=i
 
                 occupied_positions=currGameRep['ringsA']+currGameRep['ringsB']+currGameRep['markersA']+currGameRep['markersB']

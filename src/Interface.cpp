@@ -44,7 +44,7 @@ Inteface::Inteface()
     while (true)
     {
         cout << "# Moving on to get AI output" << endl;
-        ai->getMove();
+        ai->playMoveSeq();
         currentPlayer = !currentPlayer;
         cout << "# Moving on to get input" << endl;
         readInput();
