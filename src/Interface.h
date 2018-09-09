@@ -15,7 +15,7 @@ private:
 
 public:
   Inteface();
-  void readInput();
+  Move readInput();
 };
 
 #endif
