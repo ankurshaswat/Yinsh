@@ -74,7 +74,8 @@ public:
   void undoMove(Move m, bool player);
 
   /* Return valid moves for player (append to passed vector) */
-  void getValidMoves(vector<Move> &moves, bool player);
+  void getValidRingMoves(vector<Move> &moves, bool player);
+  void getValidRowMoves(Move prevMoveRing, vector<Move> &moves, bool player);
 
   /* Return evaluation of board for player */
   int evaluate(bool player);

@@ -1,4 +1,5 @@
 #include "Board.h"
+#include "Util.h"
 
 Board::Board() : Board(5) {}
 
@@ -68,12 +69,17 @@ bool Board::validMoveRing(pair<int, int> newPosition, pair<int, int> currentPosi
         return false;
     }
 
+    if (getState(newPosition) != PositionStates::empty)
+    {
+        return false;
+    }
+
     if (!(newPosition.first == currentPosition.first || newPosition.second == currentPosition.second || newPosition.first - currentPosition.first == newPosition.second - currentPosition.second))
     {
         return false;
     }
 
-    int opposingRingState = player ? PositionStates::blackRing : PositionStates::whiteRing;
+    bool jumpedMarker = false;
 
     if (newPosition.first == currentPosition.first)
     {
@@ -81,9 +87,14 @@ bool Board::validMoveRing(pair<int, int> newPosition, pair<int, int> currentPosi
 
         for (int i = currentPosition.second + increment; i != newPosition.second; i += increment)
         {
-            if (getState(currentPosition.first, i) == opposingRingState)
+            int state = getState(currentPosition.first, i);
+            if (state == PositionStates::whiteRing || state == PositionStates::blackRing || (jumpedMarker == true && state == PositionStates::empty))
             {
                 return false;
+            }
+            else if (state == PositionStates::blackMarker || state == PositionStates::whiteMarker)
+            {
+                jumpedMarker = true;
             }
         }
     }
@@ -93,9 +104,14 @@ bool Board::validMoveRing(pair<int, int> newPosition, pair<int, int> currentPosi
 
         for (int i = currentPosition.first + increment; i != newPosition.first; i += increment)
         {
-            if (getState(i, currentPosition.second) == opposingRingState)
+            int state = getState(i, currentPosition.second);
+            if (state == PositionStates::whiteRing || state == PositionStates::blackRing || (jumpedMarker == true && state == PositionStates::empty))
             {
                 return false;
+            }
+            else if (state == PositionStates::blackMarker || state == PositionStates::whiteMarker)
+            {
+                jumpedMarker = true;
             }
         }
     }
@@ -104,9 +120,14 @@ bool Board::validMoveRing(pair<int, int> newPosition, pair<int, int> currentPosi
         int increment = newPosition.second < currentPosition.second ? -1 : 1;
         for (int i1 = currentPosition.first + increment, i2 = currentPosition.second + increment; i1 != newPosition.first; i1 += increment, i2 += increment)
         {
-            if (getState(i1, i2) == opposingRingState)
+            int state = getState(i1, i2);
+            if (state == PositionStates::whiteRing || state == PositionStates::blackRing || (jumpedMarker == true && state == PositionStates::empty))
             {
                 return false;
+            }
+            else if (state == PositionStates::blackMarker || state == PositionStates::whiteMarker)
+            {
+                jumpedMarker = true;
             }
         }
     }
@@ -569,14 +590,44 @@ bool Board::isWin(bool player)
     return false;
 }
 
-void Board::getValidMoves(vector<Move> &moves, bool player)
+void Board::getValidRowMoves(Move prevMoveRing, vector<Move> &moves, bool player)
+{
+    vector<pair<pair<int, int>, pair<int, int>>> rows = checkMarkers(prevMoveRing.finalPosition, prevMoveRing.initPosition, player);
+
+    for (int i = 0; i < rows.size(); i++)
+    {
+        pair<pair<int, int>, pair<int, int>> row = rows[i];
+        pair<int, int> start = row.first, end = row.second;
+        if (axialDistance(row.first, row.second) > 5)
+        {
+            pair<int, int> direction;
+            direction.first = end.first - start.first;
+            direction.second = end.second - start.second;
+            direction = makeUnit(direction);
+
+            pair<int, int> alternateEnd;
+            alternateEnd.first = start.first + 4 * direction.first;
+            alternateEnd.second = start.second + 4 * direction.second;
+
+            moves.push_back(Move(MoveType::removeRow, start, alternateEnd));
+
+            pair<int, int> alternateStart;
+            alternateStart.first = end.first - 4 * direction.first;
+            alternateStart.second = end.second - 4 * direction.second;
+
+            moves.push_back(Move(MoveType::removeRow, alternateStart, end));
+        }
+        else
+        {
+            moves.push_back(Move(MoveType::removeRow, start, end));
+        }
+    }
+}
+
+void Board::getValidRingMoves(vector<Move> &moves, bool player)
 {
 
-    // First check if possible to remove row from anywhere and convert it into moves and return
-
-    // Otherwise
     vector<pair<int, int>> searchList = player ? rings1 : rings0;
-    PositionStates opponentMarker = player ? blackMarker : whiteMarker;
     for (int i = 0; i < searchList.size(); i++)
     {
         pair<int, int> ringPosition = searchList[i];
@@ -584,19 +635,58 @@ void Board::getValidMoves(vector<Move> &moves, bool player)
         {
             pair<int, int> direction = directions[j];
             pair<int, int> checkPosition = ringPosition;
+
+            bool jumpedMarker = false;
+
             while (true)
             {
                 checkPosition.first += direction.first;
                 checkPosition.second += direction.second;
 
                 int positionState = getState(checkPosition);
-                if (!validPosition(checkPosition) || positionState == opponentMarker)
+
+                jumpedMarker = (positionState == PositionStates::blackMarker) || (positionState == PositionStates::whiteMarker);
+
+                if (!validPosition(checkPosition) || positionState == PositionStates::whiteRing || positionState == PositionStates::blackRing)
                 {
                     break;
                 }
                 else if (positionState == PositionStates::empty)
                 {
                     moves.push_back(Move(MoveType::moveRing, ringPosition, checkPosition));
+
+                    // Move moveRing(MoveType::moveRing, ringPosition, checkPosition);
+
+                    // // Apply Move to board
+                    // playMove(moveRing, player);
+
+                    // // Check Markers for match
+                    // vector<pair<pair<int, int>, pair<int, int>>> rows = checkMarkers(checkPosition, ringPosition, player);
+
+                    // if (rows.size() == 0)
+                    // {
+
+                    //     // Append only move ring to moves
+                    // }
+                    // else
+                    // {
+
+                    //     // Append possible remove rows
+
+                    //     for (int k = 0; k < rows.size(); k++)
+                    //     {
+                    //         pair<pair<int, int>, pair<int, int>> row = rows[k];
+                    //         pair<int, int> startPos = row.first, endPos = row.second;
+                    //     }
+                    // }
+
+                    // // Undo move from board
+                    // undoMove(moveRing, player);
+
+                    if (jumpedMarker)
+                    {
+                        break;
+                    }
                 }
             }
         }

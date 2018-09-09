@@ -8,14 +8,14 @@ using namespace std;
 
 class Inteface
 {
-  private:
-    Board *board;
-    AI *ai;
-    bool currentPlayer = 0;
+private:
+  Board *board;
+  AI *ai;
+  bool currentPlayer = 0;
 
-  public:
-    Inteface();
-    void readInput();
+public:
+  Inteface();
+  void readInput();
 };
 
 #endif
