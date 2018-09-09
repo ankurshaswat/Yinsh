@@ -693,6 +693,26 @@ void Board::getValidRingMoves(vector<Move> &moves, bool player)
     }
 }
 
+void Board::getValidPlaceRingMoves(vector<Move> &moves, bool player){
+    int count=0,i,j;
+    while(count<7){
+        i= rand() % 11;
+        j= rand() % 11;
+        if(validPosition(make_pair(i,j)) && board[i][j]==PositionStates::empty ){
+            moves.push_back(Move(MoveType::placeRing, make_pair(i,j), make_pair(-1,-1)));
+            count++;
+        }
+    }
+};
+
+void Board::getValidRemoveRingMoves(vector<Move> &moves, bool player){
+    vector< pair<int,int> >* ringsPos;
+    if(player) ringsPos=&rings1;
+    else ringsPos=&rings0;
+    for(auto pos: (*ringsPos) ){
+        moves.push_back( Move(MoveType::removeRing, pos, make_pair(-1,-1)) );
+    }
+}
 
 int Board::evaluate(bool player){
     int markersCount, ringsCount, score;
@@ -708,3 +728,12 @@ int Board::evaluate(bool player){
     score= MARKERS_WEIGHT*markersCount + RINGS_WEIGHT*ringsCount; 
     return score;
 }
+
+int Board::getSize(){
+    return n;
+}
+
+int Board::getRingsCount(bool player){
+    if(player) return rings1.size();
+    else return rings0.size();    
+};

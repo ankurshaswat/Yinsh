@@ -76,12 +76,21 @@ public:
   /* Return valid moves for player (append to passed vector) */
   void getValidRingMoves(vector<Move> &moves, bool player);
   void getValidRowMoves(Move prevMoveRing, vector<Move> &moves, bool player);
+  void getValidPlaceRingMoves(vector<Move> &moves, bool player);
+  void getValidRemoveRingMoves(vector<Move> & moves, bool player);
 
   /* Return evaluation of board for player */
   int evaluate(bool player);
 
   /* Check if it is a win for player */
   bool isWin(bool player);
+  
+  /* Private member access functions */
+  int getSize();
+  int getRingsCount(bool player);
+
+  /* Helper functions */
+  bool isIntersecting(Move m, Move n);
 };
 
 #endif /* UTIL_H */
