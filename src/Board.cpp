@@ -32,6 +32,18 @@ Board::Board(int n)
     directions.push_back(make_pair(-1, -1));
 }
 
+Board::Board(int n, Board *board2Copy) : Board(n)
+{
+    for (int i = 0; i < 2 * n + 2; i++)
+    {
+        board[i] = new int[2 * n + 1];
+        for (int j = 0; j < 2 * n + 2; j++)
+        {
+            board[i][j] = board2Copy->getState(i - n, j - n);
+        }
+    }
+}
+
 int Board::getState(pair<int, int> position)
 {
     return board[position.first + n][position.second + n];
@@ -44,7 +56,7 @@ int Board::getState(int pos1, int pos2)
 
 bool Board::validPosition(pair<int, int> position)
 {
-    if (position.first == 0 || position.second == 0 || position.first == position.second)
+    if (position.first == 0 || position.second == 0 || position.first == position.second || position.first == -1 * position.second)
     {
         return (position.first < n && position.second < n && position.first > -1 * n && position.second > -1 * n);
     }
@@ -137,11 +149,13 @@ bool Board::validMoveRing(pair<int, int> newPosition, pair<int, int> currentPosi
 
 void Board::removeMarker(pair<int, int> position)
 {
+    cout << "# Board::removeMarker" << endl;
     setState(position, PositionStates::empty);
 }
 
 void Board::removeRing(pair<int, int> position)
 {
+    cout << "# Board::removeRing" << endl;
     bool player = getState(position) > 0;
     vector<pair<int, int>> searchList = player ? rings1 : rings0;
     for (auto it = searchList.begin(); it != searchList.end(); ++it)
@@ -181,7 +195,7 @@ void Board::invertState(int pos1, int pos2)
 
 bool Board::placeRing(pair<int, int> position, bool player)
 {
-
+    cout << "# Board::placeRing" << endl;
     int playerRing = player ? PositionStates::whiteRing : PositionStates::blackRing;
 
     // if (validPlaceRing(position))
@@ -197,6 +211,8 @@ bool Board::placeRing(pair<int, int> position, bool player)
 
 bool Board::moveRing(pair<int, int> newPosition, pair<int, int> currentPosition, bool player)
 {
+    cout << "# Board::moveRing" << endl;
+
     // if (!validMoveRing(newPosition, currentPosition, player))
     // {
     //     return false;
@@ -693,28 +709,40 @@ void Board::getValidRingMoves(vector<Move> &moves, bool player)
     }
 }
 
-void Board::getValidPlaceRingMoves(vector<Move> &moves, bool player){
-    int count=0,i,j;
-    while(count<7){
-        i= rand() % 11;
-        j= rand() % 11;
-        if(validPosition(make_pair(i,j)) && board[i][j]==PositionStates::empty ){
-            moves.push_back(Move(MoveType::placeRing, make_pair(i,j), make_pair(-1,-1)));
+void Board::getValidPlaceRingMoves(vector<Move> &moves, bool player)
+{
+    cout << "# Board::getValidPlaceRingMoves" << endl;
+
+    int count = 0, i, j;
+    while (count < 7)
+    {
+        i = (rand() % (2 * n + 1)) - n;
+        j = (rand() % (2 * n + 1)) - n;
+        pair<int, int> pos = make_pair(i, j);
+        if (validPosition(pos) && getState(pos) == PositionStates::empty)
+        {
+            cout << "# " << i << ' ' << j << endl;
+            moves.push_back(Move(MoveType::placeRing, pos, pos));
             count++;
         }
     }
 };
 
-void Board::getValidRemoveRingMoves(vector<Move> &moves, bool player){
-    vector< pair<int,int> >* ringsPos;
-    if(player) ringsPos=&rings1;
-    else ringsPos=&rings0;
-    for(auto pos: (*ringsPos) ){
-        moves.push_back( Move(MoveType::removeRing, pos, make_pair(-1,-1)) );
+void Board::getValidRemoveRingMoves(vector<Move> &moves, bool player)
+{
+    vector<pair<int, int>> *ringsPos;
+    if (player)
+        ringsPos = &rings1;
+    else
+        ringsPos = &rings0;
+    for (auto pos : (*ringsPos))
+    {
+        moves.push_back(Move(MoveType::removeRing, pos, make_pair(-1, -1)));
     }
 }
 
-int Board::evaluate(bool player){
+int Board::evaluate(bool player)
+{
     int markersCount, ringsCount, score;
     int MARKERS_WEIGHT = 1, RINGS_WEIGHT = -10;
     if (player)
@@ -731,11 +759,30 @@ int Board::evaluate(bool player){
     return score;
 }
 
-int Board::getSize(){
+int Board::getSize()
+{
     return n;
 }
 
-int Board::getRingsCount(bool player){
-    if(player) return rings1.size();
-    else return rings0.size();    
+int Board::getRingsCount(bool player)
+{
+    if (player)
+        return rings1.size();
+    else
+        return rings0.size();
 };
+
+bool Board::isIntersecting(Move m, Move n)
+{
+    return true;
+}
+
+Board::~Board()
+{
+    for (int i = 0; i < 2 * n + 2; i++)
+    {
+        delete[] board[i];
+    }
+    delete[] board;
+    delete[] counts;
+}

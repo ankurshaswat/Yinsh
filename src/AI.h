@@ -6,14 +6,15 @@
 class AI
 {
 private:
-  Board *board;
+  Board *originalBoard;
   bool player;
   double time;
   int moveCount;
   int boardSize;
+  int n;
 
 public:
-  AI(Board *board, bool player, int time);
+  AI(Board *board, bool player, int time,int n);
 
   void playMoveSeq(Move m);
 
@@ -23,9 +24,8 @@ public:
   /* Returns best move for max node (and its evaluation) */
   pair<vector<Move>, int> maxValue(int alpha, int beta, int depth, Board &board, Move prevMove, bool player);
 
-  void AI::RowMoves(Board& board, bool player, vector<Move>& removeRowMoves, vector<Move>& moveSeq, vector< vector<Move> > & moveSequences, bool continuePlaying);
-  void AI::moveMarkerMoves(Board& board, vector<Move>& moveSeq, vector< vector<Move> > & moveSequences, bool player);
-
+  void rowMoves(Board &board, bool player, vector<Move> &removeRowMoves, vector<Move> &moveSeq, vector<vector<Move>> &moveSequences, bool continuePlaying);
+  void moveMarkerMoves(Board &board, vector<Move> &moveSeq, vector<vector<Move>> &moveSequences, bool player);
 };
 
 #endif

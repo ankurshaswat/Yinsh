@@ -47,8 +47,7 @@ private:
   vector<pair<int, int>> rings0;
   vector<pair<int, int>> rings1;
 
-  int getState(pair<int, int> position);
-  int getState(int pos1, int pos2);
+
   bool validPosition(pair<int, int> position);
   bool validPlaceRing(pair<int, int> position);
   bool validMoveRing(pair<int, int> newPosition, pair<int, int> currentPosition, bool player);
@@ -63,6 +62,10 @@ private:
 public:
   Board();
   Board(int n);
+  Board(int n,Board *board);
+
+  int getState(pair<int, int> position);
+  int getState(int pos1, int pos2);
 
   void removeMarkers(pair<int, int> startPosition, pair<int, int> endPosition);
   void removeRing(pair<int, int> position);
@@ -77,20 +80,23 @@ public:
   void getValidRingMoves(vector<Move> &moves, bool player);
   void getValidRowMoves(Move prevMoveRing, vector<Move> &moves, bool player);
   void getValidPlaceRingMoves(vector<Move> &moves, bool player);
-  void getValidRemoveRingMoves(vector<Move> & moves, bool player);
+  void getValidRemoveRingMoves(vector<Move> &moves, bool player);
 
   /* Return evaluation of board for player */
   int evaluate(bool player);
 
   /* Check if it is a win for player */
   bool isWin(bool player);
-  
+
   /* Private member access functions */
   int getSize();
   int getRingsCount(bool player);
 
   /* Helper functions */
   bool isIntersecting(Move m, Move n);
+
+  ~Board();
+
 };
 
 #endif /* UTIL_H */

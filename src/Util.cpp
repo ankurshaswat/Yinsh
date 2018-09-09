@@ -35,7 +35,7 @@ pair<int, int> hex2axial(pair<int, int> hexCoord)
     case 5:
         return make_pair(c2 - c1, c2);
     default:
-        cout << "# Unknown Case";
+        cout << "# Util::hex2axial Unknown Case"<<endl;
         return make_pair(0, 0);
     }
 }
@@ -44,6 +44,7 @@ pair<int, int> axial2hex(pair<int, int> axialCoord)
 {
     int a = axialCoord.first;
     int b = axialCoord.second;
+    cout<<"# axial2hex ("<<a<<','<<b<<')'<<endl;
 
     int hex, pos;
 

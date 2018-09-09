@@ -38,3 +38,4 @@ yinsh
 *.pyc
 .vscode
 trash.py
+env

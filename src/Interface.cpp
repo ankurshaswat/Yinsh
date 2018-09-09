@@ -30,10 +30,12 @@ Inteface::Inteface()
 
     bool player = playerInt == 1 ? true : false;
 
-    board = new Board(n);
-    ai = new AI(board, player, time);
+    cout << "# n=" << n << " Player=" << player << " Time=" << time << endl;
 
-    cout << "# Got metadata" << endl;
+    board = new Board(n);
+    ai = new AI(board, player, time, n);
+
+    // cout << "# Got metadata" << endl;
 
     Move m;
 
@@ -56,13 +58,13 @@ Inteface::Inteface()
 
 Move Inteface::readInput()
 {
+    cout << "# Inteface::readInput" << endl;
+
     Move m;
     string str;
     getline(cin, str);
     pair<int, pair<int, int>> returnedVal;
     int i;
-
-    cout << "# Taken input" << endl;
 
     if (str[0] == 'P')
     {
@@ -97,7 +99,7 @@ Move Inteface::readInput()
                 board->moveRing(newPosition, oldPosition, currentPlayer);
 
                 m = Move(MoveType::placeRing, oldPosition, newPosition);
-                i += 2;
+                i += 1;
             }
             else if (str[i] == 'R')
             {
@@ -123,11 +125,11 @@ Move Inteface::readInput()
 
                 board->removeRing(ringPos);
 
-                i += 2;
+                i += 1;
             }
             else
             {
-                cout << "# Shouldn't be here";
+                cout << "# Inteface::readInput Shouldn't be here" << endl;
             }
         }
     }
