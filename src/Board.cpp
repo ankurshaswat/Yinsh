@@ -602,3 +602,19 @@ void Board::getValidMoves(vector<Move> &moves, bool player)
         }
     }
 }
+
+
+int Board::evaluate(bool player){
+    int markersCount, ringsCount, score;
+    int MARKERS_WEIGHT=1, RINGS_WEIGHT=-10;
+    if(player){ // player 1 - white
+        markersCount=this->counts[PositionStates::whiteMarker];
+        ringsCount=this->counts[PositionStates::whiteRing];
+    }
+    else{
+        markersCount=this->counts[PositionStates::blackMarker];
+        ringsCount=this->counts[PositionStates::blackRing];
+    }
+    score= MARKERS_WEIGHT*markersCount + RINGS_WEIGHT*ringsCount; 
+    return score;
+}
