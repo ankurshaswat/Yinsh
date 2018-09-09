@@ -45,6 +45,12 @@ pair<vector<Move>, int> AI::maxValue(int alpha, int beta, int depth, Board &boar
         bestMoveSeq.push_back(Move());
         return make_pair(bestMoveSeq,INT_MAX);
     }
+
+    //Base case for depth
+    if(depth<=0){
+        return make_pair(bestMoveSeq,board.evaluate(player));
+    }
+
     vector< vector<Move> > moveSequences;
     
 
@@ -113,6 +119,12 @@ pair<vector<Move>, int> AI::minValue(int alpha, int beta, int depth, Board &boar
         bestMoveSeq.push_back(Move());
         return make_pair(bestMoveSeq,INT_MAX);
     }
+
+    //Base case for depth
+    if(depth<=0){
+        return make_pair(bestMoveSeq,board.evaluate(player));
+    }
+
     vector< vector<Move> > moveSequences;
     
 
