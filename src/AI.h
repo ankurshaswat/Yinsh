@@ -15,7 +15,7 @@ private:
 public:
   AI(Board *board, bool player, int time);
 
-  void playMoveSeq();
+  void playMoveSeq(Move m);
 
   /* Returns best move for min node (and its evaluation) */
   pair<vector<Move>, int> minValue(int alpha, int beta, int depth, Board &board, Move prevMove, bool player);

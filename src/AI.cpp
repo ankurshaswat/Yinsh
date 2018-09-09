@@ -17,8 +17,14 @@ AI::AI(Board *board, bool player, int time)
     this->boardSize=board->getSize();
 }
 
-void AI::playMoveSeq()
+void AI::playMoveSeq(Move m)
 {
+    if (m.type == MoveType::moveRing)
+    {
+
+        // This needs to be used.....
+    }
+
     // Start time
 
     //Convert All moves to hex here and print

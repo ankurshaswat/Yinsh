@@ -35,6 +35,8 @@ Inteface::Inteface()
 
     cout << "# Got metadata" << endl;
 
+    Move m;
+
     if (player == 1)
     {
         readInput();
@@ -44,16 +46,17 @@ Inteface::Inteface()
     while (true)
     {
         cout << "# Moving on to get AI output" << endl;
-        ai->playMoveSeq();
+        ai->playMoveSeq(m);
         currentPlayer = !currentPlayer;
         cout << "# Moving on to get input" << endl;
-        readInput();
+        m = readInput();
         currentPlayer = !currentPlayer;
     }
 }
 
-void Inteface::readInput()
+Move Inteface::readInput()
 {
+    Move m;
     string str;
     getline(cin, str);
     pair<int, pair<int, int>> returnedVal;
@@ -69,109 +72,65 @@ void Inteface::readInput()
         pair<int, int> coord = returnedVal.second;
         i = returnedVal.first;
         board->placeRing(coord, currentPlayer);
+
+        m = Move(MoveType::placeRing, coord, coord);
     }
-    else if (str[0] == 'S')
+    else
     {
-        i = 2;
-
-        returnedVal = extractCoordinates(str, i);
-        pair<int, int> oldPosition = returnedVal.second;
-        i = returnedVal.first;
-
-        i += 3;
-
-        returnedVal = extractCoordinates(str, i);
-        pair<int, int> newPosition = returnedVal.second;
-        i = returnedVal.first;
-
-        board->moveRing(newPosition, oldPosition, currentPlayer);
-
-        if (str[i] != '\n')
+        i = 0;
+        while (i < str.size())
         {
-            i += 4;
+            if (str[i] == 'S')
+            {
+                i += 2;
 
-            returnedVal = extractCoordinates(str, i);
-            pair<int, int> startSeries = returnedVal.second;
-            i = returnedVal.first;
+                returnedVal = extractCoordinates(str, i);
+                pair<int, int> oldPosition = returnedVal.second;
+                i = returnedVal.first;
 
-            i += 4;
+                i += 3;
 
-            returnedVal = extractCoordinates(str, i);
-            pair<int, int> endSeries = returnedVal.second;
-            i = returnedVal.first;
+                returnedVal = extractCoordinates(str, i);
+                pair<int, int> newPosition = returnedVal.second;
+                i = returnedVal.first;
 
-            board->removeMarkers(startSeries, endSeries);
+                board->moveRing(newPosition, oldPosition, currentPlayer);
 
-            i += 3;
+                m = Move(MoveType::placeRing, oldPosition, newPosition);
+                i += 2;
+            }
+            else if (str[i] == 'R')
+            {
+                i += 3;
 
-            returnedVal = extractCoordinates(str, i);
-            pair<int, int> ringPos = returnedVal.second;
-            i = returnedVal.first;
+                returnedVal = extractCoordinates(str, i);
+                pair<int, int> startSeries = returnedVal.second;
+                i = returnedVal.first;
 
-            board->removeRing(ringPos);
+                i += 4;
+
+                returnedVal = extractCoordinates(str, i);
+                pair<int, int> endSeries = returnedVal.second;
+                i = returnedVal.first;
+
+                board->removeMarkers(startSeries, endSeries);
+
+                i += 3;
+
+                returnedVal = extractCoordinates(str, i);
+                pair<int, int> ringPos = returnedVal.second;
+                i = returnedVal.first;
+
+                board->removeRing(ringPos);
+
+                i += 2;
+            }
+            else
+            {
+                cout << "# Shouldn't be here";
+            }
         }
     }
-    else if (str[i] == 'R')
-    {
-        i = 3;
 
-        returnedVal = extractCoordinates(str, i);
-        pair<int, int> startSeries = returnedVal.second;
-        i = returnedVal.first;
-
-        i += 4;
-
-        returnedVal = extractCoordinates(str, i);
-        pair<int, int> endSeries = returnedVal.second;
-        i = returnedVal.first;
-
-        board->removeMarkers(startSeries, endSeries);
-
-        i += 3;
-
-        returnedVal = extractCoordinates(str, i);
-        pair<int, int> ringPos = returnedVal.second;
-        i = returnedVal.first;
-
-        board->removeRing(ringPos);
-
-        i += 3;
-
-        returnedVal = extractCoordinates(str, i);
-        pair<int, int> oldPosition = returnedVal.second;
-        i = returnedVal.first;
-
-        i += 3;
-
-        returnedVal = extractCoordinates(str, i);
-        pair<int, int> newPosition = returnedVal.second;
-        i = returnedVal.first;
-
-        board->moveRing(newPosition, oldPosition, currentPlayer);
-
-        if (str[i] != '\n')
-        {
-            i += 4;
-
-            returnedVal = extractCoordinates(str, i);
-            pair<int, int> startSeries = returnedVal.second;
-            i = returnedVal.first;
-
-            i += 4;
-
-            returnedVal = extractCoordinates(str, i);
-            pair<int, int> endSeries = returnedVal.second;
-            i = returnedVal.first;
-
-            board->removeMarkers(startSeries, endSeries);
-
-            i += 3;
-
-            returnedVal = extractCoordinates(str, i);
-            pair<int, int> ringPos = returnedVal.second;
-            i = returnedVal.first;
-
-            board->removeRing(ringPos);
-        }
-    }
+    return m;
 }
