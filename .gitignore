@@ -36,6 +36,5 @@ yinsh
 
 # Other
 *.pyc
-.vscode
 trash.py
 env
