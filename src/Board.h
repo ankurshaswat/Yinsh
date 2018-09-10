@@ -44,9 +44,7 @@ private:
   int *counts;
 
   vector<pair<int, int>> directions;
-  vector<pair<int, int>> rings0;
-  vector<pair<int, int>> rings1;
-
+  vector<vector<pair<int, int>>> rings;
 
   bool validPosition(pair<int, int> position);
   bool validPlaceRing(pair<int, int> position);
@@ -62,7 +60,9 @@ private:
 public:
   Board();
   Board(int n);
-  Board(int n,Board *board);
+  Board(int n, Board *board);
+
+  vector<pair<int, int>> getRingPositions(bool player);
 
   int getState(pair<int, int> position);
   int getState(int pos1, int pos2);
@@ -96,7 +96,6 @@ public:
   bool isIntersecting(Move m, Move n);
 
   ~Board();
-
 };
 
 #endif /* UTIL_H */
