@@ -98,7 +98,7 @@ Move Inteface::readInput()
 
                 board->moveRing(newPosition, oldPosition, currentPlayer);
 
-                m = Move(MoveType::placeRing, oldPosition, newPosition);
+                m = Move(MoveType::moveRing, oldPosition, newPosition);
                 i += 1;
             }
             else if (str[i] == 'R')
