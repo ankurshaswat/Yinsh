@@ -21,5 +21,4 @@ int axialDistance(pair<int, int> p1, pair<int, int> p2);
 pair<int, int> makeUnit(pair<int, int> pos);
 void printPointers(vector<vector<Move>> moveSequences);
 
-
 #endif /* UTIL_H */

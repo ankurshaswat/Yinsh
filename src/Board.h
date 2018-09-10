@@ -65,7 +65,7 @@ public:
   /* Return valid moves for player (append to passed vector) */
   void getValidRingMoves(vector<Move> &moves, bool player);
   void getValidRowMoves(Move prevMoveRing, vector<Move> &moves, bool player);
-  void getValidPlaceRingMoves(vector<Move> &moves,bool player);
+  void getValidPlaceRingMoves(vector<Move> &moves, bool player);
   void getValidRemoveRingMoves(vector<Move> &moves, bool player);
 
   /* Return evaluation of board for player */
