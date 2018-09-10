@@ -685,11 +685,15 @@ void Board::getValidRingMoves(vector<Move> &moves, bool player)
                 checkPosition.first += direction.first;
                 checkPosition.second += direction.second;
 
+                if (!validPosition(checkPosition)) {
+                    break;
+                }
+
                 int positionState = getState(checkPosition);
 
                 jumpedMarker = (positionState == PositionStates::blackMarker) || (positionState == PositionStates::whiteMarker);
 
-                if (!validPosition(checkPosition) || positionState == PositionStates::whiteRing || positionState == PositionStates::blackRing)
+                if (positionState == PositionStates::whiteRing || positionState == PositionStates::blackRing)
                 {
                     break;
                 }

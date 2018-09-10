@@ -6,7 +6,7 @@
 const int INT_MAX = numeric_limits<int>::max();
 const int INT_MIN = numeric_limits<int>::min();
 
-const int MAX_DEPTH = 5;
+const int MAX_DEPTH = 6;
 
 AI::AI(Board *board, bool player, int time, int n)
 {
@@ -37,7 +37,7 @@ void AI::playMoveSeq(Move prevMove)
     // cout << "P 4 5" << endl;
     // // Stop Time
 
-    pair<vector<Move>, int> returnedMovePair = maxValue(INT_MIN, INT_MAX, 3, *originalBoard, prevMove, player, moveCount);
+    pair<vector<Move>, int> returnedMovePair = maxValue(INT_MIN, INT_MAX, MAX_DEPTH, *originalBoard, prevMove, player, moveCount);
     vector<Move> moves = returnedMovePair.first;
 
     for (int i = 0; i < moves.size(); i++)
@@ -60,13 +60,13 @@ pair<vector<Move>, int> AI::maxValue(int alpha, int beta, int depth, Board &boar
     cout << "# AI::maxValue - alpha=" << alpha << " Beta=" << beta << " Depth=" << depth << " Player=" << player << endl;
     vector<Move> bestMoveSeq;
     // Check for win
-    if (board.isWin(!player) && internalMoveCount > 4)
+    if (board.isWin(!player) && internalMoveCount > 10)
     {
         cout << "# AI::maxValue 0 win state" << endl;
         bestMoveSeq.push_back(Move());
         return make_pair(bestMoveSeq, INT_MIN);
     }
-    else if (board.isWin(player) && internalMoveCount > 4)
+    else if (board.isWin(player) && internalMoveCount > 10)
     {
         cout << "# AI::maxValue 1 win state" << endl;
         bestMoveSeq.push_back(Move());
@@ -81,7 +81,7 @@ pair<vector<Move>, int> AI::maxValue(int alpha, int beta, int depth, Board &boar
 
     // cout<<"# "<<bestMoveSeq.size();
     vector<vector<Move>> moveSequences;
-    if (internalMoveCount < 5)
+    if (internalMoveCount < 10)
     {
         // Rings placement phase
         vector<Move> moveSeqeunce;
@@ -159,12 +159,12 @@ pair<vector<Move>, int> AI::minValue(int alpha, int beta, int depth, Board &boar
 
     vector<Move> bestMoveSeq;
     // Check for win
-    if (board.isWin(!player) && internalMoveCount > 4)
+    if (board.isWin(!player) && internalMoveCount > 10)
     {
         bestMoveSeq.push_back(Move());
         return make_pair(bestMoveSeq, INT_MIN);
     }
-    else if (board.isWin(player) && internalMoveCount > 4)
+    else if (board.isWin(player) && internalMoveCount > 10)
     {
         bestMoveSeq.push_back(Move());
         return make_pair(bestMoveSeq, INT_MAX);
@@ -178,7 +178,7 @@ pair<vector<Move>, int> AI::minValue(int alpha, int beta, int depth, Board &boar
 
     vector<vector<Move>> moveSequences;
 
-    if (internalMoveCount < 5)
+    if (internalMoveCount < 10)
     {
         // Rings placement phase
         vector<Move> placeRingMoves, moveSeq;
