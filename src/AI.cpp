@@ -21,7 +21,7 @@ void AI::playMoveSeq(Move prevMove)
 {
     cout << "# AI::playMoveSeq" << endl;
 
-    Board *board = new Board(this->boardSize, this->originalBoard);
+    // Board *board = new Board(this->boardSize, this->originalBoard);
 
     // if (m.type == MoveType::moveRing)
     // {
@@ -37,8 +37,9 @@ void AI::playMoveSeq(Move prevMove)
     // cout << "P 4 5" << endl;
     // // Stop Time
 
-    pair<vector<Move>, int> returnedMovePair = maxValue(INT_MIN, INT_MAX, 3, *board, prevMove, player, moveCount);
+    pair<vector<Move>, int> returnedMovePair = maxValue(INT_MIN, INT_MAX, 3, *originalBoard, prevMove, player, moveCount);
     vector<Move> moves = returnedMovePair.first;
+
     for (int i = 0; i < moves.size(); i++)
     {
         cout << "# Got Returned Moves" << endl;
@@ -121,15 +122,16 @@ pair<vector<Move>, int> AI::maxValue(int alpha, int beta, int depth, Board &boar
     int bestEval = INT_MIN, evaluation;
     for (auto moveSeq : moveSequences)
     {
-        Move *lastRingMove = &prevMove;
+        // Move *lastRingMove = &prevMove;
+        Move lastRingMove = prevMove;
         for (auto move = moveSeq.begin(); move != moveSeq.end(); ++move)
         {
             if ((*move).type == MoveType::moveRing)
-                lastRingMove = &(*move);
+                lastRingMove = *move;
             board.playMove(*move, player);
         }
 
-        evaluation = minValue(alpha, beta, depth - 1, board, (*lastRingMove), !player, internalMoveCount + 1).second;
+        evaluation = minValue(alpha, beta, depth - 1, board, (lastRingMove), !player, internalMoveCount + 1).second;
 
         for (auto move = moveSeq.rbegin(); move != moveSeq.rend(); ++move)
         {
@@ -180,7 +182,7 @@ pair<vector<Move>, int> AI::minValue(int alpha, int beta, int depth, Board &boar
     {
         // Rings placement phase
         vector<Move> placeRingMoves, moveSeq;
-        board.getValidPlaceRingMoves(placeRingMoves,player);
+        board.getValidPlaceRingMoves(placeRingMoves, player);
         for (auto m : placeRingMoves)
         {
             moveSeq.push_back(m);
@@ -209,15 +211,15 @@ pair<vector<Move>, int> AI::minValue(int alpha, int beta, int depth, Board &boar
     int bestEval = INT_MAX, evaluation;
     for (auto moveSeq : moveSequences)
     {
-        Move *lastRingMove = &prevMove;
+        Move lastRingMove = prevMove;
         for (auto m = moveSeq.begin(); m != moveSeq.end(); ++m)
         {
             if ((*m).type == MoveType::moveRing)
-                lastRingMove = &(*m);
+                lastRingMove = (*m);
             board.playMove(*m, player);
         }
 
-        evaluation = maxValue(alpha, beta, depth - 1, board, (*lastRingMove), !player, internalMoveCount + 1).second;
+        evaluation = maxValue(alpha, beta, depth - 1, board, (lastRingMove), !player, internalMoveCount + 1).second;
 
         for (auto m = moveSeq.rbegin(); m != moveSeq.rend(); ++m)
         {
