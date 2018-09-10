@@ -11,6 +11,7 @@ using namespace std;
 
 pair<int, int> hex2axial(pair<int, int> hexCoord)
 {
+    cout<<"# Util::hex2axial - Input=("<<hexCoord.first<<','<<hexCoord.second<<')'<<endl;
 
     int c1 = hexCoord.first;
     if (c1 == 0)
@@ -44,7 +45,6 @@ pair<int, int> axial2hex(pair<int, int> axialCoord)
 {
     int a = axialCoord.first;
     int b = axialCoord.second;
-    cout<<"# axial2hex ("<<a<<','<<b<<')'<<endl;
 
     int hex, pos;
 
@@ -90,6 +90,7 @@ pair<int, int> axial2hex(pair<int, int> axialCoord)
         }
     }
 
+    cout<<"# Util::axial2hex - Input=("<<a<<','<<b<<')'<<" Output=("<<hex<<','<<pos<<')'<<endl;
     return make_pair(hex, pos);
 }
 
@@ -107,7 +108,7 @@ pair<int, pair<int, int>> extractCoordinates(string str, int startPosition)
     int coord2 = 0;
     while (str[i] != ' ' && i < str.length())
     {
-        coord1 = 10 * coord1 + str[i++] - '0';
+        coord2 = 10 * coord2 + str[i++] - '0';
     }
 
     return make_pair(i, hex2axial(make_pair(coord1, coord2)));

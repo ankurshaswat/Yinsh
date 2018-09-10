@@ -38,3 +38,5 @@ yinsh
 *.pyc
 trash.py
 env
+log.txt
+

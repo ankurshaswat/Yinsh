@@ -30,7 +30,7 @@ Inteface::Inteface()
 
     bool player = playerInt == 1 ? true : false;
 
-    cout << "# n=" << n << " Player=" << player << " Time=" << time << endl;
+    cout << "# Inteface::Inteface - n=" << n << " Player=" << player << " Time=" << time << endl;
 
     board = new Board(n);
     ai = new AI(board, player, time, n);

@@ -6,6 +6,9 @@ all: $(SRC)
 debug: $(SRC)
 	  g++ -g -o yinsh $(SRC)
 
+warnings: $(SRC)
+	  g++ -g -Wall -Wextra -o yinsh $(SRC)
+
 clean:
 	rm -rf build
 	rm -rf main

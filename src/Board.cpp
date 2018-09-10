@@ -148,13 +148,13 @@ bool Board::validMoveRing(pair<int, int> newPosition, pair<int, int> currentPosi
 
 void Board::removeMarker(pair<int, int> position)
 {
-    cout << "# Board::removeMarker" << endl;
+    cout << "# Board::removeMarker - (" << position.first << ',' << position.second << ')' << endl;
     setState(position, PositionStates::empty);
 }
 
 void Board::removeRing(pair<int, int> position)
 {
-    cout << "# Board::removeRing" << endl;
+    cout << "# Board::removeRing - (" << position.first << ',' << position.second << ')' << endl;
     bool player = getState(position) > 0;
     vector<pair<int, int>> searchList = player ? rings1 : rings0;
     for (auto it = searchList.begin(); it != searchList.end(); ++it)
@@ -194,7 +194,9 @@ void Board::invertState(int pos1, int pos2)
 
 bool Board::placeRing(pair<int, int> position, bool player)
 {
-    cout << "# Board::placeRing" << endl;
+    cout << "# Board::placeRing - Player=" << player
+         << " Position=(" << position.first << ',' << position.second << ')' << endl;
+
     int playerRing = player ? PositionStates::whiteRing : PositionStates::blackRing;
 
     // if (validPlaceRing(position))
@@ -210,7 +212,9 @@ bool Board::placeRing(pair<int, int> position, bool player)
 
 bool Board::moveRing(pair<int, int> newPosition, pair<int, int> currentPosition, bool player)
 {
-    cout << "# Board::moveRing" << endl;
+    cout << "# Board::moveRing - Player=" << player
+         << " OldPosition=(" << currentPosition.first << ',' << currentPosition.second
+         << ") NewPosition=(" << newPosition.first << ',' << newPosition.second << endl;
 
     // if (!validMoveRing(newPosition, currentPosition, player))
     // {
@@ -488,6 +492,9 @@ vector<pair<pair<int, int>, pair<int, int>>> Board::checkMarkers(pair<int, int> 
 
 void Board::removeMarkers(pair<int, int> startSeries, pair<int, int> endSeries)
 {
+    cout << "# Board::removeMarkers - StartPosition=(" << startSeries.first << ',' << startSeries.second
+         << ") EndPosition=(" << endSeries.first << ',' << endSeries.second << endl;
+
     if (startSeries.first == endSeries.first)
     {
         int increment = startSeries.second < endSeries.second ? -1 : 1;
@@ -710,7 +717,7 @@ void Board::getValidRingMoves(vector<Move> &moves, bool player)
 
 void Board::getValidPlaceRingMoves(vector<Move> &moves, bool player)
 {
-    cout << "# Board::getValidPlaceRingMoves" << endl;
+    cout << "# Board::getValidPlaceRingMoves - Player=" << player << endl;
 
     int count = 0, i, j;
     while (count < 7)
@@ -720,7 +727,7 @@ void Board::getValidPlaceRingMoves(vector<Move> &moves, bool player)
         pair<int, int> pos = make_pair(i, j);
         if (validPosition(pos) && getState(pos) == PositionStates::empty)
         {
-            cout << "# " << i << ' ' << j << endl;
+            // cout << "# " << i << ' ' << j << endl;
             moves.push_back(Move(MoveType::placeRing, pos, pos));
             count++;
         }
