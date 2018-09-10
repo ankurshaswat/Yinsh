@@ -78,6 +78,7 @@ pair<vector<Move>, int> AI::maxValue(int alpha, int beta, int depth, Board &boar
         return make_pair(bestMoveSeq, board.evaluate(player));
     }
 
+    // cout<<"# "<<bestMoveSeq.size();
     vector<vector<Move>> moveSequences;
     if (internalMoveCount < 5)
     {
