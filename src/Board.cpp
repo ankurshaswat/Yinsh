@@ -436,6 +436,10 @@ vector<pair<pair<int, int>, pair<int, int>>> Board::checkMarkers(pair<int, int> 
 
     vector<pair<pair<int, int>, pair<int, int>>> combinationSequences;
 
+    if (newPosition.first == oldPosition.first && newPosition.second == oldPosition.second) {
+        return combinationSequences;
+    }
+
     pair<bool, pair<pair<int, int>, pair<int, int>>> returnedSequence;
 
     if (newPosition.first == oldPosition.first)
