@@ -135,7 +135,7 @@ pair<vector<Move>, int> AI::maxValue(int alpha, int beta, int depth, Board &boar
             board.undoMove(*m, player);
         }
 
-        if (evaluation > bestEval)
+        if (evaluation >= bestEval)
         {
             bestMoveSeq = moveSeq;
             bestEval = evaluation;
@@ -205,7 +205,7 @@ pair<vector<Move>, int> AI::minValue(int alpha, int beta, int depth, Board &boar
     }
 
     Move bestMove;
-    int bestEval = INT_MIN, evaluation;
+    int bestEval = INT_MAX, evaluation;
     for (auto moveSeq : moveSequences)
     {
         Move *lastRingMove = &prevMove;
@@ -223,7 +223,7 @@ pair<vector<Move>, int> AI::minValue(int alpha, int beta, int depth, Board &boar
             board.undoMove(*m, player);
         }
 
-        if (evaluation < bestEval)
+        if (evaluation <= bestEval)
         {
             bestMoveSeq = moveSeq;
             bestEval = evaluation;
