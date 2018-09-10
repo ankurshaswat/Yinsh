@@ -64,12 +64,20 @@ int Board::getState(int pos1, int pos2)
 
 bool Board::validPosition(pair<int, int> position)
 {
-    if (position.first == 0 || position.second == 0 || position.first == position.second || position.first == -1 * position.second)
+    int absPos1 = abs(position.first);
+    int absPos2 = abs(position.second);
+    if (position.first == 0 || position.second == 0 || position.first == position.second)
     {
-        return (position.first < n && position.second < n && position.first > -1 * n && position.second > -1 * n);
+        return (absPos1 < n && absPos2 < n);
     }
-
-    return (position.first <= n && position.second <= n && position.first >= -1 * n && position.second >= -1 * n);
+    else if (position.first * position.second > 0)
+    {
+        return (absPos1 <= n && absPos2 <= n);
+    }
+    else
+    {
+        return (absPos1 + absPos2 <= n);
+    }
 }
 
 bool Board::validPlaceRing(pair<int, int> position)
