@@ -4,7 +4,7 @@ all: $(SRC)
 	  g++ -o yinsh $(SRC)
 
 debug: $(SRC)
-	  g++ -g -o yinsh $(SRC)
+	  g++ -DUSEDEBUG -g -o yinsh $(SRC)
 
 warnings: $(SRC)
 	  g++ -g -Wall -Wextra -o yinsh $(SRC)

@@ -6,6 +6,12 @@
 
 using namespace std;
 
+#ifdef USEDEBUG
+#define Debug(x) cout << "# " << x << endl
+#else
+#define Debug(x)
+#endif
+
 Inteface::Inteface()
 {
     int playerInt = 0, n = 0, time = 0;
@@ -30,12 +36,12 @@ Inteface::Inteface()
 
     bool player = playerInt == 1 ? true : false;
 
-    cout << "# Inteface::Inteface - n=" << n << " Player=" << player << " Time=" << time << endl;
+    Debug("Inteface::Inteface - n=" << n << " Player=" << player << " Time=" << time );
 
     board = new Board(n);
     ai = new AI(board, player, time, n);
 
-    // cout << "# Got metadata" << endl;
+    // Debug("Got metadata");
 
     Move m;
 
@@ -47,10 +53,10 @@ Inteface::Inteface()
 
     while (true)
     {
-        cout << "# Moving on to get AI output" << endl;
+        Debug("# Moving on to get AI output");
         ai->playMoveSeq(m);
         currentPlayer = !currentPlayer;
-        cout << "# Moving on to get input" << endl;
+        Debug("# Moving on to get input");
         m = readInput();
         currentPlayer = !currentPlayer;
     }
@@ -58,7 +64,7 @@ Inteface::Inteface()
 
 Move Inteface::readInput()
 {
-    cout << "# Inteface::readInput" << endl;
+    Debug("# Inteface::readInput");
 
     Move m;
     string str;
@@ -129,7 +135,7 @@ Move Inteface::readInput()
             }
             else
             {
-                cout << "# Inteface::readInput Shouldn't be here" << endl;
+                Debug("# Inteface::readInput Shouldn't be here");
             }
         }
     }

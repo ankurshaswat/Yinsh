@@ -3,6 +3,12 @@
 #include <iostream>
 #include <limits>
 
+#ifdef USEDEBUG
+#define Debug(x) std::cout << "# " << x
+#else
+#define Debug(x)
+#endif
+
 const int INT_MAX = numeric_limits<int>::max();
 const int INT_MIN = numeric_limits<int>::min();
 
@@ -19,7 +25,7 @@ AI::AI(Board *board, bool player, int time, int n)
 
 void AI::playMoveSeq(Move prevMove)
 {
-    cout << "# AI::playMoveSeq" << endl;
+    Debug("# AI::playMoveSeq" << endl);
 
     // Board *board = new Board(this->boardSize, this->originalBoard);
 
@@ -34,7 +40,7 @@ void AI::playMoveSeq(Move prevMove)
     // pair<vector<Move>, int> maxValue(INT_MIN, INT_MAX, board, )
 
     //Convert All moves to hex here and print
-    // cout << "P 4 5" << endl;
+    // Debug( << "P 4 5" << endl;
     // // Stop Time
 
     pair<vector<Move>, int> returnedMovePair = maxValue(INT_MIN, INT_MAX, MAX_DEPTH, *originalBoard, prevMove, player, moveCount);
@@ -42,7 +48,7 @@ void AI::playMoveSeq(Move prevMove)
 
     for (int i = 0; i < moves.size(); i++)
     {
-        cout << "# Got Returned Moves" << endl;
+        Debug("# Got Returned Moves" << endl);
         Move move = moves[i];
         this->originalBoard->playMove(move, player);
         if (move.type == MoveType::placeRing)
@@ -57,18 +63,18 @@ void AI::playMoveSeq(Move prevMove)
 
 pair<vector<Move>, int> AI::maxValue(int alpha, int beta, int depth, Board &board, Move prevMove, bool player, int internalMoveCount)
 {
-    cout << "# AI::maxValue - alpha=" << alpha << " Beta=" << beta << " Depth=" << depth << " Player=" << player << endl;
+    Debug("# AI::maxValue - alpha=" << alpha << " Beta=" << beta << " Depth=" << depth << " Player=" << player << endl);
     vector<Move> bestMoveSeq;
     // Check for win
     if (board.isWin(!player) && internalMoveCount > 10)
     {
-        cout << "# AI::maxValue 0 win state" << endl;
+        Debug("# AI::maxValue 0 win state" << endl);
         bestMoveSeq.push_back(Move());
         return make_pair(bestMoveSeq, INT_MIN);
     }
     else if (board.isWin(player) && internalMoveCount > 10)
     {
-        cout << "# AI::maxValue 1 win state" << endl;
+        Debug("# AI::maxValue 1 win state" << endl);
         bestMoveSeq.push_back(Move());
         return make_pair(bestMoveSeq, INT_MAX);
     }
@@ -79,7 +85,7 @@ pair<vector<Move>, int> AI::maxValue(int alpha, int beta, int depth, Board &boar
         return make_pair(bestMoveSeq, board.evaluate(player));
     }
 
-    // cout<<"# "<<bestMoveSeq.size();
+    // Debug(<<"# "<<bestMoveSeq.size();
     vector<vector<Move>> moveSequences;
     if (internalMoveCount < 10)
     {
@@ -88,7 +94,7 @@ pair<vector<Move>, int> AI::maxValue(int alpha, int beta, int depth, Board &boar
 
         vector<Move> placeRingMoves;
         board.getValidPlaceRingMoves(placeRingMoves, player);
-        cout << "# AI::maxValue Got Valid Ring Placements" << endl;
+        Debug("# AI::maxValue Got Valid Ring Placements" << endl);
 
         for (auto move : placeRingMoves)
         {
@@ -98,7 +104,7 @@ pair<vector<Move>, int> AI::maxValue(int alpha, int beta, int depth, Board &boar
             moveSeqeunce.pop_back();
         }
 
-        cout << "# AI::maxValue Pushed" << endl;
+        Debug("# AI::maxValue Pushed" << endl);
     }
     else
     {
@@ -116,7 +122,7 @@ pair<vector<Move>, int> AI::maxValue(int alpha, int beta, int depth, Board &boar
             rowMoves(board, player, removeRowMoves, moveSeqeunce, moveSequences, true);
         }
     }
-    cout << "# AI::maxValue Out" << endl;
+    Debug("# AI::maxValue Out" << endl);
 
     Move bestMove;
     int bestEval = INT_MIN, evaluation;
@@ -146,7 +152,7 @@ pair<vector<Move>, int> AI::maxValue(int alpha, int beta, int depth, Board &boar
         alpha = max(alpha, evaluation);
         if (alpha >= beta)
         {
-            cout << "# AI::maxValue Returning alpha>=beta Alpha=" << alpha << " Beta=" << beta << endl;
+            Debug("# AI::maxValue Returning alpha>=beta Alpha=" << alpha << " Beta=" << beta << endl);
             return make_pair(moveSeq, evaluation);
         }
     }
@@ -155,7 +161,7 @@ pair<vector<Move>, int> AI::maxValue(int alpha, int beta, int depth, Board &boar
 
 pair<vector<Move>, int> AI::minValue(int alpha, int beta, int depth, Board &board, Move prevMove, bool player, int internalMoveCount)
 {
-    cout << "# AI::minValue - alpha=" << alpha << " Beta=" << beta << " Depth=" << depth << " Player=" << player << endl;
+    Debug("# AI::minValue - alpha=" << alpha << " Beta=" << beta << " Depth=" << depth << " Player=" << player << endl);
 
     vector<Move> bestMoveSeq;
     // Check for win
@@ -234,7 +240,7 @@ pair<vector<Move>, int> AI::minValue(int alpha, int beta, int depth, Board &boar
         beta = min(beta, evaluation);
         if (beta <= alpha)
         {
-            cout << "# AI::maxValue Returning alpha>=beta Alpha=" << alpha << " Beta=" << beta << endl;
+            Debug("# AI::maxValue Returning alpha>=beta Alpha=" << alpha << " Beta=" << beta << endl);
             return make_pair(moveSeq, evaluation);
         }
     }
@@ -243,7 +249,7 @@ pair<vector<Move>, int> AI::minValue(int alpha, int beta, int depth, Board &boar
 
 void AI::rowMoves(Board &board, bool player, vector<Move> &removeRowMoves, vector<Move> &moveSeq, vector<vector<Move>> &moveSequences, bool continuePlaying)
 {
-    cout << "# AI::rowMoves - Player=" << player << " ContinuePlaying=" << continuePlaying << endl;
+    Debug("# AI::rowMoves - Player=" << player << " ContinuePlaying=" << continuePlaying << endl);
 
     int ringsLeft = board.getRingsCount(player);
 
@@ -352,7 +358,7 @@ void AI::rowMoves(Board &board, bool player, vector<Move> &removeRowMoves, vecto
 
 void AI::moveMarkerMoves(Board &board, vector<Move> &moveSeq, vector<vector<Move>> &moveSequences, bool player)
 {
-    cout << "# AI::moveMarkerMoves - Player=" << player << endl;
+    Debug("# AI::moveMarkerMoves - Player=" << player << endl);
 
     vector<Move> moveRingMoves;
     board.getValidRingMoves(moveRingMoves, player);
