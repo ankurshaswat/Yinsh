@@ -36,7 +36,6 @@ Board::Board(int n, Board *board2Copy) : Board(n)
 {
     for (int i = 0; i < 2 * n + 2; i++)
     {
-        board[i] = new int[2 * n + 1];
         for (int j = 0; j < 2 * n + 2; j++)
         {
             board[i][j] = board2Copy->getState(i - n, j - n);
