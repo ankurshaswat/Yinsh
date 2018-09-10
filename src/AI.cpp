@@ -43,14 +43,15 @@ void AI::playMoveSeq(Move prevMove)
     {
         cout << "# Got Returned Moves" << endl;
         Move move = moves[i];
+        this->originalBoard->playMove(move, player);
         if (move.type == MoveType::placeRing)
         {
             pair<int, int> position = axial2hex(move.initPosition);
             cout << "P " << position.first << ' ' << position.second << endl;
-            break;
+            // break;
         }
     }
-    moveCount++;
+    moveCount += 2;
 }
 
 pair<vector<Move>, int> AI::maxValue(int alpha, int beta, int depth, Board &board, Move prevMove, bool player, int internalMoveCount)
@@ -82,58 +83,57 @@ pair<vector<Move>, int> AI::maxValue(int alpha, int beta, int depth, Board &boar
     if (internalMoveCount < 5)
     {
         // Rings placement phase
-        // cout << "# AI::maxValue Rings Placement phase" << endl;
-        vector<Move> moveSeq;
+        vector<Move> moveSeqeunce;
 
         vector<Move> placeRingMoves;
         board.getValidPlaceRingMoves(placeRingMoves, player);
-        // cout << "# AI::maxValue Got Valid Ring Placements" << endl;
+        cout << "# AI::maxValue Got Valid Ring Placements" << endl;
 
-        for (auto m : placeRingMoves)
+        for (auto move : placeRingMoves)
         {
-            moveSeq.push_back(m);
+            moveSeqeunce.push_back(move);
             // Evaluate position till shallow depth (for move ordering)
-            moveSequences.push_back(moveSeq);
-            moveSeq.pop_back();
+            moveSequences.push_back(moveSeqeunce);
+            moveSeqeunce.pop_back();
         }
 
-        // cout << "# AI::maxValue Pushed" << endl;
+        cout << "# AI::maxValue Pushed" << endl;
     }
     else
     {
         // Rings movement phase
-        vector<Move> moveSeq;
+        vector<Move> moveSeqeunce;
 
         vector<Move> removeRowMoves;
         board.getValidRowMoves(prevMove, removeRowMoves, player);
         if (removeRowMoves.size() == 0)
         {
-            moveMarkerMoves(board, moveSeq, moveSequences, player);
+            moveMarkerMoves(board, moveSeqeunce, moveSequences, player);
         }
         else
         {
-            rowMoves(board, player, removeRowMoves, moveSeq, moveSequences, true);
+            rowMoves(board, player, removeRowMoves, moveSeqeunce, moveSequences, true);
         }
     }
-    // cout << "# AI::maxValue Out" << endl;
+    cout << "# AI::maxValue Out" << endl;
 
     Move bestMove;
     int bestEval = INT_MIN, evaluation;
     for (auto moveSeq : moveSequences)
     {
         Move *lastRingMove = &prevMove;
-        for (auto m = moveSeq.begin(); m != moveSeq.end(); ++m)
+        for (auto move = moveSeq.begin(); move != moveSeq.end(); ++move)
         {
-            if ((*m).type == MoveType::moveRing)
-                lastRingMove = &(*m);
-            board.playMove(*m, player);
+            if ((*move).type == MoveType::moveRing)
+                lastRingMove = &(*move);
+            board.playMove(*move, player);
         }
 
         evaluation = minValue(alpha, beta, depth - 1, board, (*lastRingMove), !player, internalMoveCount + 1).second;
 
-        for (auto m = moveSeq.rbegin(); m != moveSeq.rend(); ++m)
+        for (auto move = moveSeq.rbegin(); move != moveSeq.rend(); ++move)
         {
-            board.undoMove(*m, player);
+            board.undoMove(*move, player);
         }
 
         if (evaluation >= bestEval)
@@ -180,7 +180,7 @@ pair<vector<Move>, int> AI::minValue(int alpha, int beta, int depth, Board &boar
     {
         // Rings placement phase
         vector<Move> placeRingMoves, moveSeq;
-        board.getValidPlaceRingMoves(placeRingMoves, player);
+        board.getValidPlaceRingMoves(placeRingMoves,player);
         for (auto m : placeRingMoves)
         {
             moveSeq.push_back(m);

@@ -11,7 +11,7 @@ using namespace std;
 
 pair<int, int> hex2axial(pair<int, int> hexCoord)
 {
-    cout<<"# Util::hex2axial - Input=("<<hexCoord.first<<','<<hexCoord.second<<')'<<endl;
+    cout << "# Util::hex2axial - Input=(" << hexCoord.first << ',' << hexCoord.second << ')' << endl;
 
     int c1 = hexCoord.first;
     if (c1 == 0)
@@ -36,7 +36,7 @@ pair<int, int> hex2axial(pair<int, int> hexCoord)
     case 5:
         return make_pair(c2 - c1, c2);
     default:
-        cout << "# Util::hex2axial Unknown Case"<<endl;
+        cout << "# Util::hex2axial Unknown Case" << endl;
         return make_pair(0, 0);
     }
 }
@@ -90,7 +90,7 @@ pair<int, int> axial2hex(pair<int, int> axialCoord)
         }
     }
 
-    cout<<"# Util::axial2hex - Input=("<<a<<','<<b<<')'<<" Output=("<<hex<<','<<pos<<')'<<endl;
+    cout << "# Util::axial2hex - Input=(" << a << ',' << b << ')' << " Output=(" << hex << ',' << pos << ')' << endl;
     return make_pair(hex, pos);
 }
 
@@ -134,4 +134,17 @@ pair<int, int> makeUnit(pair<int, int> pos)
     }
 
     return pos;
+}
+
+void printPointers(vector<vector<Move>> moveSequences)
+{
+    for (int i = 0; i < moveSequences.size(); i++)
+    {
+        cout << "# ";
+        for (int j = 0; j < moveSequences[i].size(); j++)
+        {
+            cout << &moveSequences[i][j] << ' ';
+        }
+        cout << endl;
+    }
 }

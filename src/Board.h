@@ -9,23 +9,9 @@
 
 #include <vector>
 #include <utility>
+#include "Move.h"
 
 using namespace std;
-
-enum class MoveType
-{
-  placeRing = 0,
-  moveRing = 1,
-  removeRow = 2,
-  removeRing = 3
-};
-struct Move
-{
-  MoveType type;
-  pair<int, int> initPosition, finalPosition;
-  Move() : type(MoveType::placeRing), initPosition(make_pair(-9, -9)), finalPosition(make_pair(-9, -9)) {}
-  Move(MoveType type, pair<int, int> initPosition, pair<int, int> finalPosition) : type(type), initPosition(initPosition), finalPosition(finalPosition) {}
-};
 
 class Board
 {
@@ -79,7 +65,7 @@ public:
   /* Return valid moves for player (append to passed vector) */
   void getValidRingMoves(vector<Move> &moves, bool player);
   void getValidRowMoves(Move prevMoveRing, vector<Move> &moves, bool player);
-  void getValidPlaceRingMoves(vector<Move> &moves, bool player);
+  void getValidPlaceRingMoves(vector<Move> &moves,bool player);
   void getValidRemoveRingMoves(vector<Move> &moves, bool player);
 
   /* Return evaluation of board for player */

@@ -24,12 +24,12 @@ Board::Board(int n) : rings(2), directions(6)
 
     counts += 2;
 
-    directions.push_back(make_pair(0, 1));
-    directions.push_back(make_pair(0, -1));
-    directions.push_back(make_pair(1, 0));
-    directions.push_back(make_pair(-1, 0));
-    directions.push_back(make_pair(1, 1));
-    directions.push_back(make_pair(-1, -1));
+    directions[0] = make_pair(0, 1);
+    directions[1] = make_pair(0, -1);
+    directions[2] = make_pair(1, 0);
+    directions[3] = make_pair(-1, 0);
+    directions[4] = make_pair(1, 1);
+    directions[5] = make_pair(-1, -1);
 }
 
 Board::Board(int n, Board *board2Copy) : Board(n)
@@ -44,7 +44,7 @@ Board::Board(int n, Board *board2Copy) : Board(n)
 
     for (int i = 0; i < 2; i++)
     {
-        vector<pair<int, int>> tempRings = getRingPositions(i);
+        vector<pair<int, int>> tempRings = board2Copy->getRingPositions(i);
         for (int j = 0; j < tempRings.size(); j++)
         {
             rings[i].push_back(tempRings[j]);
@@ -726,7 +726,7 @@ void Board::getValidRingMoves(vector<Move> &moves, bool player)
 void Board::getValidPlaceRingMoves(vector<Move> &moves, bool player)
 {
     cout << "# Board::getValidPlaceRingMoves - Player=" << player << endl;
-
+    // vector<Move> moves;
     int count = 0, i, j;
     while (count < 7)
     {
@@ -740,6 +740,8 @@ void Board::getValidPlaceRingMoves(vector<Move> &moves, bool player)
             count++;
         }
     }
+
+    // return moves;
 };
 
 void Board::getValidRemoveRingMoves(vector<Move> &moves, bool player)
