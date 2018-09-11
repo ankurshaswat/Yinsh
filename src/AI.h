@@ -17,6 +17,7 @@ public:
   AI(Board *board, bool player, int time, int n);
 
   void playMoveSeq(Move m);
+  void printMove(Move m);
 
   /* Returns best move for min node (and its evaluation) */
   pair<vector<Move>, int> minValue(int alpha, int beta, int depth, Board &board, Move prevMove, bool player, int moveCount);
