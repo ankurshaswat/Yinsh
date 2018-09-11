@@ -23,33 +23,34 @@ AI::AI(Board *board, bool player, int time, int n)
     this->moveCount = 0;
 }
 
-void AI::printMove(Move move){
+void AI::printMove(Move move)
+{
     if (move.type == MoveType::placeRing)
     {
         pair<int, int> position = axial2hex(move.initPosition);
-        cout << "P " << position.first << ' ' << position.second<<' ';
+        cout << "P " << position.first << ' ' << position.second << ' ';
         // break;
     }
     else if (move.type == MoveType::moveRing)
     {
         pair<int, int> position1 = axial2hex(move.initPosition);
         pair<int, int> position2 = axial2hex(move.finalPosition);
-        cout << "S " << position1.first << ' ' << position1.second<<' ';
-        cout << "M " << position2.first << ' ' << position2.second<<' ';
+        cout << "S " << position1.first << ' ' << position1.second << ' ';
+        cout << "M " << position2.first << ' ' << position2.second << ' ';
         // break;
     }
     else if (move.type == MoveType::removeRow)
     {
         pair<int, int> position1 = axial2hex(move.initPosition);
         pair<int, int> position2 = axial2hex(move.finalPosition);
-        cout << "RS " << position1.first << ' ' << position1.second<<' ';
-        cout << "RE " << position2.first << ' ' << position2.second<<' ';
+        cout << "RS " << position1.first << ' ' << position1.second << ' ';
+        cout << "RE " << position2.first << ' ' << position2.second << ' ';
         // break;
     }
     if (move.type == MoveType::removeRing)
     {
         pair<int, int> position = axial2hex(move.initPosition);
-        cout << "X " << position.first << ' ' << position.second<<' ';
+        cout << "X " << position.first << ' ' << position.second << ' ';
         // break;
     }
 }
@@ -84,7 +85,8 @@ void AI::playMoveSeq(Move prevMove)
         Move move = moves[i];
         this->originalBoard->playMove(move, player);
     }
-    for(auto move: moves) printMove(move); 
+    for (auto move : moves)
+        printMove(move);
     cout << endl;
     moveCount += 2;
 }
@@ -96,14 +98,12 @@ pair<vector<Move>, int> AI::maxValue(int alpha, int beta, int depth, Board &boar
     // Check for win
     if (board.isWin(!player) && internalMoveCount > 10)
     {
-        Debug("# AI::maxValue 0 win state" << endl);
-        bestMoveSeq.push_back(Move());
+        cout << "# AI::maxValue 0 win state" << endl;
         return make_pair(bestMoveSeq, INT_MIN);
     }
     else if (board.isWin(player) && internalMoveCount > 10)
     {
-        Debug("# AI::maxValue 1 win state" << endl);
-        bestMoveSeq.push_back(Move());
+        cout << "# AI::maxValue 1 win state" << endl;
         return make_pair(bestMoveSeq, INT_MAX);
     }
 
@@ -195,13 +195,13 @@ pair<vector<Move>, int> AI::minValue(int alpha, int beta, int depth, Board &boar
     // Check for win
     if (board.isWin(!player) && internalMoveCount > 10)
     {
-        bestMoveSeq.push_back(Move());
-        return make_pair(bestMoveSeq, INT_MIN);
+        cout << "# AI::maxValue 0 win state" << endl;
+        return make_pair(bestMoveSeq, INT_MAX);
     }
     else if (board.isWin(player) && internalMoveCount > 10)
     {
-        bestMoveSeq.push_back(Move());
-        return make_pair(bestMoveSeq, INT_MAX);
+        cout << "# AI::maxValue 1 win state" << endl;
+        return make_pair(bestMoveSeq, INT_MIN);
     }
 
     //Base case for depth
@@ -295,6 +295,8 @@ void AI::rowMoves(Board &board, bool player, vector<Move> &removeRowMoves, vecto
             // play moveRing move
             board.playMove(m1, player);
             moveSeq.push_back(m1);
+            cout << "# Row made after opponent's move- "
+                 << " " << board.getRingsCount(player) << " " << removeRowMoves[i].initPosition.first << ", " << removeRowMoves[i].initPosition.second << endl;
 
             for (int j = i + 1; j < removeRowMoves.size(); j++)
             {
@@ -342,7 +344,7 @@ void AI::rowMoves(Board &board, bool player, vector<Move> &removeRowMoves, vecto
                         if (!moveSeqFound)
                         {
                             moveSeqFound = true;
-                            if (ringsLeft == 2 || !continuePlaying)
+                            if (board.getRingsCount(player) == 2 || !continuePlaying)
                             {
                                 // Evaluate new board position till shallow depth (for move ordering)
                                 moveSequences.push_back(moveSeq); //push this with evaluated value
@@ -365,7 +367,7 @@ void AI::rowMoves(Board &board, bool player, vector<Move> &removeRowMoves, vecto
             {
                 // Evaluate new board position till shallow depth (for move ordering)
                 moveSeqFound = true;
-                if (ringsLeft == 1 || !continuePlaying)
+                if (board.getRingsCount(player) == 2 || !continuePlaying)
                 {
                     // Evaluate new board position till shallow depth (for move ordering)
                     moveSequences.push_back(moveSeq); //push this with evaluated value

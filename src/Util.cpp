@@ -120,10 +120,10 @@ pair<int, pair<int, int>> extractCoordinates(string str, int startPosition)
     return make_pair(i, hex2axial(make_pair(coord1, coord2)));
 }
 
-int axialDistance(pair<int, int> p1, pair<int, int> p2)
+int inclusiveMarkerCount(pair<int, int> p1, pair<int, int> p2)
 {
-    int d1 = abs(p1.first - p2.first);
-    int d2 = abs(p1.second - p2.second);
+    int d1 = abs(p1.first - p2.first) + 1;
+    int d2 = abs(p1.second - p2.second) + 1;
     return max(d1, d2);
 }
 
