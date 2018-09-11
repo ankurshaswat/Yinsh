@@ -218,7 +218,7 @@ void Board::invertState(int pos1, int pos2)
 bool Board::placeRing(pair<int, int> position, bool player)
 {
     Debug("# Board::placeRing - Player=" << player
-         << " Position=(" << position.first << ',' << position.second << ')' << endl);
+                                         << " Position=(" << position.first << ',' << position.second << ')' << endl);
 
     int playerRing = player ? PositionStates::whiteRing : PositionStates::blackRing;
 
@@ -236,8 +236,8 @@ bool Board::placeRing(pair<int, int> position, bool player)
 bool Board::moveRing(pair<int, int> newPosition, pair<int, int> currentPosition, bool player)
 {
     Debug("# Board::moveRing - Player=" << player
-         << " OldPosition=(" << currentPosition.first << ',' << currentPosition.second
-         << ") NewPosition=(" << newPosition.first << ',' << newPosition.second << endl);
+                                        << " OldPosition=(" << currentPosition.first << ',' << currentPosition.second
+                                        << ") NewPosition=(" << newPosition.first << ',' << newPosition.second << endl);
 
     // if (!validMoveRing(newPosition, currentPosition, player))
     // {
@@ -442,7 +442,8 @@ vector<pair<pair<int, int>, pair<int, int>>> Board::checkMarkers(pair<int, int> 
 
     vector<pair<pair<int, int>, pair<int, int>>> combinationSequences;
 
-    if (newPosition.first == oldPosition.first && newPosition.second == oldPosition.second) {
+    if (newPosition.first == oldPosition.first && newPosition.second == oldPosition.second)
+    {
         return combinationSequences;
     }
 
@@ -519,7 +520,7 @@ vector<pair<pair<int, int>, pair<int, int>>> Board::checkMarkers(pair<int, int> 
 void Board::removeMarkers(pair<int, int> startSeries, pair<int, int> endSeries)
 {
     Debug("# Board::removeMarkers - StartPosition=(" << startSeries.first << ',' << startSeries.second
-         << ") EndPosition=(" << endSeries.first << ',' << endSeries.second << endl);
+                                                     << ") EndPosition=(" << endSeries.first << ',' << endSeries.second << endl);
 
     if (startSeries.first == endSeries.first)
     {
@@ -691,13 +692,14 @@ void Board::getValidRingMoves(vector<Move> &moves, bool player)
                 checkPosition.first += direction.first;
                 checkPosition.second += direction.second;
 
-                if (!validPosition(checkPosition)) {
+                if (!validPosition(checkPosition))
+                {
                     break;
                 }
 
                 int positionState = getState(checkPosition);
 
-                jumpedMarker = (positionState == PositionStates::blackMarker) || (positionState == PositionStates::whiteMarker);
+                jumpedMarker = jumpedMarker || (positionState == PositionStates::blackMarker) || (positionState == PositionStates::whiteMarker);
 
                 if (positionState == PositionStates::whiteRing || positionState == PositionStates::blackRing)
                 {

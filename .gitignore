@@ -41,3 +41,4 @@ env
 log.txt
 input.txt
 inputGame.txt
+*.log

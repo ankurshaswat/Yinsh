@@ -106,9 +106,9 @@ class Client(Communicator):
 		success_flag =  super(Client,self).SendDataOnSocket(sendData)
 		if(not success_flag):
 			print 'ERROR : FAILED TO SEND DATA TO SERVER'
-			super(Client,self).closeSocket()
-		elif((data['action'] == 'KILLPROC') or (data['action'] == 'FINISH')):
-			super(Client,self).closeSocket()
+			#super(Client,self).closeSocket()
+		#elif((data['action'] == 'KILLPROC') or (data['action'] == 'FINISH')):
+			#super(Client,self).closeSocket()
 		return success_flag
 
 	
@@ -300,8 +300,8 @@ def game_loop(args):
 				print 'Opponent\'s Score : ' + str(game.get_score(1))
 
 		client.SendData2Server(message)
-		if message['action'] == 'FINISH' or message['action'] == 'KILLPROC':
-			break
+		#if message['action'] == 'FINISH' or message['action'] == 'KILLPROC':
+			#break
 		
 		## Listen to Other Player's Move
 		move = client.RecvDataFromServer()

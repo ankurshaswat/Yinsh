@@ -4,13 +4,13 @@
 #include "Util.h"
 // #include "AI.h"
 
-using namespace std;
-
 #ifdef USEDEBUG
-#define Debug(x) cout << "# " << x << endl
+#define Debug(x) std::cout << "# " << x
 #else
 #define Debug(x)
 #endif
+
+using namespace std;
 
 Inteface::Inteface()
 {
@@ -36,7 +36,7 @@ Inteface::Inteface()
 
     bool player = playerInt == 1 ? true : false;
 
-    Debug("Inteface::Inteface - n=" << n << " Player=" << player << " Time=" << time );
+    Debug("# Interface::Interface - n=" << n << " Player=" << player << " Time=" << time << endl);
 
     board = new Board(n);
     ai = new AI(board, player, time, n);
@@ -53,10 +53,12 @@ Inteface::Inteface()
 
     while (true)
     {
-        Debug("# Moving on to get AI output");
+
+        Debug("Moving on to get AI output" << endl);
+
         ai->playMoveSeq(m);
         currentPlayer = !currentPlayer;
-        Debug("# Moving on to get input");
+        Debug("# Moving on to get input" << endl);
         m = readInput();
         currentPlayer = !currentPlayer;
     }
@@ -64,7 +66,7 @@ Inteface::Inteface()
 
 Move Inteface::readInput()
 {
-    Debug("# Inteface::readInput");
+    Debug("# Inteface::readInput" << endl);
 
     Move m;
     string str;
@@ -135,7 +137,7 @@ Move Inteface::readInput()
             }
             else
             {
-                Debug("# Inteface::readInput Shouldn't be here");
+                Debug("# Inteface::readInput Shouldn't be here" << endl);
             }
         }
     }

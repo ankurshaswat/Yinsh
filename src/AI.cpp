@@ -12,7 +12,7 @@
 const int INT_MAX = numeric_limits<int>::max();
 const int INT_MIN = numeric_limits<int>::min();
 
-const int MAX_DEPTH = 6;
+const int MAX_DEPTH = 3;
 
 AI::AI(Board *board, bool player, int time, int n)
 {
@@ -46,18 +46,28 @@ void AI::playMoveSeq(Move prevMove)
     pair<vector<Move>, int> returnedMovePair = maxValue(INT_MIN, INT_MAX, MAX_DEPTH, *originalBoard, prevMove, player, moveCount);
     vector<Move> moves = returnedMovePair.first;
 
+    // Debug("# Got Returned Moves" << endl);
+
     for (int i = 0; i < moves.size(); i++)
     {
-        Debug("# Got Returned Moves" << endl);
         Move move = moves[i];
         this->originalBoard->playMove(move, player);
         if (move.type == MoveType::placeRing)
         {
             pair<int, int> position = axial2hex(move.initPosition);
-            cout << "P " << position.first << ' ' << position.second << endl;
+            cout << "P " << position.first << ' ' << position.second;
             // break;
         }
+        else if (move.type == MoveType::moveRing)
+        {
+            cout << "# S " << move.initPosition.first << ' ' << move.initPosition.second << " M " << move.finalPosition.first << ' ' << move.finalPosition.second << endl;
+            pair<int, int> position1 = axial2hex(move.initPosition);
+            pair<int, int> position2 = axial2hex(move.finalPosition);
+            cout << "# S " << position1.first << ' ' << position1.second << " M " << position2.first << ' ' << position2.second << endl;
+            cout << "S " << position1.first << ' ' << position1.second << " M " << position2.first << ' ' << position2.second;
+        }
     }
+    cout << endl;
     moveCount += 2;
 }
 
