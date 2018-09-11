@@ -12,7 +12,7 @@
 const int INT_MAX = numeric_limits<int>::max();
 const int INT_MIN = numeric_limits<int>::min();
 
-const int MAX_DEPTH = 2;
+const int MAX_DEPTH = 5;
 
 AI::AI(Board *board, bool player, int time, int n)
 {
