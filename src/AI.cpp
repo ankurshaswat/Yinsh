@@ -6,7 +6,7 @@
 const int INT_MAX = numeric_limits<int>::max();
 const int INT_MIN = numeric_limits<int>::min();
 
-const int MAX_DEPTH = 6;
+const int MAX_DEPTH = 3;
 
 AI::AI(Board *board, bool player, int time, int n)
 {
@@ -15,6 +15,39 @@ AI::AI(Board *board, bool player, int time, int n)
     this->player = player;
     this->time = 1.0 * time;
     this->moveCount = 0;
+}
+
+void AI::printMove(Move move){
+    if (move.type == MoveType::placeRing)
+    {
+        pair<int, int> position = axial2hex(move.initPosition);
+        cout << "P " << position.first << ' ' << position.second<<' ';
+        // break;
+    }
+    else if (move.type == MoveType::moveRing)
+    {
+        pair<int, int> position1 = axial2hex(move.initPosition);
+        pair<int, int> position2 = axial2hex(move.finalPosition);
+        cout << "S " << position1.first << ' ' << position1.second<<' ';
+        cout << "M " << position2.first << ' ' << position2.second<<' ';
+        // break;
+    }
+    else if (move.type == MoveType::removeRow)
+    {
+        pair<int, int> position1 = axial2hex(move.initPosition);
+        pair<int, int> position2 = axial2hex(move.finalPosition);
+        cout << "RS " << position1.first << ' ' << position1.second<<' ';
+        cout << "RE " << position2.first << ' ' << position2.second<<' ';
+        // break;
+    }
+    if (move.type == MoveType::removeRing)
+    {
+        pair<int, int> position = axial2hex(move.initPosition);
+        cout << "X " << position.first << ' ' << position.second<<' ';
+        // break;
+    }
+    
+
 }
 
 void AI::playMoveSeq(Move prevMove)
@@ -45,12 +78,7 @@ void AI::playMoveSeq(Move prevMove)
         cout << "# Got Returned Moves" << endl;
         Move move = moves[i];
         this->originalBoard->playMove(move, player);
-        if (move.type == MoveType::placeRing)
-        {
-            pair<int, int> position = axial2hex(move.initPosition);
-            cout << "P " << position.first << ' ' << position.second << endl;
-            // break;
-        }
+        printMove(move);
     }
     moveCount += 2;
 }
