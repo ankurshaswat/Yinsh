@@ -437,13 +437,13 @@ vector<pair<pair<int, int>, pair<int, int>>> Board::checkMarkers(pair<int, int> 
 
         for (int i = oldPosition.first; i != newPosition.first; i += increment)
         {
-            returnedSequence = checkMarkersLocal(make_pair(newPosition.first, i), make_pair(0, 1), player);
+            returnedSequence = checkMarkersLocal(make_pair(i, newPosition.second), make_pair(0, 1), player);
             if (returnedSequence.first == true)
             {
                 combinationSequences.push_back(returnedSequence.second);
             }
 
-            returnedSequence = checkMarkersLocal(make_pair(newPosition.first, i), make_pair(1, 1), player);
+            returnedSequence = checkMarkersLocal(make_pair(i, newPosition.second), make_pair(1, 1), player);
             if (returnedSequence.first == true)
             {
                 combinationSequences.push_back(returnedSequence.second);
@@ -559,7 +559,7 @@ void Board::playMove(Move m, bool player)
     }
     else
     {
-        cout << "# Remove Row??? (" << m.finalPosition.first << ',' << m.finalPosition.second << ") (" << m.initPosition.first << ',' << m.initPosition.second << ")" << endl;        
+        cout << "# Remove Row??? (" << m.finalPosition.first << ',' << m.finalPosition.second << ") (" << m.initPosition.first << ',' << m.initPosition.second << ")" << endl;
         removeMarkers(m.initPosition, m.finalPosition);
     }
 }
@@ -712,20 +712,19 @@ void Board::getValidRemoveRingMoves(vector<Move> &moves, bool player)
 
 int Board::evaluate(bool player)
 {
-    int markersCount, ringsCount, score;
-    int MARKERS_WEIGHT = 1, RINGS_WEIGHT = -10;
-    if (player)
-    { // player 1 - white
-        markersCount = this->counts[PositionStates::whiteMarker];
-        ringsCount = this->counts[PositionStates::whiteRing];
-    }
-    else
-    {
-        markersCount = this->counts[PositionStates::blackMarker];
-        ringsCount = this->counts[PositionStates::blackRing];
-    }
-    score = MARKERS_WEIGHT * markersCount + RINGS_WEIGHT * ringsCount;
-    return score;
+    int markersCount, ringsCount, score1, score0;
+    int MARKERS_WEIGHT = 1, RINGS_WEIGHT = -100, OWN_SCORE_WEIGHT = 2;
+    // if (player)
+    // { // player 1 - white
+    markersCount = this->counts[PositionStates::whiteMarker];
+    ringsCount = this->counts[PositionStates::whiteRing];
+    score1 = MARKERS_WEIGHT * markersCount + RINGS_WEIGHT * ringsCount;
+
+    markersCount = this->counts[PositionStates::blackMarker];
+    ringsCount = this->counts[PositionStates::blackRing];
+    score0 = MARKERS_WEIGHT * markersCount + RINGS_WEIGHT * ringsCount;
+
+    return player ? OWN_SCORE_WEIGHT * score1 - score0 : OWN_SCORE_WEIGHT * score0 - score1;
 }
 
 int Board::getSize()
