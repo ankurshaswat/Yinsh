@@ -96,7 +96,7 @@ pair<int, int> axial2hex(pair<int, int> axialCoord)
         }
     }
 
-    Debug("# Util::axial2hex - Input=(" << a << ',' << b << ')' << " Output=(" << hex << ',' << pos << ')' << endl);
+    // Debug("# Util::axial2hex - Input=(" << a << ',' << b << ')' << " Output=(" << hex << ',' << pos << ')' << endl);
     return make_pair(hex, pos);
 }
 
