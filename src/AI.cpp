@@ -12,7 +12,7 @@
 const int INT_MAX = numeric_limits<int>::max();
 const int INT_MIN = numeric_limits<int>::min();
 
-const int MAX_DEPTH = 4;
+const int MAX_DEPTH = 2;
 
 AI::AI(Board *board, bool player, int time, int n)
 {
@@ -52,8 +52,6 @@ void AI::printMove(Move move){
         cout << "X " << position.first << ' ' << position.second<<' ';
         // break;
     }
-    
-
 }
 
 void AI::playMoveSeq(Move prevMove)
@@ -85,8 +83,8 @@ void AI::playMoveSeq(Move prevMove)
     {
         Move move = moves[i];
         this->originalBoard->playMove(move, player);
-        printMove(move);
     }
+    for(auto move: moves) printMove(move); 
     cout << endl;
     moveCount += 2;
 }

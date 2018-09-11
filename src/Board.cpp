@@ -171,13 +171,13 @@ bool Board::validMoveRing(pair<int, int> newPosition, pair<int, int> currentPosi
 
 void Board::removeMarker(pair<int, int> position)
 {
-    Debug("# Board::removeMarker - (" << position.first << ',' << position.second << ')' << endl);
+    Debug("Board::removeMarker - (" << position.first << ',' << position.second << ')' << endl);
     setState(position, PositionStates::empty);
 }
 
 void Board::removeRing(pair<int, int> position)
 {
-    Debug("# Board::removeRing - (" << position.first << ',' << position.second << ')' << endl);
+    Debug("Board::removeRing - (" << position.first << ',' << position.second << ')' << endl);
     bool player = getState(position) > 0;
     int ringIndex = player ? 1 : 0;
     for (auto it = rings[ringIndex].begin(); it != rings[ringIndex].end(); ++it)
@@ -217,7 +217,7 @@ void Board::invertState(int pos1, int pos2)
 
 bool Board::placeRing(pair<int, int> position, bool player)
 {
-    Debug("# Board::placeRing - Player=" << player
+    Debug("Board::placeRing - Player=" << player
                                          << " Position=(" << position.first << ',' << position.second << ')' << endl);
 
     int playerRing = player ? PositionStates::whiteRing : PositionStates::blackRing;
@@ -235,7 +235,7 @@ bool Board::placeRing(pair<int, int> position, bool player)
 
 bool Board::moveRing(pair<int, int> newPosition, pair<int, int> currentPosition, bool player)
 {
-    Debug("# Board::moveRing - Player=" << player
+    Debug("Board::moveRing - Player=" << player
                                         << " OldPosition=(" << currentPosition.first << ',' << currentPosition.second
                                         << ") NewPosition=(" << newPosition.first << ',' << newPosition.second << endl);
 
@@ -749,7 +749,7 @@ void Board::getValidRingMoves(vector<Move> &moves, bool player)
 
 void Board::getValidPlaceRingMoves(vector<Move> &moves, bool player)
 {
-    Debug("# Board::getValidPlaceRingMoves - Player=" << player << endl);
+    Debug("Board::getValidPlaceRingMoves - Player=" << player << endl);
     // vector<Move> moves;
     int count = 0, i, j;
     while (count < 7)
