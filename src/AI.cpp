@@ -86,7 +86,6 @@ void AI::playMoveSeq(Move prevMove)
         Move move = moves[i];
         this->originalBoard->playMove(move, player);
         printMove(move);
-        cout<<endl;
     }
     cout << endl;
     moveCount += 2;

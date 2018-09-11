@@ -41,4 +41,5 @@ env
 log.txt
 input.txt
 inputGame.txt
+.vscode
 *.log
