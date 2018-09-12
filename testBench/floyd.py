@@ -190,6 +190,17 @@ class floydPlayer:
                 return [moveS,moveM]
             else:
                 # Row of 5 + ring removed
+                self.setBoard()
+                rows=getValidRowMoves()
+                moveSeq=[]
+                moveSequences=[]
+                if(len(rows)==0):
+                    self.moveMarkerMoves(moveSeq,moveSequences)
+                else:
+                    self.rowMoves(rows,moveSeq,moveSequences,True)
+                
+                # for moveSequence in moveSequences:
+                
 
                 #Select ring
 
@@ -263,6 +274,13 @@ class floydPlayer:
 
 
         return 
+
+    def moveMarkerMoves(self,moveSeq, moveSequences):
+        pass
+
+    def rowMoves(self,rows,moveSeq,moveSequences,continuePlaying):
+        pass
+    
 
     def play(self):
         move = sys.stdin.readline().strip()
