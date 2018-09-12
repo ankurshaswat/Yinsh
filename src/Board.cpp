@@ -713,16 +713,38 @@ void Board::getValidRemoveRingMoves(vector<Move> &moves, bool player)
 int Board::evaluate(bool player)
 {
     int markersCount, ringsCount, score1, score0;
-    int MARKERS_WEIGHT = 1, RINGS_WEIGHT = -100, OWN_SCORE_WEIGHT = 2;
+    int MARKERS_WEIGHT = 1, RINGS_WEIGHT = -2000, OWN_SCORE_WEIGHT = 2;
     // if (player)
     // { // player 1 - white
     markersCount = this->counts[PositionStates::whiteMarker];
     ringsCount = this->counts[PositionStates::whiteRing];
     score1 = MARKERS_WEIGHT * markersCount + RINGS_WEIGHT * ringsCount;
+    if (ringsCount <= 2)
+    {
+        if (player)
+        {
+            return INT32_MAX;
+        }
+        else
+        {
+            return INT32_MIN;
+        }
+    }
 
     markersCount = this->counts[PositionStates::blackMarker];
     ringsCount = this->counts[PositionStates::blackRing];
     score0 = MARKERS_WEIGHT * markersCount + RINGS_WEIGHT * ringsCount;
+    if (ringsCount <= 2)
+    {
+        if (!player)
+        {
+            return INT32_MAX;
+        }
+        else
+        {
+            return INT32_MIN;
+        }
+    }
 
     return player ? OWN_SCORE_WEIGHT * score1 - score0 : OWN_SCORE_WEIGHT * score0 - score1;
 }

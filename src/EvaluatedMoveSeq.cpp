@@ -8,9 +8,10 @@ EvaluatedMoveSeq::EvaluatedMoveSeq(vector<Move> moveSequence, int evaluation)
 
 bool EvaluatedMoveSeq::operator<(const EvaluatedMoveSeq &rhs)
 {
-    if (evaluation < rhs.evaluation)
-    {
-        return true;
-    }
-    return false;
+    return (evaluation < rhs.evaluation);
+}
+
+bool EvaluatedMoveSeq::operator>(const EvaluatedMoveSeq &rhs)
+{
+    return (evaluation > rhs.evaluation);
 }

@@ -1,5 +1,7 @@
 #include "AI.h"
 #include "Util.h"
+#include "EvaluatedMoveSeq.h"
+#include <algorithm>
 #include <limits>
 
 #ifdef USEDEBUG
@@ -12,6 +14,7 @@ const int INT_MAX = numeric_limits<int>::max();
 const int INT_MIN = numeric_limits<int>::min();
 
 const int MAX_DEPTH = 4;
+const int SHALLOW_DEPTH = 4;
 
 AI::AI(Board *board, bool player, int time, int n)
 {
@@ -287,16 +290,16 @@ void AI::rowMoves(Board &board, bool player, vector<Move> &removeRowMoves, vecto
         board.playMove(removeRowMoves[i], player);
         moveSeq.push_back(removeRowMoves[i]);
 
-        vector<Move> moveRingMoves;
-        board.getValidRemoveRingMoves(moveRingMoves, player);
-        for (auto m1 : moveRingMoves)
+        vector<Move> removeRingMoves;
+        board.getValidRemoveRingMoves(removeRingMoves, player);
+        for (auto m1 : removeRingMoves)
         {
             // play moveRing move
             moveSeqFound=false;
             board.playMove(m1, player);
             moveSeq.push_back(m1);
             // cout << "# Row made after opponent's move- "
-                //  << " " << board.getRingsCount(player) << " " << removeRowMoves[i].initPosition.first << ", " << removeRowMoves[i].initPosition.second << endl;
+            //  << " " << board.getRingsCount(player) << " " << removeRowMoves[i].initPosition.first << ", " << removeRowMoves[i].initPosition.second << endl;
 
             for (int j = i + 1; j < removeRowMoves.size(); j++)
             {
@@ -306,12 +309,16 @@ void AI::rowMoves(Board &board, bool player, vector<Move> &removeRowMoves, vecto
                     board.playMove(removeRowMoves[j], player);
                     moveSeq.push_back(removeRowMoves[j]);
 
-                    vector<Move> moveRingMoves2;
-                    board.getValidRemoveRingMoves(moveRingMoves2, player);
-                    for (auto m2 : moveRingMoves2)
+                    vector<Move> removeRingMoves2;
+                    board.getValidRemoveRingMoves(removeRingMoves2, player);
+                    for (auto m2 : removeRingMoves2)
                     {
+<<<<<<< HEAD
                         // play moveRing move
                         moveSeqFound=false;
+=======
+                        // play removeRing move
+>>>>>>> 569ac61bb724681c581bd30fad58b7a234bd04f2
                         board.playMove(m2, player);
                         moveSeq.push_back(m2);
 
@@ -323,13 +330,13 @@ void AI::rowMoves(Board &board, bool player, vector<Move> &removeRowMoves, vecto
                                 board.playMove(removeRowMoves[k], player);
                                 moveSeq.push_back(removeRowMoves[k]);
 
-                                vector<Move> moveRingMoves3;
-                                board.getValidRemoveRingMoves(moveRingMoves3, player);
+                                vector<Move> removeRingMoves3;
+                                board.getValidRemoveRingMoves(removeRingMoves3, player);
 
-                                for (auto m3 : moveRingMoves3)
+                                for (auto m3 : removeRingMoves3)
                                 {
                                     moveSeq.push_back(m3);
-                                    // play moveRing move
+                                    // play removeRing move
                                     board.playMove(m3, player);
                                     // Evaluate new board position till shallow depth (for move ordering)
                                     moveSeqFound = true;
@@ -390,6 +397,7 @@ void AI::rowMoves(Board &board, bool player, vector<Move> &removeRowMoves, vecto
 void AI::moveMarkerMoves(Board &board, vector<Move> &moveSeq, vector<vector<Move>> &moveSequences, bool player)
 {
     Debug("# AI::moveMarkerMoves - Player=" << player << endl);
+    vector<EvaluatedMoveSeq> tempMoveSequences;
 
     vector<Move> moveRingMoves;
     board.getValidRingMoves(moveRingMoves, player);
@@ -408,11 +416,34 @@ void AI::moveMarkerMoves(Board &board, vector<Move> &moveSeq, vector<vector<Move
         else
         {
             // Evaluate position till shallow depth (for move ordering)
-            moveSequences.push_back(moveSeq); //push this with evaluated value
+            pair<vector<Move>, int> retVal;
+            if (player == this->player)
+            {
+                retVal = minValue(INT_MIN, INT_MAX, SHALLOW_DEPTH, board, m, !player, 11);
+            }
+            else
+            {
+                retVal = maxValue(INT_MIN, INT_MAX, SHALLOW_DEPTH, board, m, !player, 11);
+            }
+            tempMoveSequences.push_back(EvaluatedMoveSeq(retVal.first, retVal.second));
+            // moveSequences.push_back(moveSeq); //push this with evaluated value
         }
 
         board.undoMove(m, player);
 
         moveSeq.pop_back();
+    }
+
+    if (player == this->player)
+    {
+        sort(tempMoveSequences.begin(), tempMoveSequences.end(),greater<EvaluatedMoveSeq>());
+    }
+    else
+    {
+        sort(tempMoveSequences.begin(), tempMoveSequences.end());
+    }
+
+    for (int i =0;i<tempMoveSequences.size();i++) {
+        moveSequences.push_back(tempMoveSequences[i].moveSequence);
     }
 }
