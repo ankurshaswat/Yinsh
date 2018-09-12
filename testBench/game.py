@@ -171,7 +171,11 @@ class Game:
 		gameRep={'ringsA':rings_A,'ringsB':rings_B,'markersA':markers_A,'markersB':markers_B}
 		print('# Game board:'+str(gameRep))
 		return gameRep
-		
+
+	def getGameBoard(self):
+		positions = list(self.driver.execute_script('return positions;'))
+		return positions		
+
 	
 	def check_won(self):
 		required_move = self.driver.execute_script('return required_move;')
