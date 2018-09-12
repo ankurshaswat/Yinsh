@@ -145,11 +145,11 @@ pair<vector<Move>, int> AI::maxValue(int alpha, int beta, int depth, Board &boar
         board.getValidRowMoves(prevMove, removeRowMoves, player);
         if (removeRowMoves.size() == 0)
         {
-            moveMarkerMoves(board, moveSeqeunce, moveSequences, player);
+            moveMarkerMoves(board, moveSeqeunce, moveSequences, player,depth);
         }
         else
         {
-            rowMoves(board, player, removeRowMoves, moveSeqeunce, moveSequences, true);
+            rowMoves(board, player, removeRowMoves, moveSeqeunce, moveSequences, true, depth);
         }
     }
     Debug("# AI::maxValue Out" << endl);
@@ -234,12 +234,12 @@ pair<vector<Move>, int> AI::minValue(int alpha, int beta, int depth, Board &boar
         board.getValidRowMoves(prevMove, removeRowMoves, player);
         if (removeRowMoves.size() == 0)
         {
-            moveMarkerMoves(board, moveSeq, moveSequences, player);
+            moveMarkerMoves(board, moveSeq, moveSequences, player,depth);
         }
 
         else
         {
-            rowMoves(board, player, removeRowMoves, moveSeq, moveSequences, true);
+            rowMoves(board, player, removeRowMoves, moveSeq, moveSequences, true,depth);
         }
     }
 
@@ -277,7 +277,7 @@ pair<vector<Move>, int> AI::minValue(int alpha, int beta, int depth, Board &boar
     return make_pair(bestMoveSeq, bestEval);
 }
 
-void AI::rowMoves(Board &board, bool player, vector<Move> &removeRowMoves, vector<Move> &moveSeq, vector<vector<Move>> &moveSequences, bool continuePlaying)
+void AI::rowMoves(Board &board, bool player, vector<Move> &removeRowMoves, vector<Move> &moveSeq, vector<vector<Move>> &moveSequences, bool continuePlaying,int depth)
 {
     Debug("# AI::rowMoves - Player=" << player << " ContinuePlaying=" << continuePlaying << endl);
 
@@ -355,7 +355,7 @@ void AI::rowMoves(Board &board, bool player, vector<Move> &removeRowMoves, vecto
                             }
                             else
                             {
-                                moveMarkerMoves(board, moveSeq, moveSequences, player);
+                                moveMarkerMoves(board, moveSeq, moveSequences, player,depth);
                             }
                         }
 
@@ -378,7 +378,7 @@ void AI::rowMoves(Board &board, bool player, vector<Move> &removeRowMoves, vecto
                 }
                 else
                 {
-                    moveMarkerMoves(board, moveSeq, moveSequences, player);
+                    moveMarkerMoves(board, moveSeq, moveSequences, player,depth);
                 }
             }
 
@@ -390,10 +390,10 @@ void AI::rowMoves(Board &board, bool player, vector<Move> &removeRowMoves, vecto
     }
 }
 
-void AI::moveMarkerMoves(Board &board, vector<Move> &moveSeq, vector<vector<Move>> &moveSequences, bool player)
+void AI::moveMarkerMoves(Board &board, vector<Move> &moveSeq, vector<vector<Move>> &moveSequences, bool player, int depth)
 {
     Debug("# AI::moveMarkerMoves - Player=" << player << endl);
-    // vector<EvaluatedMoveSeq> tempMoveSequences;
+    vector<EvaluatedMoveSeq> tempMoveSequences;
 
     vector<Move> moveRingMoves;
     board.getValidRingMoves(moveRingMoves, player);
@@ -407,21 +407,21 @@ void AI::moveMarkerMoves(Board &board, vector<Move> &moveSeq, vector<vector<Move
         board.getValidRowMoves(m, removeRowMovesAgain, player);
         if (removeRowMovesAgain.size() > 0)
         {
-            rowMoves(board, player, removeRowMovesAgain, moveSeq, moveSequences, false);
+            rowMoves(board, player, removeRowMovesAgain, moveSeq, moveSequences, false,depth);
         }
         else
         {
             // Evaluate position till shallow depth (for move ordering)
-            // pair<vector<Move>, int> retVal;
-            // if (player == this->player)
-            // {
-            //     retVal = minValue(INT_MIN, INT_MAX, SHALLOW_DEPTH, board, m, !player, 11);
-            // }
-            // else
-            // {
-            //     retVal = maxValue(INT_MIN, INT_MAX, SHALLOW_DEPTH, board, m, !player, 11);
-            // }
-            // tempMoveSequences.push_back(EvaluatedMoveSeq(retVal.first, retVal.second));
+            pair<vector<Move>, int> retVal;
+            if (player == this->player)
+            {
+                retVal = minValue(INT_MIN, INT_MAX, depth - SHALLOW_DEPTH, board, m, !player, 11);
+            }
+            else
+            {
+                retVal = maxValue(INT_MIN, INT_MAX, depth - SHALLOW_DEPTH, board, m, !player, 11);
+            }
+            tempMoveSequences.push_back(EvaluatedMoveSeq(retVal.first, retVal.second));
             moveSequences.push_back(moveSeq); //push this with evaluated value
         }
 
@@ -430,26 +430,26 @@ void AI::moveMarkerMoves(Board &board, vector<Move> &moveSeq, vector<vector<Move
         moveSeq.pop_back();
     }
 
-    // if (player == this->player)
-    // {
-    //     sort(tempMoveSequences.begin(), tempMoveSequences.end(), greater<EvaluatedMoveSeq>());
-    // }
-    // else
-    // {
-    //     sort(tempMoveSequences.begin(), tempMoveSequences.end());
-    // }
+    if (player == this->player)
+    {
+        sort(tempMoveSequences.begin(), tempMoveSequences.end(), greater<EvaluatedMoveSeq>());
+    }
+    else
+    {
+        sort(tempMoveSequences.begin(), tempMoveSequences.end());
+    }
 
-    // if (tempMoveSequences.size() > 0)
-    // {
-    //     cout << "# " << player << ' ' << this->player<<endl;
-    // }
-    // for (int i = 0; i < tempMoveSequences.size(); i++)
-    // {
-    //     // cout << "# " << tempMoveSequences[i].evaluation << ' ';
-    //     moveSequences.push_back(tempMoveSequences[i].moveSequence);
-    // }
-    // if (tempMoveSequences.size() > 0)
-    // {
-    //     cout << endl;
-    // }
+    if (tempMoveSequences.size() > 0)
+    {
+        // cout << "# " << player << ' ' << this->player<<endl;
+    }
+    for (int i = 0; i < tempMoveSequences.size(); i++)
+    {
+        // cout << "# " << tempMoveSequences[i].evaluation << ' ';
+        moveSequences.push_back(tempMoveSequences[i].moveSequence);
+    }
+    if (tempMoveSequences.size() > 0)
+    {
+        // cout << endl;
+    }
 }
