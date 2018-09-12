@@ -6,7 +6,7 @@ import ast
 import requests
 
 PositionStates={'whiteMarker':-1,'blackMarker':1,'whiteRing':-2,'blackRing':2,'empty':0}
-MoveType = {'removeRow':2}
+MoveType = {'removeRow':2,'placeRing':0,'moveRing':1,'removeRing':3}
 class Pair:
 
     def __init__(self,i,j):
@@ -37,6 +37,7 @@ class floydPlayer:
         self.RingPos = {}
         self.play()
         self.board=[]
+        self.prevMoveRing=Move(MoveType['moveRing'],Pair(-1,-1),Pair(-1,-1))
 
     def play_move_seq(self, move_seq):
         moves = ' '.join(move_seq) + '\n'
@@ -201,6 +202,17 @@ class floydPlayer:
                 return [moveS,moveM]
             else:
                 # Row of 5 + ring removed
+                self.setBoard()
+                rows=self.getValidRowMoves()
+                moveSeq=[]
+                moveSequences=[]
+                if(len(rows)==0):
+                    self.moveMarkerMoves(moveSeq,moveSequences)
+                else:
+                    self.rowMoves(rows,moveSeq,moveSequences,True)
+                
+                # for moveSequence in moveSequences:
+                
 
                 #Select ring
 
@@ -274,6 +286,106 @@ class floydPlayer:
 
 
         return 
+
+    def moveMarkerMoves(self,moveSeq, moveSequences):
+
+        pass
+
+    def rowMoves(self,rows,moveSeq,moveSequences,continuePlaying):
+        pass
+
+
+    def getValidRingMoves(moves,ringsA):
+        directions=[(0,1),(1,0),(1,1),(-1,-1),(1,-1),(-1,1)]
+        for ringPos in ringsA:
+            ringPosition = Pair(ringPos[0],ringPos[1])
+            for j in range(len(directions)):
+                direction =directions[j].copy()
+                checkPosition = ringPosition.copy()
+
+                jumpedMarker = False
+
+                while (True):
+                    checkPosition.first += direction.first
+                    checkPosition.second += direction.second
+                    if (not validPosition(checkPosition)):
+                        break
+
+                    positionState = getState(checkPosition)
+
+                    jumpedMarker = jumpedMarker or (positionState == PositionStates['blackMarker']) or (positionState == PositionStates['whiteMarker'])
+
+                    if (positionState == PositionStates['whiteRing'] or positionState == PositionStates['blackRing']):
+                        break
+                    elif (positionState == PositionStates['empty']):
+                        moves.append(Move(MoveType['moveRing'], ringPosition.copy(), checkPosition.copy()))
+
+                        if (jumpedMarker):
+                            break
+        return
+
+
+    def playMove(self,m):
+        type = m.moveType
+        if (type == MoveType['placeRing']):
+            self.setState(m.initPosition,PositionStates['whiteRing'])
+        elif (type == MoveType['moveRing']):
+            self.moveRing(m.finalPosition, m.initPosition,True)
+        elif (type == MoveType['removeRing']):
+            self.setState(m.initPosition, PositionStates['empty'])
+        else:
+            self.removeMarkers(m.initPosition, m.finalPosition)
+
+    def undoMove(self,m):
+        type = m.moveType
+        if (type == MoveType['placeRing']):
+            removeRing(m.initPosition)
+        elif (type == MoveType['moveRing']):
+            setState(m.initPosition, PositionStates['empty'])
+            moveRing(m.initPosition, m.finalPosition, True)
+            setState(m.finalPosition, PositionStates['empty'])
+        elif (type == MoveType['removeRing']):
+            setState(m.initPosition,PositionStates['whiteRing'])
+        else:
+            # cout << "# Undo Remove Row??? (" << m.finalPosition.first << ',' << m.finalPosition.second << ") (" << m.initPosition.first << ',' << m.initPosition.second << ")" << endl;
+            placeMarkers(m.initPosition, m.finalPosition, player)
+
+    def placeMarkers(self,startSeries,endSeries):
+        if (startSeries.first == endSeries.first):
+            increment = -1 if(startSeries.second < endSeries.second) else 1
+            for i in range(endSeries.second,startSeries.second + increment,increment):
+                self.setState(Pair(endSeries.first, i), PositionStates['whiteMarker'])
+        elif (startSeries.second == endSeries.second):
+            increment = -1 if(startSeries.first < endSeries.first) else 1
+            for i in range(endSeries.first,startSeries.first + increment,increment)
+                setState(Pair(i, endSeries.second), PositionStates['whiteMarker'])
+        else:
+            increment = -1 if(startSeries.second < endSeries.second) else 1
+            i2 = endSeries.second
+            for i1 in range(endSeries.first,startSeries.first + increment,increment):
+                setState(Pair(i1, i2), PositionStates['whiteMarker'])
+                i2 += increment
+        return 
+        
+
+    def removeMarkers(self,startSeries,endSeries):
+        if (startSeries.first == endSeries.first):
+            increment = -1 if(startSeries.second < endSeries.second) else 1
+            for i in range(endSeries.second,startSeries.second + increment,increment):
+                self.setState(Pair(endSeries.first, i), PositionStates['empty'])
+        elif (startSeries.second == endSeries.second):
+            increment = -1 if(startSeries.first < endSeries.first) else 1
+            for i in range(endSeries.first,startSeries.first + increment,increment)
+                setState(Pair(i, endSeries.second), PositionStates['empty'])
+        else:
+            increment = -1 if(startSeries.second < endSeries.second) else 1
+            i2 = endSeries.second
+            for i1 in range(endSeries.first,startSeries.first + increment,increment):
+                setState(Pair(i1, i2), PositionStates['empty'])
+                i2 += increment
+        return 
+    
+
 
     def play(self):
         move = sys.stdin.readline().strip()
