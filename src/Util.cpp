@@ -1,5 +1,5 @@
 /* 
- * File:   Util.h
+ * File:   Util.cpp
  * Author: Shashwat Shivam
  *
  */
@@ -151,7 +151,6 @@ void printPointers(vector<vector<Move>> moveSequences)
         Debug(endl);
     }
 }
-
 
 bool isIntersecting(Move m, Move n)
 {

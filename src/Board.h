@@ -1,5 +1,5 @@
 /* 
- * File:   Yinsh.h
+ * File:   Board.h
  * Author: Shashwat Shivam
  *
  */

@@ -706,7 +706,7 @@ void Board::getValidRemoveRingMoves(vector<Move> &moves, bool player)
     vector<pair<int, int>> *ringsPos = &rings[ringIndex];
     for (auto pos : (*ringsPos))
     {
-        moves.push_back(Move(MoveType::removeRing, pos, make_pair(-1, -1)));
+        moves.push_back(Move(MoveType::removeRing, pos, pos));
     }
 }
 
