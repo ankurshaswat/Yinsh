@@ -384,7 +384,8 @@ class floydPlayer:
 
             while (self.validPosition(startMarker)):
                 count += 1
-                if (self.getState(startMarker) != playerMarker):
+                # if (self.getState(startMarker) != playerMarker):
+                if (self.getState(startMarker) != playerMarker or count>5):
                     count -= 1
                     break
 
@@ -393,22 +394,25 @@ class floydPlayer:
             startMarker.first -= direction.first
             startMarker.second -= direction.second
 
-            endMarker = position.copy()
-            endMarker.first -= direction.first
-            endMarker.second -= direction.second
-
-            while (self.validPosition(endMarker)):
-                count += 1
-                if (self.getState(endMarker) != playerMarker):
-                    count -= 1
-                    break
-                endMarker.first -= direction.first
-                endMarker.second -= direction.second
-            endMarker.first += direction.first
-            endMarker.second += direction.second
-
             if (count >= 5):
-                return Pair(True, Pair(startMarker.copy(), endMarker.copy()))
+                return Pair(True, Pair(position.copy(), startMarker.copy()))
+
+            # endMarker = position.copy()
+            # endMarker.first -= direction.first
+            # endMarker.second -= direction.second
+
+            # while (self.validPosition(endMarker)):
+            #     count += 1
+            #     if (self.getState(endMarker) != playerMarker):
+            #         count -= 1
+            #         break
+            #     endMarker.first -= direction.first
+            #     endMarker.second -= direction.second
+            # endMarker.first += direction.first
+            # endMarker.second += direction.second
+
+            # if (count >= 5):
+            #     return Pair(True, Pair(startMarker.copy(), endMarker.copy()))
 
         return Pair(False, Pair(position.copy(), position.copy()))
 
@@ -460,7 +464,7 @@ class floydPlayer:
         if (newPosition.first == oldPosition.first):
             increment = -1 if newPosition.second < oldPosition.second else 1
 
-            combinationSequences = self.checkMarkersLine(newPosition, Pair(0, increment * -1), player)
+            combinationSequences = self.checkMarkersLine(newPosition.copy(), Pair(0, increment * -1), player)
 
             for i in range(oldPosition.second,newPosition.second,increment):
                 returnedSequence = self.checkMarkersLocal(Pair(newPosition.first, i), Pair(1, 0), player)
@@ -521,30 +525,43 @@ class floydPlayer:
         return pos
 
     def getValidRowMoves(self,prevMoveRing,moves,player):
-        rows = self.checkMarkers(prevMoveRing.finalPosition.copy(), prevMoveRing.initPosition.copy(), player)
+        rows = []
+        for i in range(0,12):
+            for j in range(0,12):
+                if (self.validPosition(Pair(i-self.n,j-self.n))):
+                    x = self.checkMarkersLocal(Pair(i-self.n,j-self.n),Pair(0,1),player)
+                    if (x.first):
+                        rows.append(x.second)
+                    x = self.checkMarkersLocal(Pair(i-self.n,j-self.n),Pair(1,1),player)
+                    if (x.first):
+                        rows.append(x.second)
+                    x = self.checkMarkersLocal(Pair(i-self.n,j-self.n),Pair(1,0),player)
+                    if (x.first):
+                        rows.append(x.second)
+        # rows = self.checkMarkers(prevMoveRing.finalPosition.copy(), prevMoveRing.initPosition.copy(), player)
 
-        for i in range(0,len(rows)):
-            row = rows[i]
-            start = row.first.copy()
-            end = row.second.copy()
-            if ( self.inclusiveMarkerCount(row.first, row.second) > 5):
-                direction = Pair(1,2)
-                direction.first = end.first - start.first
-                direction.second = end.second - start.second
-                direction =  self.makeUnit(direction)
+        # for i in range(0,len(rows)):
+        #     row = rows[i]
+        #     start = row.first.copy()
+        #     end = row.second.copy()
+        #     if ( self.inclusiveMarkerCount(row.first, row.second) > 5):
+        #         direction = Pair(1,2)
+        #         direction.first = end.first - start.first
+        #         direction.second = end.second - start.second
+        #         direction =  self.makeUnit(direction)
 
-                alternateEnd = Pair(1,2)
-                alternateEnd.first = start.first + 4 * direction.first
-                alternateEnd.second = start.second + 4 * direction.second
+        #         alternateEnd = Pair(1,2)
+        #         alternateEnd.first = start.first + 4 * direction.first
+        #         alternateEnd.second = start.second + 4 * direction.second
 
-                moves.append(Move(MoveType['removeRow'], start.copy(), alternateEnd.copy()))
+        #         moves.append(Move(MoveType['removeRow'], start.copy(), alternateEnd.copy()))
 
-                alternateStart = Pair(1,2)
-                alternateStart.first = end.first - 4 * direction.first
-                alternateStart.second = end.second - 4 * direction.second
+        #         alternateStart = Pair(1,2)
+        #         alternateStart.first = end.first - 4 * direction.first
+        #         alternateStart.second = end.second - 4 * direction.second
 
-                moves.append(Move(MoveType['removeRow'], alternateStart.copy(), end.copy()))
-            else:
-                moves.append(Move(MoveType['removeRow'], start.copy(), end.copy()))
+        #         moves.append(Move(MoveType['removeRow'], alternateStart.copy(), end.copy()))
+        #     else:
+        #         moves.append(Move(MoveType['removeRow'], start.copy(), end.copy()))
 
 floyd_player = floydPlayer()
