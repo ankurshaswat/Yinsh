@@ -6,6 +6,7 @@ import ast
 import requests
 
 PositionStates={'whiteMarker':-1,'blackMarker':1,'whiteRing':-2,'blackRing':2,'empty':0}
+MoveType = {'removeRow':2}
 class Pair:
 
     def __init__(self,i,j):
@@ -14,6 +15,16 @@ class Pair:
 
     def copy(self):
         return Pair(self.first,self.second)
+
+class Move:
+
+    def __init__(self,moveType,initPosition,finalPosition):
+        self.moveType = moveType
+        self.initPosition = initPosition
+        self.finalPosition = finalPosition
+
+    def copy(self):
+        return Move( self.moveType, self.initPosition.copy(), self.finalPosition.copy())
 
 class floydPlayer:
 
@@ -452,28 +463,28 @@ class floydPlayer:
             for i in range(oldPosition.second,newPosition.second,increment):
                 returnedSequence = self.checkMarkersLocal(Pair(newPosition.first, i), Pair(1, 0), player)
                 if (returnedSequence.first == True):
-                    combinationSequences.append(returnedSequence.second)
+                    combinationSequences.append(returnedSequence.second.copy())
 
                 returnedSequence = self.checkMarkersLocal(Pair(newPosition.first, i), Pair(1, 1), player)
                 if (returnedSequence.first == True):
-                    combinationSequences.append(returnedSequence.second)
+                    combinationSequences.append(returnedSequence.second.copy())
         elif (newPosition.second == oldPosition.second):
             increment = -1 if newPosition.first < oldPosition.first else 1
 
-            combinationSequences = self.checkMarkersLine(newPosition, Pair(increment * -1, 0), player)
+            combinationSequences = self.checkMarkersLine(newPosition.copy(), Pair(increment * -1, 0), player)
 
             for i in range(oldPosition.first,newPosition.first,increment):
                 returnedSequence = self.checkMarkersLocal(Pair(i, newPosition.second), Pair(0, 1), player)
                 if (returnedSequence.first == True):
-                    combinationSequences.append(returnedSequence.second)
+                    combinationSequences.append(returnedSequence.second.copy())
 
                 returnedSequence = self.checkMarkersLocal(Pair(i, newPosition.second), Pair(1, 1), player)
                 if (returnedSequence.first == True):
-                    combinationSequences.append(returnedSequence.second)
+                    combinationSequences.append(returnedSequence.second.copy())
         else:
             increment = -1 if newPosition.second < oldPosition.second else 1
 
-            combinationSequences = self.checkMarkersLine(newPosition, Pair(increment * -1, increment * -1), player)
+            combinationSequences = self.checkMarkersLine(newPosition.copy(), Pair(increment * -1, increment * -1), player)
 
             i1 = oldPosition.first
             i2 = oldPosition.second
@@ -481,15 +492,57 @@ class floydPlayer:
             while(i1 != newPosition.first):
                 returnedSequence = self.checkMarkersLocal(Pair(i1, i2), Pair(0, 1), player)
                 if (returnedSequence.first == True):
-                    combinationSequences.append(returnedSequence.second)
+                    combinationSequences.append(returnedSequence.second.copy())
 
                 returnedSequence = self.checkMarkersLocal(Pair(i1, i2), Pair(1, 0), player)
                 if (returnedSequence.first == True):
-                    combinationSequences.append(returnedSequence.second)
+                    combinationSequences.append(returnedSequence.second.copy())
                 
                 i1 += increment
                 i2 += increment
 
         return combinationSequences
+
+    def inclusiveMarkerCount(self, p1, p2):
+        d1 = abs(p1.first - p2.first) + 1
+        d2 = abs(p1.second - p2.second) + 1
+        return max(d1, d2)
+
+    def makeUnit(self, pos1):
+        pos = pos1.copy()
+        if (pos.first != 0):
+            pos.first = pos.first / abs(pos.first)
+
+        if (pos.second != 0):
+            pos.second = pos.second / abs(pos.second)
+
+        return pos
+
+    def getValidRowMoves(self,prevMoveRing,moves,player):
+        rows = self.checkMarkers(prevMoveRing.finalPosition.copy(), prevMoveRing.initPosition.copy(), player)
+
+        for i in range(0,len(rows)):
+            row = rows[i]
+            start = row.first.copy()
+            end = row.second.copy()
+            if ( self.inclusiveMarkerCount(row.first, row.second) > 5):
+                direction = Pair(1,2)
+                direction.first = end.first - start.first
+                direction.second = end.second - start.second
+                direction =  self.makeUnit(direction)
+
+                alternateEnd = Pair(1,2)
+                alternateEnd.first = start.first + 4 * direction.first
+                alternateEnd.second = start.second + 4 * direction.second
+
+                moves.append(Move(MoveType['removeRow'], start.copy(), alternateEnd.copy()))
+
+                alternateStart = Pair(1,2)
+                alternateStart.first = end.first - 4 * direction.first
+                alternateStart.second = end.second - 4 * direction.second
+
+                moves.append(Move(MoveType['removeRow'], alternateStart.copy(), end.copy()))
+            else:
+                moves.append(Move(MoveType['removeRow'], start.copy(), end.copy()))
 
 floyd_player = floydPlayer()
