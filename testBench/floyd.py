@@ -6,7 +6,7 @@ import ast
 import requests
 
 PositionStates={'whiteMarker':-1,'blackMarker':1,'whiteRing':-2,'blackRing':2,'empty':0}
-MoveType = {'removeRow':2}
+MoveType = {'removeRow':2,'placeRing':0,'moveRing':1,'removeRing':3}
 class Pair:
 
     def __init__(self,i,j):
@@ -37,6 +37,7 @@ class floydPlayer:
         self.RingPos = {}
         self.play()
         self.board=[]
+        self.prevMoveRing=Move(MoveType['moveRing'],Pair(-1,-1),Pair(-1,-1))
 
     def play_move_seq(self, move_seq):
         moves = ' '.join(move_seq) + '\n'
@@ -202,7 +203,7 @@ class floydPlayer:
             else:
                 # Row of 5 + ring removed
                 self.setBoard()
-                rows=getValidRowMoves()
+                rows=self.getValidRowMoves()
                 moveSeq=[]
                 moveSequences=[]
                 if(len(rows)==0):
@@ -287,6 +288,7 @@ class floydPlayer:
         return 
 
     def moveMarkerMoves(self,moveSeq, moveSequences):
+
         pass
 
     def rowMoves(self,rows,moveSeq,moveSequences,continuePlaying):
