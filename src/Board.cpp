@@ -738,12 +738,6 @@ int Board::getRingsCount(bool player)
     return rings[ringIndex].size();
 }
 
-bool Board::isIntersecting(Move m, Move n)
-{
-
-    return true;
-}
-
 Board::~Board()
 {
     for (int i = 0; i < 2 * n + 2; i++)

@@ -1,6 +1,5 @@
 #include "AI.h"
 #include "Util.h"
-#include <iostream>
 #include <limits>
 
 #ifdef USEDEBUG
@@ -300,7 +299,7 @@ void AI::rowMoves(Board &board, bool player, vector<Move> &removeRowMoves, vecto
 
             for (int j = i + 1; j < removeRowMoves.size(); j++)
             {
-                if (!board.isIntersecting(removeRowMoves[i], removeRowMoves[j]))
+                if (!isIntersecting(removeRowMoves[i], removeRowMoves[j]))
                 {
                     // play remove row move
                     board.playMove(removeRowMoves[j], player);
@@ -316,7 +315,7 @@ void AI::rowMoves(Board &board, bool player, vector<Move> &removeRowMoves, vecto
 
                         for (int k = j + 1; k < removeRowMoves.size(); k++)
                         {
-                            if (!board.isIntersecting(removeRowMoves[k], removeRowMoves[j]) && !board.isIntersecting(removeRowMoves[k], removeRowMoves[i]))
+                            if (!isIntersecting(removeRowMoves[k], removeRowMoves[j]) && !isIntersecting(removeRowMoves[k], removeRowMoves[i]))
                             {
                                 // play remove row move
                                 board.playMove(removeRowMoves[k], player);

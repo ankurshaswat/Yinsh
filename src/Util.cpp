@@ -5,9 +5,6 @@
  */
 
 #include "Util.h"
-#include <iostream>
-#include <utility>
-using namespace std;
 
 #ifdef USEDEBUG
 #define Debug(x) std::cout << "# " << x
@@ -153,4 +150,60 @@ void printPointers(vector<vector<Move>> moveSequences)
         }
         Debug(endl);
     }
+}
+
+
+bool isIntersecting(Move m, Move n)
+{
+
+    pair<int, int> pos1 = m.initPosition;
+    pair<int, int> pos2 = m.finalPosition;
+
+    int minV, maxV;
+    int coordDiff = pos1.first - pos1.second;
+    if (pos1.first == pos2.first)
+    {
+        minV = min(pos1.second, pos2.second);
+        maxV = max(pos1.second, pos2.second);
+    }
+    else
+    {
+        minV = min(pos1.first, pos2.first);
+        maxV = max(pos1.first, pos2.first);
+    }
+
+    pair<int, int> startIter = n.initPosition;
+    pair<int, int> endIter = n.finalPosition;
+    pair<int, int> direction = makeUnit(make_pair(endIter.first - startIter.first, endIter.second - startIter.second));
+
+    pair<int, int> checkPosition = startIter;
+    while (checkPosition.first != endIter.first + direction.first && checkPosition.second != endIter.second + direction.second)
+    {
+        if (pos1.first == pos2.first)
+        {
+            if (checkPosition.first == pos1.first && (checkPosition.second >= minV && checkPosition.second <= maxV))
+            {
+                return true;
+            }
+        }
+        else if (pos1.second == pos2.second)
+        {
+            if (checkPosition.second == pos1.second && (checkPosition.first >= minV && checkPosition.first <= maxV))
+            {
+                return true;
+            }
+        }
+        else
+        {
+            if (checkPosition.first - checkPosition.second == coordDiff && (checkPosition.first >= minV && checkPosition.first <= maxV))
+            {
+                return true;
+            }
+        }
+
+        checkPosition.first += direction.first;
+        checkPosition.second += direction.second;
+    }
+
+    return false;
 }

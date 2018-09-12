@@ -1,16 +1,11 @@
-// #include <iostream>
 #include "Interface.h"
-// #include "Board.h"
 #include "Util.h"
-// #include "AI.h"
 
 #ifdef USEDEBUG
 #define Debug(x) std::cout << "# " << x
 #else
 #define Debug(x)
 #endif
-
-using namespace std;
 
 Inteface::Inteface()
 {

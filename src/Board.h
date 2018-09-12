@@ -8,7 +8,6 @@
 #define BOARD_H
 
 #include <vector>
-#include <utility>
 #include "Move.h"
 
 using namespace std;
@@ -77,9 +76,6 @@ public:
   /* Private member access functions */
   int getSize();
   int getRingsCount(bool player);
-
-  /* Helper functions */
-  bool isIntersecting(Move m, Move n);
 
   ~Board();
 };
