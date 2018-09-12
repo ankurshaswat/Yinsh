@@ -1,4 +1,4 @@
-SRC= src/Move.cpp src/Util.cpp src/Board.cpp src/AI.cpp src/Interface.cpp src/main.cpp 
+SRC=  src/Move.cpp src/EvaluatedMoveSeq.cpp src/Util.cpp src/Board.cpp src/AI.cpp src/Interface.cpp src/main.cpp 
 
 all: $(SRC)
 	  g++ -o yinsh $(SRC)

@@ -14,7 +14,7 @@ const int INT_MAX = numeric_limits<int>::max();
 const int INT_MIN = numeric_limits<int>::min();
 
 const int MAX_DEPTH = 4;
-const int SHALLOW_DEPTH = 4;
+const int SHALLOW_DEPTH = 2;
 
 AI::AI(Board *board, bool player, int time, int n)
 {
@@ -391,7 +391,7 @@ void AI::rowMoves(Board &board, bool player, vector<Move> &removeRowMoves, vecto
 void AI::moveMarkerMoves(Board &board, vector<Move> &moveSeq, vector<vector<Move>> &moveSequences, bool player)
 {
     Debug("# AI::moveMarkerMoves - Player=" << player << endl);
-    vector<EvaluatedMoveSeq> tempMoveSequences;
+    // vector<EvaluatedMoveSeq> tempMoveSequences;
 
     vector<Move> moveRingMoves;
     board.getValidRingMoves(moveRingMoves, player);
@@ -410,17 +410,17 @@ void AI::moveMarkerMoves(Board &board, vector<Move> &moveSeq, vector<vector<Move
         else
         {
             // Evaluate position till shallow depth (for move ordering)
-            pair<vector<Move>, int> retVal;
-            if (player == this->player)
-            {
-                retVal = minValue(INT_MIN, INT_MAX, SHALLOW_DEPTH, board, m, !player, 11);
-            }
-            else
-            {
-                retVal = maxValue(INT_MIN, INT_MAX, SHALLOW_DEPTH, board, m, !player, 11);
-            }
-            tempMoveSequences.push_back(EvaluatedMoveSeq(retVal.first, retVal.second));
-            // moveSequences.push_back(moveSeq); //push this with evaluated value
+            // pair<vector<Move>, int> retVal;
+            // if (player == this->player)
+            // {
+            //     retVal = minValue(INT_MIN, INT_MAX, SHALLOW_DEPTH, board, m, !player, 11);
+            // }
+            // else
+            // {
+            //     retVal = maxValue(INT_MIN, INT_MAX, SHALLOW_DEPTH, board, m, !player, 11);
+            // }
+            // tempMoveSequences.push_back(EvaluatedMoveSeq(retVal.first, retVal.second));
+            moveSequences.push_back(moveSeq); //push this with evaluated value
         }
 
         board.undoMove(m, player);
@@ -428,16 +428,26 @@ void AI::moveMarkerMoves(Board &board, vector<Move> &moveSeq, vector<vector<Move
         moveSeq.pop_back();
     }
 
-    if (player == this->player)
-    {
-        sort(tempMoveSequences.begin(), tempMoveSequences.end(),greater<EvaluatedMoveSeq>());
-    }
-    else
-    {
-        sort(tempMoveSequences.begin(), tempMoveSequences.end());
-    }
+    // if (player == this->player)
+    // {
+    //     sort(tempMoveSequences.begin(), tempMoveSequences.end(), greater<EvaluatedMoveSeq>());
+    // }
+    // else
+    // {
+    //     sort(tempMoveSequences.begin(), tempMoveSequences.end());
+    // }
 
-    for (int i =0;i<tempMoveSequences.size();i++) {
-        moveSequences.push_back(tempMoveSequences[i].moveSequence);
-    }
+    // if (tempMoveSequences.size() > 0)
+    // {
+    //     cout << "# " << player << ' ' << this->player<<endl;
+    // }
+    // for (int i = 0; i < tempMoveSequences.size(); i++)
+    // {
+    //     // cout << "# " << tempMoveSequences[i].evaluation << ' ';
+    //     moveSequences.push_back(tempMoveSequences[i].moveSequence);
+    // }
+    // if (tempMoveSequences.size() > 0)
+    // {
+    //     cout << endl;
+    // }
 }

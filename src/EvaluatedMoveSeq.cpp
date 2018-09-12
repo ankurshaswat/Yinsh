@@ -1,17 +1,13 @@
 #include "EvaluatedMoveSeq.h"
 
-EvaluatedMoveSeq::EvaluatedMoveSeq(vector<Move> moveSequence, int evaluation)
+EvaluatedMoveSeq::EvaluatedMoveSeq(vector<Move> moveSequence, int evaluation) : moveSequence(moveSequence), evaluation(evaluation) {}
+
+bool EvaluatedMoveSeq::operator<(const EvaluatedMoveSeq &other) const
 {
-    this->moveSequence = moveSequence;
-    this->evaluation = evaluation;
+    return (evaluation < other.evaluation);
 }
 
-bool EvaluatedMoveSeq::operator<(const EvaluatedMoveSeq &rhs)
+bool EvaluatedMoveSeq::operator>(const EvaluatedMoveSeq &other) const
 {
-    return (evaluation < rhs.evaluation);
-}
-
-bool EvaluatedMoveSeq::operator>(const EvaluatedMoveSeq &rhs)
-{
-    return (evaluation > rhs.evaluation);
+    return (evaluation > other.evaluation);
 }
