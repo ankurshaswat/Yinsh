@@ -5,6 +5,7 @@ import time
 import ast
 import requests
 
+PositionStates={'whiteMarker':-1,'blackMarker':1,'whiteRing':-2,'blackRing':2,'empty':0}
 class Pair:
 
     def __init__(self,i,j):
@@ -24,6 +25,8 @@ class floydPlayer:
         self.game = Game(self.n)
         self.RingPos = {}
         self.play()
+        self.board=[]
+
     def play_move_seq(self, move_seq):
         moves = ' '.join(move_seq) + '\n'
         sys.stdout.write(moves)
@@ -293,11 +296,20 @@ class floydPlayer:
         else:
             return (absPos1 + absPos2 <= n)
 
+    def setBoard():
+        self.board=self.game.getGameBoard()
+
     def setState(position,state):
+        board[position.first + n][position.second + n] = state
+
 
     def getState(position):
+        return self.board[position.first + n][position.second + n]
 
     def invertState(position):
+        board[position.first + n][position.second + n] = -1 * board[position.first + n][position.second + n]
+
+
 
     def moveRing(newPosition,currentPosition,player):
 
@@ -331,7 +343,7 @@ class floydPlayer:
                 break
         return true
 
-    def checkMarkersLocal(position, direction, player)
+    def checkMarkersLocal(position, direction, player):
 
         playerMarker = PositionStates['whiteMarker'] if player else PositionStates['blackMarker']
 
