@@ -440,7 +440,7 @@ class floydPlayer:
         if (newPosition.first == oldPosition.first):
             increment = -1 if newPosition.second < oldPosition.second else 1
 
-            combinationSequences = self.checkMarkersLine(newPosition, Pair(0, increment * -1), player)
+            combinationSequences = self.checkMarkersLine(newPosition.copy(), Pair(0, increment * -1), player)
 
             for i in range(oldPosition.second,newPosition.second,increment):
                 returnedSequence = self.checkMarkersLocal(Pair(newPosition.first, i), Pair(1, 0), player)
