@@ -313,12 +313,8 @@ void AI::rowMoves(Board &board, bool player, vector<Move> &removeRowMoves, vecto
                     board.getValidRemoveRingMoves(removeRingMoves2, player);
                     for (auto m2 : removeRingMoves2)
                     {
-<<<<<<< HEAD
                         // play moveRing move
                         moveSeqFound=false;
-=======
-                        // play removeRing move
->>>>>>> 569ac61bb724681c581bd30fad58b7a234bd04f2
                         board.playMove(m2, player);
                         moveSeq.push_back(m2);
 
