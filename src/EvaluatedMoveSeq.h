@@ -8,4 +8,5 @@ struct EvaluatedMoveSeq
 
     EvaluatedMoveSeq(vector<Move> moveSequence, int evaluation);
     bool operator<(const EvaluatedMoveSeq &rhs);
+    bool operator>(const EvaluatedMoveSeq &rhs);
 };
