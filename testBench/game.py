@@ -156,10 +156,12 @@ class Game:
 		positions = list(self.driver.execute_script('return positions;'))
 		rings_A,rings_B,markers_A,markers_B=[],[],[],[]
 		# r_to_x={0:-1, 1:-2, 2:-3, 4:-4, 5:-4, 6:-5, 7:-5, 8:-5, 9:-5, 10:-4, 11:-4, 12:-3, 13:-2, 14:-1}
-
+		board_state=[]
 		for r,row in enumerate(positions,-5):
+			col=[]
 			for c,place in enumerate(row,-5):
 				piece = dict(place)['piece']
+				col.append(piece)
 				if piece == 2:
 					rings_B.append( (r,c))
 				elif piece == 1:
@@ -168,9 +170,10 @@ class Game:
 					markers_A.append((r,c))
 				elif piece == -2:
 					rings_A.append((r,c))
+			board_state.append(col)
 		gameRep={'ringsA':rings_A,'ringsB':rings_B,'markersA':markers_A,'markersB':markers_B}
 		print('# Game board:'+str(gameRep))
-		return gameRep
+		return board_state,gameRep
 
 	def getGameBoard(self):
 		positions = list(self.driver.execute_script('return positions;'))

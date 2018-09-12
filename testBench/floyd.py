@@ -4,6 +4,7 @@ import sys
 import time
 import ast
 import requests
+import copy
 
 PositionStates={'whiteMarker':-1,'blackMarker':1,'whiteRing':-2,'blackRing':2,'empty':0}
 MoveType = {'removeRow':2,'placeRing':0,'moveRing':1,'removeRing':3}
@@ -194,6 +195,10 @@ class floydPlayer:
     def convertToMoveSeq(self,nextGameRep, currGameRep, turnMode):
         ringsBefore=currGameRep['ringsA'] 
         ringsAfter=nextGameRep['ringsA']
+        # self.setBoard()
+        # print("# Sanity check-")
+        # _=self.sameBoard(currGameRep)
+        
         if(turnMode=='AddRing'):
             hex,position=-1,-1
             for pos in ringsAfter:
@@ -204,156 +209,176 @@ class floydPlayer:
             # self.RingPos[i] = (hex, position)
             return [moveP]
         elif(turnMode=='AddMarker'):
-            self.setBoard()
-            rows=self.getValidRowMoves()
+            rows=[]
+            self.getValidRowMoves(rows,True)
             moveSeq=[]
             moveSequences=[]
             if(len(rows)==0):
+                print("# Opponent has made no rows for you :( ")
                 self.moveMarkerMoves(moveSeq,moveSequences)
             else:
+                print("# Opponent has made a row :) ")
                 self.rowMoves(rows,moveSeq,moveSequences,True)
             
             finalMoveSeq=[]
+            print("# MoveSequences found- "+str(moveSequences))
             for moveSequence in moveSequences:
                 for move in moveSequence:
-                    playMove(move)
-                if(sameBoard(nextGameRep)):
+                    self.playMove(move)
+                # print("# Sanity check-")
+                # _=self.sameBoard(currGameRep)
+                if(self.sameBoard(nextGameRep)):
                     finalMoveSeq=moveSequence
                     break
                 for move in reversed(moveSequence):
-                    undoMove(move)
+                    self.undoMove(move)
 
-            ans=convertMoveSeq(finalMoveSeq)
+            ans=self.convertMoveSeq(finalMoveSeq)
+            print("# Answer-"+str(ans))
             return ans                
 
     def sameBoard(self,nextGameRep):
         rings_A,rings_B,markers_A,markers_B=[],[],[],[]        
-        for i in range(-1*n,n+1):
-            for j in range(-1*n,n+1):
-                if(getState(Pair(i,j))==PositionStates['whiteRing'] ):
-                    rings_A.append(sorted(i,j))
-                elif(getState(Pair(i,j))==PositionStates['blackRing'] ):
-                    rings_B.append(sorted(i,j))
-                elif(getState(Pair(i,j))==PositionStates['whiteMarker'] ):
-                    markers_A.append(sorted(i,j))
-                elif(getState(Pair(i,j))==PositionStates['blackMarker'] ):
-                    markers_B.append(sorted(i,j))
-        
+        for i in range(-1*self.n,self.n+1):
+            for j in range(-1*self.n,self.n+1):
+                if(self.getState(Pair(i,j))==PositionStates['whiteRing'] ):
+                    rings_A.append(sorted( (i,j) ))
+                elif(self.getState(Pair(i,j))==PositionStates['blackRing'] ):
+                    rings_B.append(sorted( (i,j) ))
+                elif(self.getState(Pair(i,j))==PositionStates['whiteMarker'] ):
+                    markers_A.append(sorted( (i,j) ))
+                elif(self.getState(Pair(i,j))==PositionStates['blackMarker'] ):
+                    markers_B.append(sorted( (i,j) ))
+        # print("# Sameboard: RingsA "+str(rings_A))
+        # print("# Sameboard: RingsB "+str(rings_B) )
+        # print("# Sameboard: markersA "+str(markers_A) )
+        # print("# Sameboard: markersB "+str(markers_B) )
+
+
         for i in nextGameRep.keys():
             for j in range(len(nextGameRep[i])):
                 nextGameRep[i][j]=sorted(nextGameRep[i][j]) #dirty code );
         
         if(sorted(nextGameRep['ringsA'])==sorted(rings_A) and sorted(nextGameRep['ringsB'])==sorted(rings_B)
             and sorted(nextGameRep['markersA'])==sorted(markers_A) and sorted(nextGameRep['markersB'])==sorted(markers_B) ):
-            print("# SAME BOARD!! \n")
+            print("# SAME BOARD!! ")
             return True
 
         return                    
       
 
+    def getValidRemoveRingMoves(self,moves):
+        for i in range(-1*self.n,self.n+1):
+            for j in range(-1*self.n,self.n+1):
+                if(self.getState(Pair(i,j))==PositionStates['whiteRing'] ):
+                    moves.append(Move(MoveType['removeRing'],Pair(i,j),Pair(-1,-1)))
+
+        return
+
     def moveMarkerMoves(self,moveSeq, moveSequences):
         moveRingMoves=[]
         self.getValidRingMoves(moveRingMoves)
+        print("# Valid Ring Moves-"+str(len(moveRingMoves)))
         for m in moveRingMoves:
             # play move m
-            playMove(m)
+            self.playMove(m)
             moveSeq.append(m.copy())
             removeRowMovesAgain=[]
-            getValidRowMoves(removeRowMovesAgain, True)
+            self.getValidRowMoves(removeRowMovesAgain, True)
             if (len(removeRowMovesAgain) > 0):
-                rowMoves(removeRowMovesAgain, moveSeq, moveSequences, False)
+                self.rowMoves(removeRowMovesAgain, moveSeq, moveSequences, False)
             else:
-                moveSequences.append(moveSeq)
+                moveSequences.append(copy.deepcopy(moveSeq) )
 
-            undoMove(m)
+            self.undoMove(m)
 
             moveSeq.pop()
         return 
 
 
-    def getRingsCount():
+    def getRingsCount(self):
         ans=0
-        for i in range(-1*n,n+1):
-            for j in range(-1*n,n+1):
-                if(getState(Pair(i,j))==PositionStates['whiteRing'] ):
+        for i in range(-1*self.n,self.n+1):
+            for j in range(-1*self.n,self.n+1):
+                if(self.getState(Pair(i,j))==PositionStates['whiteRing'] ):
                     ans+=1
         return ans
        
-    def isIntersecting(rowMove1,rowMove2):
+    def isIntersecting(self,rowMove1,rowMove2):
         return True
 
     def rowMoves(self,removeRowMoves,moveSeq,moveSequences,continuePlaying):
-        ringsLeft = getRingsCount()
+        # ringsLeft = self.getRingsCount()
 
-        for i in range(removeRowMoves):
+        for i in range(len(removeRowMoves) ):
             moveSeqFound = False
             # play remove row move
-            playMove(removeRowMoves[i])
+            self.playMove(removeRowMoves[i])
             moveSeq.append(removeRowMoves[i].copy())
             moveRingMoves=[]
-            getValidRemoveRingMoves(moveRingMoves)
+            self.getValidRemoveRingMoves(moveRingMoves)
             for m1 in moveRingMoves:
                 # play moveRing move
-                playMove(m1)
+                self.playMove(m1)
                 moveSeq.append(m1.copy())
                 #cout << "# Row made after opponent's move- "
                 #    << " " << board.getRingsCount(player) << " " << removeRowMoves[i].initPosition.first << ", " << removeRowMoves[i].initPosition.second << endl;
 
                 for  j in range(i + 1,len(removeRowMoves)):
-                    if (not isIntersecting(removeRowMoves[i], removeRowMoves[j])):
+                    if (not self.isIntersecting(removeRowMoves[i], removeRowMoves[j])):
                         # play remove row move
-                        playMove(removeRowMoves[j])
+                        self.playMove(removeRowMoves[j])
                         moveSeq.append(removeRowMoves[j].copy())
                         moveRingMoves2=[]
-                        getValidRemoveRingMoves(moveRingMoves2)
+                        self.getValidRemoveRingMoves(moveRingMoves2)
                         for  m2 in moveRingMoves2:
                             # play moveRing move
-                            playMove(m2)
+                            self.playMove(m2)
                             moveSeq.append(m2.copy())
                             for  k  in range(j + 1,len(removeRowMoves)):
-                                if (not( isIntersecting(removeRowMoves[k], removeRowMoves[j]) ) and not( isIntersecting(removeRowMoves[k], removeRowMoves[i]) ) ):
+                                if (not( self.isIntersecting(removeRowMoves[k], removeRowMoves[j]) ) and not( self.isIntersecting(removeRowMoves[k], removeRowMoves[i]) ) ):
                                     # play remove row move
-                                    playMove(removeRowMoves[k]);
+                                    self.playMove(removeRowMoves[k])
                                     moveSeq.append(removeRowMoves[k].copy())
                                     moveRingMoves3=[]
-                                    getValidRemoveRingMoves(moveRingMoves3)
+                                    self.getValidRemoveRingMoves(moveRingMoves3)
                                     for m3 in moveRingMoves3:
                                         moveSeq.append(m3.copy())
                                         # play moveRing move
-                                        playMove(m3)
+                                        self.playMove(m3)
                                         # Evaluate new board position till shallow depth (for move ordering)
                                         moveSeqFound = True
-                                        moveSequences.append(moveSeq) #push this with evaluated value
+                                        moveSequences.append(copy.deepcopy(moveSeq) ) #push this with evaluated value
 
-                                        undoMove(m3)
+                                        self.undoMove(m3)
                                         moveSeq.pop()
-                                    undoMove(removeRowMoves[k])
+                                    self.undoMove(removeRowMoves[k])
                                     moveSeq.pop()
                             if (not moveSeqFound):
                                 moveSeqFound = True
-                                if (getRingsCount() == 2 or (not continuePlaying) ):
+                                if (self.getRingsCount() == 2 or (not continuePlaying) ):
                                     # Evaluate new board position till shallow depth (for move ordering)
-                                    moveSequences.append(moveSeq) #push this with evaluated value
+                                    moveSequences.append(copy.deepcopy(moveSeq)) #push this with evaluated value
                                 else:
-                                    moveMarkerMoves(moveSeq, moveSequences)
+                                    self.moveMarkerMoves(moveSeq, moveSequences)
 
-                            undoMove(m2)
+                            self.undoMove(m2)
                             moveSeq.pop()
-                        undoMove(removeRowMoves[j])
+                        self.undoMove(removeRowMoves[j])
                         moveSeq.pop()
 
                 if (not moveSeqFound):
                     # Evaluate new board position till shallow depth (for move ordering)
                     moveSeqFound = True
-                    if (getRingsCount() == 2 or (not continuePlaying) ):
+                    if (self.getRingsCount() == 2 or (not continuePlaying) ):
                         # Evaluate new board position till shallow depth (for move ordering)
-                        moveSequences.append(moveSeq) #push this with evaluated value
+                        moveSequences.append(copy.deepcopy(moveSeq)) #push this with evaluated value
                     else:
-                        moveMarkerMoves( moveSeq, moveSequences)
+                        self.moveMarkerMoves( moveSeq, moveSequences)
 
-                undoMove(m1)
+                self.undoMove(m1)
                 moveSeq.pop()
-            undoMove(removeRowMoves[i])
+            self.undoMove(removeRowMoves[i])
             moveSeq.pop()
         return
 
@@ -366,14 +391,15 @@ class floydPlayer:
 
 
 
-    def getValidRingMoves(moves):
-        directions=[(0,1),(1,0),(1,1),(-1,-1),(1,-1),(-1,1)]
+    def getValidRingMoves(self,moves):
+        directions=[(0,1),(1,0),(1,1),(0,-1),(-1,0),(-1,-1)]
+        directions=[Pair(i[0],i[1]) for i in directions]
         ringsA=[]
-        for i in range(-1*n,n+1):
-            for j in range(-1*n,n+1):
-                if(getState(Pair(i,j))==PositionStates['whiteRing'] ):
-                    ringsA.append(Pair(i,j))
-
+        for i in range(-1*self.n,self.n+1):
+            for j in range(-1*self.n,self.n+1):
+                if(self.getState(Pair(i,j))==PositionStates['whiteRing'] ):
+                    ringsA.append((i,j))
+        print("# Floyd rings- "+str(ringsA))
         for ringPos in ringsA:
             ringPosition = Pair(ringPos[0],ringPos[1])
             for j in range(len(directions)):
@@ -385,10 +411,10 @@ class floydPlayer:
                 while (True):
                     checkPosition.first += direction.first
                     checkPosition.second += direction.second
-                    if (not validPosition(checkPosition)):
+                    if (not self.validPosition(checkPosition)):
                         break
 
-                    positionState = getState(checkPosition)
+                    positionState = self.getState(checkPosition)
 
                     jumpedMarker = jumpedMarker or (positionState == PositionStates['blackMarker']) or (positionState == PositionStates['whiteMarker'])
 
@@ -416,16 +442,16 @@ class floydPlayer:
     def undoMove(self,m):
         type = m.moveType
         if (type == MoveType['placeRing']):
-            removeRing(m.initPosition)
+            self.removeRing(m.initPosition)
         elif (type == MoveType['moveRing']):
-            setState(m.initPosition, PositionStates['empty'])
-            moveRing(m.initPosition, m.finalPosition, True)
-            setState(m.finalPosition, PositionStates['empty'])
+            self.setState(m.initPosition, PositionStates['empty'])
+            self.moveRing(m.initPosition, m.finalPosition, True)
+            self.setState(m.finalPosition, PositionStates['empty'])
         elif (type == MoveType['removeRing']):
-            setState(m.initPosition,PositionStates['whiteRing'])
+            self.setState(m.initPosition,PositionStates['whiteRing'])
         else:
             # cout << "# Undo Remove Row??? (" << m.finalPosition.first << ',' << m.finalPosition.second << ") (" << m.initPosition.first << ',' << m.initPosition.second << ")" << endl;
-            placeMarkers(m.initPosition, m.finalPosition, player)
+            self.placeMarkers(m.initPosition, m.finalPosition)
 
     def placeMarkers(self,startSeries,endSeries):
         if (startSeries.first == endSeries.first):
@@ -434,13 +460,13 @@ class floydPlayer:
                 self.setState(Pair(endSeries.first, i), PositionStates['whiteMarker'])
         elif (startSeries.second == endSeries.second):
             increment = -1 if(startSeries.first < endSeries.first) else 1
-            for i in range(endSeries.first,startSeries.first + increment,increment)
-                setState(Pair(i, endSeries.second), PositionStates['whiteMarker'])
+            for i in range(endSeries.first,startSeries.first + increment,increment):
+                self.setState(Pair(i, endSeries.second), PositionStates['whiteMarker'])
         else:
             increment = -1 if(startSeries.second < endSeries.second) else 1
             i2 = endSeries.second
             for i1 in range(endSeries.first,startSeries.first + increment,increment):
-                setState(Pair(i1, i2), PositionStates['whiteMarker'])
+                self.setState(Pair(i1, i2), PositionStates['whiteMarker'])
                 i2 += increment
         return 
         
@@ -452,13 +478,13 @@ class floydPlayer:
                 self.setState(Pair(endSeries.first, i), PositionStates['empty'])
         elif (startSeries.second == endSeries.second):
             increment = -1 if(startSeries.first < endSeries.first) else 1
-            for i in range(endSeries.first,startSeries.first + increment,increment)
-                setState(Pair(i, endSeries.second), PositionStates['empty'])
+            for i in range(endSeries.first,startSeries.first + increment,increment):
+                self.setState(Pair(i, endSeries.second), PositionStates['empty'])
         else:
             increment = -1 if(startSeries.second < endSeries.second) else 1
             i2 = endSeries.second
             for i1 in range(endSeries.first,startSeries.first + increment,increment):
-                setState(Pair(i1, i2), PositionStates['empty'])
+                self.setState(Pair(i1, i2), PositionStates['empty'])
                 i2 += increment
         return 
     
@@ -469,7 +495,9 @@ class floydPlayer:
         self.game.execute_move(move)
         rings_placed=0
         while True: # Keep playing moves till game is ove
-            currGameRep=self.game.getGameRep()
+            self.board,currGameRep=self.game.getGameRep()
+            self.board=copy.deepcopy(self.board)
+            # print("#Board state: "+str(self.board))
             if(rings_placed<self.n):
                 rings_placed+=1
                 turnMode='AddRing'
@@ -496,8 +524,9 @@ class floydPlayer:
         else:
             return (absPos1 + absPos2 <= self.n)
 
-    def setBoard(self):
-        self.board=self.game.getGameBoard()
+    # def setBoard(self):
+    #     self.board=copy.deepcopy(self.game.getGameBoard())
+
 
     def setState(self,position,state):
         self.board[position.first + self.n][position.second + self.n] = state
@@ -507,6 +536,11 @@ class floydPlayer:
         return self.board[position.first + self.n][position.second + self.n]
 
     def invertState(self,p1,p2):
+        # print("# invertState "+str(p1+self.n))
+        # print("# invertState "+str(p2+self.n) )
+        # print("# invertState "+str( len(self.board) )) 
+        # print("# invertState "+str( len(self.board[0]) ))   
+          
         self.board[p1 + self.n][p2 + self.n] = -1 * self.board[p1 + self.n][p2 + self.n]
 
     def moveRing(self,newPosition,currentPosition,player):
@@ -529,6 +563,7 @@ class floydPlayer:
             i1 = currentPosition.first + increment
             i2 = currentPosition.second + increment
             while(i1 != newPosition.first):
+                # print("# Calling invert state: "+str(i1)+" "+str(i2)+" "+str(len(self.board))+" "+str(len(self.board[0])) ) 
                 self.invertState(i1, i2)
                 i1 += increment
                 i2 += increment
@@ -699,13 +734,13 @@ class floydPlayer:
                 if (self.validPosition(Pair(i-self.n,j-self.n))):
                     x = self.checkMarkersLocal(Pair(i-self.n,j-self.n),Pair(0,1),player)
                     if (x.first):
-                        rows.append(Move(MoveType['removeRow'],x.second.first.copy(),x.second.second.copy())
+                        rows.append(Move(MoveType['removeRow'],x.second.first.copy(),x.second.second.copy()))
                     x = self.checkMarkersLocal(Pair(i-self.n,j-self.n),Pair(1,1),player)
                     if (x.first):
-                        rows.append(Move(MoveType['removeRow'],x.second.first.copy(),x.second.second.copy())
+                        rows.append(Move(MoveType['removeRow'],x.second.first.copy(),x.second.second.copy()))
                     x = self.checkMarkersLocal(Pair(i-self.n,j-self.n),Pair(1,0),player)
                     if (x.first):
-                        rows.append(Move(MoveType['removeRow'],x.second.first.copy(),x.second.second.copy())
+                        rows.append(Move(MoveType['removeRow'],x.second.first.copy(),x.second.second.copy()))
         return 
         # rows = self.checkMarkers(prevMoveRing.finalPosition.copy(), prevMoveRing.initPosition.copy(), player)
 
