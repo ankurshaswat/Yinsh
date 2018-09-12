@@ -35,10 +35,10 @@ class floydPlayer:
             position+=1
         return '{type} {hex} {pos}'.format(type=movetype, hex=hexagon, pos=position), len(self.RingPos)
 
-	def removeRing(self,ring_num):
-		movetype = 'X'
-		ring = self.RingPos[ring_num]
-		return '{type} {hex} {pos}'.format(type=movetype, hex=ring[0], pos=ring[1])
+    def removeRing(self,ring_num):
+        movetype = 'X'
+        ring = self.RingPos[ring_num]
+        return '{type} {hex} {pos}'.format(type=movetype, hex=ring[0], pos=ring[1])
 
 
     def selectRing(self,ring_num):
@@ -52,17 +52,17 @@ class floydPlayer:
             position+=1
         return '{type} {hex} {pos}'.format(type=movetype, hex=hexagon, pos=position)
 
-	def removeRowStart(self,hexagon,position):
-		movetype = 'RS'
-		if hexagon==self.n and position%self.n==0:
-			position+=1
-		return '{type} {hex} {pos}'.format(type=movetype, hex=hexagon, pos=position)
+    def removeRowStart(self,hexagon,position):
+        movetype = 'RS'
+        if hexagon==self.n and position%self.n==0:
+            position+=1
+        return '{type} {hex} {pos}'.format(type=movetype, hex=hexagon, pos=position)
 
-	def removeRowEnd(self,hexagon,position):
-		movetype = 'RE'
-		if hexagon==self.n and position%self.n==0:
-			position+=1
-		return '{type} {hex} {pos}'.format(type=movetype, hex=hexagon, pos=position)
+    def removeRowEnd(self,hexagon,position):
+        movetype = 'RE'
+        if hexagon==self.n and position%self.n==0:
+            position+=1
+        return '{type} {hex} {pos}'.format(type=movetype, hex=hexagon, pos=position)
 
 
 
