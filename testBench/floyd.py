@@ -49,7 +49,7 @@ class floydPlayer:
         ring = self.RingPos[ring_num]
         return '{type} {hex} {pos}'.format(type=movetype, hex=ring[0], pos=ring[1])
 
-    def moveRing(self,hexagon,position):
+    def moveRing1(self,hexagon,position):
         movetype = 'M'
         if hexagon==self.n and position%self.n==0:
             position+=1
@@ -183,7 +183,7 @@ class floydPlayer:
                                     break
 
                 moveS = self.selectRing(index)
-                moveM= self.moveRing(hex,position)
+                moveM= self.moveRing1(hex,position)
                 self.RingPos[index]=(hex,position)
                 x=self.game.execute_move(moveS)
                 x=self.game.execute_move(moveM)
@@ -242,7 +242,7 @@ class floydPlayer:
                 
 
                 hex,pos=self.axial2hex((x2,y2))
-                moveM=self.moveRing(hex,pos)
+                moveM=self.moveRing1(hex,pos)
 
                 hex,pos=self.axial2hex(markers_removed[0])
                 moveRS=self.removeRowStart(hex,pos)
@@ -286,77 +286,74 @@ class floydPlayer:
             move = sys.stdin.readline().strip()
             self.game.execute_move(move)
 
-    def validPosition(position):
+    def validPosition(self,position):
         absPos1 = abs(position.first)
         absPos2 = abs(position.second)
         if (position.first == 0 or position.second == 0 or position.first == position.second):
-            return (absPos1 < n and absPos2 < n)
+            return (absPos1 < self.n and absPos2 < self.n)
         elif (position.first * position.second > 0):
-            return (absPos1 <= n and absPos2 <= n)
+            return (absPos1 <= self.n and absPos2 <= self.n)
         else:
-            return (absPos1 + absPos2 <= n)
+            return (absPos1 + absPos2 <= self.n)
 
-    def setBoard():
+    def setBoard(self):
         self.board=self.game.getGameBoard()
 
-    def setState(position,state):
-        board[position.first + n][position.second + n] = state
+    def setState(self,position,state):
+        self.board[position.first + self.n][position.second + self.n] = state
 
 
-    def getState(position):
-        return self.board[position.first + n][position.second + n]
+    def getState(self,position):
+        return self.board[position.first + self.n][position.second + self.n]
 
-    def invertState(position):
-        board[position.first + n][position.second + n] = -1 * board[position.first + n][position.second + n]
+    def invertState(self,p1,p2):
+        self.board[p1 + self.n][p2 + self.n] = -1 * self.board[p1 + self.n][p2 + self.n]
 
-
-
-    def moveRing(newPosition,currentPosition,player):
+    def moveRing(self,newPosition,currentPosition,player):
 
         playerRing = PositionStates['whiteRing'] if player else PositionStates['blackRing']
         playerMarker = PositionStates['whiteMarker'] if player else PositionStates['blackMarker']
-        setState(currentPosition, playerMarker)
-        setState(newPosition, playerRing)
+        self.setState(currentPosition, playerMarker)
+        self.setState(newPosition, playerRing)
 
         if (newPosition.first == currentPosition.first):
             increment = PositionStates['whiteMarker'] if newPosition.second < currentPosition.second else 1
             for i in range(currentPosition.second + increment,newPosition.second,increment):
-                invertState(currentPosition.first, i)
+                self.invertState(currentPosition.first, i)
         elif (newPosition.second == currentPosition.second):
             increment = -1 if newPosition.first < currentPosition.first else 1
             for  i in range(currentPosition.first + increment,newPosition.first,increment):
-                invertState(i, currentPosition.second)
-        else
+                self.invertState(i, currentPosition.second)
+        else:
             increment = -1 if newPosition.second < currentPosition.second else 1
             i1 = currentPosition.first + increment
             i2 = currentPosition.second + increment
             while(i1 != newPosition.first):
-                invertState(i1, i2)
+                self.invertState(i1, i2)
                 i1 += increment
                 i2 += increment
 
-        ringIndex = 1 if player else 0
-        for i in range(0,rings[ringIndex].size()):
-            pos = rings[ringIndex][i].copy()
-            if (pos.first == currentPosition.first and pos.second == currentPosition.second):
-                rings[ringIndex][i] = newPosition.copy()
-                break
-        return true
+        # ringIndex = 1 if player else 0
+        # for i in range(0,rings[ringIndex].size()):
+        #     pos = rings[ringIndex][i].copy()
+        #     if (pos.first == currentPosition.first and pos.second == currentPosition.second):
+        #         rings[ringIndex][i] = newPosition.copy()
+        #         break
+        return True
 
-    def checkMarkersLocal(position, direction, player):
-
+    def checkMarkersLocal(self,position, direction, player):
         playerMarker = PositionStates['whiteMarker'] if player else PositionStates['blackMarker']
 
-        if (getState(position) == playerMarker):
+        if (self.getState(position) == playerMarker):
             count = 1
 
             startMarker = position.copy()
             startMarker.first += direction.first
             startMarker.second += direction.second
 
-            while (validPosition(startMarker)):
+            while (self.validPosition(startMarker)):
                 count += 1
-                if (getState(startMarker) != playerMarker):
+                if (self.getState(startMarker) != playerMarker):
                     count -= 1
                     break
 
@@ -369,9 +366,9 @@ class floydPlayer:
             endMarker.first -= direction.first
             endMarker.second -= direction.second
 
-            while (validPosition(endMarker)):
+            while (self.validPosition(endMarker)):
                 count += 1
-                if (getState(endMarker) != playerMarker):
+                if (self.getState(endMarker) != playerMarker):
                     count -= 1
                     break
                 endMarker.first -= direction.first
@@ -380,11 +377,11 @@ class floydPlayer:
             endMarker.second += direction.second
 
             if (count >= 5):
-                return Pair(true, Pair(startMarker.copy(), endMarker.copy()))
+                return Pair(True, Pair(startMarker.copy(), endMarker.copy()))
 
-        return Pair(false, Pair(position.copy(), position.copy()))
+        return Pair(False, Pair(position.copy(), position.copy()))
 
-    def checkMarkersLine(position, direction, player):
+    def checkMarkersLine(self,position, direction, player):
         
         combinationSequences = []
         playerMarker = PositionStates['whiteMarker'] if player else PositionStates['blackMarker']
@@ -393,19 +390,19 @@ class floydPlayer:
         newStartMarker.first += direction.first
         newStartMarker.second += direction.second
 
-        while (validPosition(newStartMarker)):
-            if (getState(newStartMarker) != playerMarker):
+        while (self.validPosition(newStartMarker)):
+            if (self.getState(newStartMarker) != playerMarker):
                 newStartMarker.first += direction.first
                 newStartMarker.second += direction.second
-            else
+            else:
                 count = 1
                 startMarker = newStartMarker.copy()
                 endMarker = startMarker.copy()
                 endMarker.first += direction.first
                 endMarker.second += direction.second
-                while (validPosition(endMarker)):
+                while (self.validPosition(endMarker)):
                     count += 1
-                    if (getState(endMarker) != playerMarker):
+                    if (self.getState(endMarker) != playerMarker):
                         count -=1
                         break
                     endMarker.first += direction.first
@@ -421,7 +418,7 @@ class floydPlayer:
 
         return combinationSequences
 
-    def checkMarkers(newPosition, oldPosition, player)
+    def checkMarkers(self,newPosition, oldPosition, player):
         combinationSequences = []
 
         if (newPosition.first == oldPosition.first and newPosition.second == oldPosition.second):
@@ -432,45 +429,44 @@ class floydPlayer:
         if (newPosition.first == oldPosition.first):
             increment = -1 if newPosition.second < oldPosition.second else 1
 
-            combinationSequences = checkMarkersLine(newPosition, Pair(0, increment * -1), player)
+            combinationSequences = self.checkMarkersLine(newPosition, Pair(0, increment * -1), player)
 
             for i in range(oldPosition.second,newPosition.second,increment):
-                returnedSequence = checkMarkersLocal(Pair(newPosition.first, i), Pair(1, 0), player)
-                if (returnedSequence.first == true):
+                returnedSequence = self.checkMarkersLocal(Pair(newPosition.first, i), Pair(1, 0), player)
+                if (returnedSequence.first == True):
                     combinationSequences.append(returnedSequence.second)
 
-                returnedSequence = checkMarkersLocal(Pair(newPosition.first, i), Pair(1, 1), player)
-                if (returnedSequence.first == true):
+                returnedSequence = self.checkMarkersLocal(Pair(newPosition.first, i), Pair(1, 1), player)
+                if (returnedSequence.first == True):
                     combinationSequences.append(returnedSequence.second)
         elif (newPosition.second == oldPosition.second):
             increment = -1 if newPosition.first < oldPosition.first else 1
 
-            combinationSequences = checkMarkersLine(newPosition, Pair(increment * -1, 0), player)
+            combinationSequences = self.checkMarkersLine(newPosition, Pair(increment * -1, 0), player)
 
             for i in range(oldPosition.first,newPosition.first,increment):
-                returnedSequence = checkMarkersLocal(Pair(i, newPosition.second), Pair(0, 1), player)
-                if (returnedSequence.first == true):
+                returnedSequence = self.checkMarkersLocal(Pair(i, newPosition.second), Pair(0, 1), player)
+                if (returnedSequence.first == True):
                     combinationSequences.append(returnedSequence.second)
 
-                returnedSequence = checkMarkersLocal(Pair(i, newPosition.second), Pair(1, 1), player)
-                if (returnedSequence.first == true):
+                returnedSequence = self.checkMarkersLocal(Pair(i, newPosition.second), Pair(1, 1), player)
+                if (returnedSequence.first == True):
                     combinationSequences.append(returnedSequence.second)
-        else
+        else:
             increment = -1 if newPosition.second < oldPosition.second else 1
 
-            combinationSequences = checkMarkersLine(newPosition, Pair(increment * -1, increment * -1), player)
+            combinationSequences = self.checkMarkersLine(newPosition, Pair(increment * -1, increment * -1), player)
 
             i1 = oldPosition.first
             i2 = oldPosition.second
 
-            for (int i1 = oldPosition.first, i2 = oldPosition.second + increment; i1 != newPosition.first; i1 += increment, i2 += increment)
             while(i1 != newPosition.first):
-                returnedSequence = checkMarkersLocal(Pair(i1, i2), Pair(0, 1), player)
-                if (returnedSequence.first == true):
+                returnedSequence = self.checkMarkersLocal(Pair(i1, i2), Pair(0, 1), player)
+                if (returnedSequence.first == True):
                     combinationSequences.append(returnedSequence.second)
 
-                returnedSequence = checkMarkersLocal(Pair(i1, i2), Pair(1, 0), player)
-                if (returnedSequence.first == true):
+                returnedSequence = self.checkMarkersLocal(Pair(i1, i2), Pair(1, 0), player)
+                if (returnedSequence.first == True):
                     combinationSequences.append(returnedSequence.second)
                 
                 i1 += increment
