@@ -275,5 +275,187 @@ class floydPlayer:
             move = sys.stdin.readline().strip()
             self.game.execute_move(move)
 
+    def validPosition(position):
+        absPos1 = abs(position.first)
+        absPos2 = abs(position.second)
+        if (position.first == 0 or position.second == 0 or position.first == position.second):
+            return (absPos1 < n and absPos2 < n)
+        elif (position.first * position.second > 0):
+            return (absPos1 <= n and absPos2 <= n)
+        else:
+            return (absPos1 + absPos2 <= n)
+
+    def setState(position,state):
+
+    def getState(position):
+
+    def invertState(position):
+
+    def moveRing(newPosition,currentPosition,player):
+
+        playerRing = PositionStates::whiteRing if player else PositionStates::blackRing
+        playerMarker = PositionStates::whiteMarker if player else PositionStates::blackMarker
+        setState(currentPosition, playerMarker)
+        setState(newPosition, playerRing)
+
+        if (newPosition.first == currentPosition.first):
+            increment = PositionStates::whiteMarker if newPosition.second < currentPosition.second else 1
+            for i in range(currentPosition.second + increment,newPosition.second,increment):
+                invertState(currentPosition.first, i)
+        elif (newPosition.second == currentPosition.second):
+            increment = -1 if newPosition.first < currentPosition.first else 1
+            for  i in range(currentPosition.first + increment,newPosition.first,increment):
+                invertState(i, currentPosition.second)
+        else
+            increment = -1 if newPosition.second < currentPosition.second else 1
+            i1 = currentPosition + increment
+            i2 = currentPosition + increment
+            while(i1 != newPosition.first):
+                invertState(i1, i2)
+                i1 += increment
+                i2 += increment
+
+        ringIndex = 1 if player else 0
+        for i in range(0,rings[ringIndex].size()):
+            pos = rings[ringIndex][i]
+            if (pos.first == currentPosition.first and pos.second == currentPosition.second):
+                rings[ringIndex][i] = newPosition
+                break
+        return true
+
+    def checkMarkersLocal(position, direction, player)
+
+        playerMarker = PositionStates::whiteMarker if player else PositionStates::blackMarker
+
+        if (getState(position) == playerMarker):
+            count = 1
+
+            startMarker = position
+            startMarker.first += direction.first
+            startMarker.second += direction.second
+
+            while (validPosition(startMarker)):
+                count += 1
+                if (getState(startMarker) != playerMarker):
+                    count -= 1
+                    break
+
+                startMarker.first += direction.first
+                startMarker.second += direction.second
+            startMarker.first -= direction.first
+            startMarker.second -= direction.second
+
+            endMarker = position
+            endMarker.first -= direction.first
+            endMarker.second -= direction.second
+
+            while (validPosition(endMarker)):
+                count += 1
+                if (getState(endMarker) != playerMarker):
+                    count -= 1
+                    break
+                endMarker.first -= direction.first
+                endMarker.second -= direction.second
+            endMarker.first += direction.first
+            endMarker.second += direction.second
+
+            if (count >= 5):
+                return make_pair(true, make_pair(startMarker, endMarker))
+
+        return make_pair(false, make_pair(position, position))
+
+    def checkMarkersLine(position, direction, player):
+        
+        combinationSequences = []
+        playerMarker = PositionStates::whiteMarker if player else PositionStates::blackMarker
+
+        newStartMarker = position
+        newStartMarker.first += direction.first
+        newStartMarker.second += direction.second
+
+        while (validPosition(newStartMarker)):
+            if (getState(newStartMarker) != playerMarker):
+                newStartMarker.first += direction.first
+                newStartMarker.second += direction.second
+            else
+                count = 1
+                startMarker = newStartMarker
+                endMarker = startMarker
+                endMarker.first += direction.first
+                endMarker.second += direction.second
+                while (validPosition(endMarker)):
+                    count += 1
+                    if (getState(endMarker) != playerMarker):
+                        count -=1
+                        break
+                    endMarker.first += direction.first
+                    endMarker.second += direction.second
+                endMarker.first -= direction.first
+                endMarker.second -= direction.second
+
+                if (count >= 5):
+                    combinationSequences.append(make_pair(startMarker, endMarker))
+
+                newStartMarker.first = endMarker.first + 2 * direction.first
+                newStartMarker.second = endMarker.second + 2 * direction.second
+
+        return combinationSequences
+
+    def checkMarkers(newPosition, oldPosition, player)
+        combinationSequences = []
+
+        if (newPosition.first == oldPosition.first and newPosition.second == oldPosition.second):
+            return combinationSequences
+
+        returnedSequence = []
+
+        if (newPosition.first == oldPosition.first):
+            increment = -1 if newPosition.second < oldPosition.second else 1
+
+            combinationSequences = checkMarkersLine(newPosition, make_pair(0, increment * -1), player)
+
+            for i in range(oldPosition.second,newPosition.second,increment):
+                returnedSequence = checkMarkersLocal(make_pair(newPosition.first, i), make_pair(1, 0), player)
+                if (returnedSequence.first == true):
+                    combinationSequences.append(returnedSequence.second)
+
+                returnedSequence = checkMarkersLocal(make_pair(newPosition.first, i), make_pair(1, 1), player);
+                if (returnedSequence.first == true):
+                    combinationSequences.append(returnedSequence.second)
+        elif (newPosition.second == oldPosition.second):
+            increment = -1 if newPosition.first < oldPosition.first else 1
+
+            combinationSequences = checkMarkersLine(newPosition, make_pair(increment * -1, 0), player)
+
+            for i in range(oldPosition.first,newPosition.first,increment):
+                returnedSequence = checkMarkersLocal(make_pair(i, newPosition.second), make_pair(0, 1), player)
+                if (returnedSequence.first == true):
+                    combinationSequences.append(returnedSequence.second)
+
+                returnedSequence = checkMarkersLocal(make_pair(i, newPosition.second), make_pair(1, 1), player)
+                if (returnedSequence.first == true):
+                    combinationSequences.append(returnedSequence.second)
+        else
+            increment = -1 if newPosition.second < oldPosition.second else 1
+
+            combinationSequences = checkMarkersLine(newPosition, make_pair(increment * -1, increment * -1), player)
+
+            i1 = oldPosition.first
+            i2 = oldPosition.second
+
+            for (int i1 = oldPosition.first, i2 = oldPosition.second + increment; i1 != newPosition.first; i1 += increment, i2 += increment)
+            while(i1 != newPosition.first):
+                returnedSequence = checkMarkersLocal(make_pair(i1, i2), make_pair(0, 1), player)
+                if (returnedSequence.first == true):
+                    combinationSequences.append(returnedSequence.second)
+
+                returnedSequence = checkMarkersLocal(make_pair(i1, i2), make_pair(1, 0), player)
+                if (returnedSequence.first == true):
+                    combinationSequences.append(returnedSequence.second)
+                
+                i1 += increment
+                i2 += increment
+
+        return combinationSequences
 
 floyd_player = floydPlayer()

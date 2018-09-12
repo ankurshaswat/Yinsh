@@ -456,7 +456,7 @@ vector<pair<pair<int, int>, pair<int, int>>> Board::checkMarkers(pair<int, int> 
 
         combinationSequences = checkMarkersLine(newPosition, make_pair(increment * -1, increment * -1), player);
 
-        for (int i1 = oldPosition.first, i2 = oldPosition.second + increment; i1 != newPosition.first; i1 += increment, i2 += increment)
+        for (int i1 = oldPosition.first, i2 = oldPosition.second; i1 != newPosition.first; i1 += increment, i2 += increment)
         {
             returnedSequence = checkMarkersLocal(make_pair(i1, i2), make_pair(0, 1), player);
             if (returnedSequence.first == true)
@@ -740,6 +740,7 @@ int Board::getRingsCount(bool player)
 
 bool Board::isIntersecting(Move m, Move n)
 {
+
     return true;
 }
 
