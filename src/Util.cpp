@@ -176,7 +176,8 @@ bool isIntersecting(Move m, Move n)
     pair<int, int> direction = makeUnit(make_pair(endIter.first - startIter.first, endIter.second - startIter.second));
 
     pair<int, int> checkPosition = startIter;
-    while (checkPosition.first != endIter.first + direction.first && checkPosition.second != endIter.second + direction.second)
+
+    while (!(checkPosition.first == endIter.first + direction.first && checkPosition.second == endIter.second + direction.second))
     {
         if (pos1.first == pos2.first)
         {
