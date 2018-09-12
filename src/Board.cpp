@@ -559,7 +559,7 @@ void Board::playMove(Move m, bool player)
     }
     else
     {
-        cout << "# Remove Row??? (" << m.finalPosition.first << ',' << m.finalPosition.second << ") (" << m.initPosition.first << ',' << m.initPosition.second << ")" << endl;
+        // cout << "# Remove Row??? (" << m.finalPosition.first << ',' << m.finalPosition.second << ") (" << m.initPosition.first << ',' << m.initPosition.second << ")" << endl;
         removeMarkers(m.initPosition, m.finalPosition);
     }
 }
@@ -583,7 +583,7 @@ void Board::undoMove(Move m, bool player)
     }
     else
     {
-        cout << "# Undo Remove Row??? (" << m.finalPosition.first << ',' << m.finalPosition.second << ") (" << m.initPosition.first << ',' << m.initPosition.second << ")" << endl;
+        // cout << "# Undo Remove Row??? (" << m.finalPosition.first << ',' << m.finalPosition.second << ") (" << m.initPosition.first << ',' << m.initPosition.second << ")" << endl;
         placeMarkers(m.initPosition, m.finalPosition, player);
     }
 }

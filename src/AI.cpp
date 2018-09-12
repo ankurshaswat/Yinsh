@@ -11,7 +11,7 @@
 const int INT_MAX = numeric_limits<int>::max();
 const int INT_MIN = numeric_limits<int>::min();
 
-const int MAX_DEPTH = 2;
+const int MAX_DEPTH = 4;
 
 AI::AI(Board *board, bool player, int time, int n)
 {
@@ -97,12 +97,12 @@ pair<vector<Move>, int> AI::maxValue(int alpha, int beta, int depth, Board &boar
     // Check for win
     if (board.isWin(!player) && internalMoveCount > 10)
     {
-        cout << "# AI::maxValue 0 win state" << endl;
+        // cout << "# AI::maxValue 0 win state" << endl;
         return make_pair(bestMoveSeq, INT_MIN);
     }
     else if (board.isWin(player) && internalMoveCount > 10)
     {
-        cout << "# AI::maxValue 1 win state" << endl;
+        // cout << "# AI::maxValue 1 win state" << endl;
         return make_pair(bestMoveSeq, INT_MAX);
     }
 
@@ -194,12 +194,12 @@ pair<vector<Move>, int> AI::minValue(int alpha, int beta, int depth, Board &boar
     // Check for win
     if (board.isWin(!player) && internalMoveCount > 10)
     {
-        cout << "# AI::maxValue 0 win state" << endl;
+        // cout << "# AI::maxValue 0 win state" << endl;
         return make_pair(bestMoveSeq, INT_MAX);
     }
     else if (board.isWin(player) && internalMoveCount > 10)
     {
-        cout << "# AI::maxValue 1 win state" << endl;
+        // cout << "# AI::maxValue 1 win state" << endl;
         return make_pair(bestMoveSeq, INT_MIN);
     }
 
@@ -294,8 +294,8 @@ void AI::rowMoves(Board &board, bool player, vector<Move> &removeRowMoves, vecto
             // play moveRing move
             board.playMove(m1, player);
             moveSeq.push_back(m1);
-            cout << "# Row made after opponent's move- "
-                 << " " << board.getRingsCount(player) << " " << removeRowMoves[i].initPosition.first << ", " << removeRowMoves[i].initPosition.second << endl;
+            // cout << "# Row made after opponent's move- "
+                //  << " " << board.getRingsCount(player) << " " << removeRowMoves[i].initPosition.first << ", " << removeRowMoves[i].initPosition.second << endl;
 
             for (int j = i + 1; j < removeRowMoves.size(); j++)
             {
