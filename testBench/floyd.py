@@ -8,6 +8,8 @@ import copy
 
 PositionStates={'whiteMarker':-1,'blackMarker':1,'whiteRing':-2,'blackRing':2,'empty':0}
 MoveType = {'removeRow':2,'placeRing':0,'moveRing':1,'removeRing':3}
+MoveTypeInverse = {2:'removeRow',0:'placeRing',1:'moveRing',3:'removeRing'}
+
 class Pair:
 
     def __init__(self,i,j):
@@ -16,6 +18,9 @@ class Pair:
 
     def copy(self):
         return Pair(self.first,self.second)
+    
+    def __str__(self):
+        return '('+str(self.first)+','+str(self.second)+')'
 
 class Move:
 
@@ -26,6 +31,9 @@ class Move:
 
     def copy(self):
         return Move( self.moveType, self.initPosition.copy(), self.finalPosition.copy())
+
+    def __str__(self):
+        return MoveTypeInverse[self.moveType]+" "+str(self.initPosition)+" "+str(self.finalPosition)
 
 class floydPlayer:
 
@@ -249,11 +257,13 @@ class floydPlayer:
                     markers_A.append(sorted( (i,j) ))
                 elif(self.getState(Pair(i,j))==PositionStates['blackMarker'] ):
                     markers_B.append(sorted( (i,j) ))
-        # print("# Sameboard: RingsA "+str(rings_A))
-        # print("# Sameboard: RingsB "+str(rings_B) )
-        # print("# Sameboard: markersA "+str(markers_A) )
-        # print("# Sameboard: markersB "+str(markers_B) )
+        print("# Sameboard: RingsA "+str(rings_A))
+        print("# Sameboard: RingsB "+str(rings_B) )
+        print("# Sameboard: markersA "+str(markers_A) )
+        print("# Sameboard: markersB "+str(markers_B) )
 
+        print("# "+str(nextGameRep))
+        print("########################################")
 
         for i in nextGameRep.keys():
             for j in range(len(nextGameRep[i])):
@@ -317,8 +327,11 @@ class floydPlayer:
             moveSeq.append(removeRowMoves[i].copy())
             moveRingMoves=[]
             self.getValidRemoveRingMoves(moveRingMoves)
+            print("# rowMoves: "+str(moveRingMoves))
             for m1 in moveRingMoves:
                 # play moveRing move
+                moveSeqFound = False
+                print("# rowMoves: ring that can be removed- "+ str(m1))
                 self.playMove(m1)
                 moveSeq.append(m1.copy())
                 #cout << "# Row made after opponent's move- "
@@ -333,6 +346,7 @@ class floydPlayer:
                         self.getValidRemoveRingMoves(moveRingMoves2)
                         for  m2 in moveRingMoves2:
                             # play moveRing move
+                            moveSeqFound = False            
                             self.playMove(m2)
                             moveSeq.append(m2.copy())
                             for  k  in range(j + 1,len(removeRowMoves)):
@@ -372,6 +386,8 @@ class floydPlayer:
                     moveSeqFound = True
                     if (self.getRingsCount() == 2 or (not continuePlaying) ):
                         # Evaluate new board position till shallow depth (for move ordering)
+                        print("# RowMoves Debug "+str(moveSeq[0])+" "+str(moveSeq[1])+" "+str(moveSeq[2]) )
+                        
                         moveSequences.append(copy.deepcopy(moveSeq)) #push this with evaluated value
                     else:
                         self.moveMarkerMoves( moveSeq, moveSequences)
@@ -437,6 +453,8 @@ class floydPlayer:
         elif (type == MoveType['removeRing']):
             self.setState(m.initPosition, PositionStates['empty'])
         else:
+            print('# Remove row move: {x1},{y1} {x2},{y2} '.format(x1=m.initPosition.first,
+                y1=m.initPosition.second,x2=m.finalPosition.first,y2=m.finalPosition.second))
             self.removeMarkers(m.initPosition, m.finalPosition)
 
     def undoMove(self,m):
@@ -729,8 +747,8 @@ class floydPlayer:
         return pos
 
     def getValidRowMoves(self,rows,player):
-        for i in range(0,12):
-            for j in range(0,12):
+        for i in range(0,11):
+            for j in range(0,11):
                 if (self.validPosition(Pair(i-self.n,j-self.n))):
                     x = self.checkMarkersLocal(Pair(i-self.n,j-self.n),Pair(0,1),player)
                     if (x.first):

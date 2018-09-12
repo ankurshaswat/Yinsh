@@ -295,6 +295,7 @@ void AI::rowMoves(Board &board, bool player, vector<Move> &removeRowMoves, vecto
         for (auto m1 : removeRingMoves)
         {
             // play moveRing move
+            moveSeqFound=false;
             board.playMove(m1, player);
             moveSeq.push_back(m1);
             // cout << "# Row made after opponent's move- "
@@ -312,7 +313,8 @@ void AI::rowMoves(Board &board, bool player, vector<Move> &removeRowMoves, vecto
                     board.getValidRemoveRingMoves(removeRingMoves2, player);
                     for (auto m2 : removeRingMoves2)
                     {
-                        // play removeRing move
+                        // play moveRing move
+                        moveSeqFound=false;
                         board.playMove(m2, player);
                         moveSeq.push_back(m2);
 
@@ -368,7 +370,7 @@ void AI::rowMoves(Board &board, bool player, vector<Move> &removeRowMoves, vecto
             if (!moveSeqFound)
             {
                 // Evaluate new board position till shallow depth (for move ordering)
-                moveSeqFound = true;
+                // moveSeqFound = true;
                 if (board.getRingsCount(player) == 2 || !continuePlaying)
                 {
                     // Evaluate new board position till shallow depth (for move ordering)
