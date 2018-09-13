@@ -81,7 +81,9 @@ void AI::playMoveSeq(Move prevMove)
     vector<Move> moves = returnedMovePair.first;
 
     // Debug("# Got Returned Moves" << endl);
-
+    // cout<<"# Test Purpose"<<endl;
+    // this->originalBoard->evaluate(false);
+    
     for (int i = 0; i < moves.size(); i++)
     {
         Move move = moves[i];
@@ -90,6 +92,9 @@ void AI::playMoveSeq(Move prevMove)
     for (auto move : moves)
         printMove(move);
     cout << endl;
+
+
+        
     moveCount += 2;
 }
 
