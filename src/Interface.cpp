@@ -14,19 +14,13 @@ Inteface::Inteface()
     getline(cin, str);
     int i = 0;
     while (str[i] != ' ')
-    {
         playerInt = 10 * playerInt + str[i++] - '0';
-    }
     i++;
     while (str[i] != ' ')
-    {
         n = 10 * n + str[i++] - '0';
-    }
     i++;
     while (str[i] != ' ' && i < str.length())
-    {
         time = 10 * time + str[i++] - '0';
-    }
     playerInt--;
 
     bool player = playerInt == 1 ? true : false;
@@ -84,7 +78,6 @@ Move Inteface::readInput()
     {
         i = 0;
         while (i < str.size())
-        {
             if (str[i] == 'S')
             {
                 i += 2;
@@ -131,10 +124,7 @@ Move Inteface::readInput()
                 i += 1;
             }
             else
-            {
                 Debug("# Inteface::readInput Shouldn't be here" << endl);
-            }
-        }
     }
 
     return m;
