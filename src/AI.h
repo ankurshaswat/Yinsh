@@ -2,6 +2,7 @@
 #define AI_H
 
 #include "Board.h"
+#include "EvaluatedMoveSeq.h"
 
 class AI
 {
@@ -25,8 +26,8 @@ public:
   /* Returns best move for max node (and its evaluation) */
   pair<vector<Move>, int> maxValue(int alpha, int beta, int depth, Board &board, Move prevMove, bool player, int moveCount);
 
-  void rowMoves(Board &board, bool player, vector<Move> &removeRowMoves, vector<Move> &moveSeq, vector<vector<Move>> &moveSequences, bool continuePlaying, int depth);
-  void moveMarkerMoves(Board &board, vector<Move> &moveSeq, vector<vector<Move>> &moveSequences, bool player, int depth);
+  void rowMoves(Board &board, bool player, vector<Move> &removeRowMoves, vector<Move> &moveSeq, vector<EvaluatedMoveSeq> &moveSequences, bool continuePlaying, int depth);
+  void moveMarkerMoves(Board &board, vector<Move> &moveSeq, vector<EvaluatedMoveSeq> &moveSequences, bool player, int depth);
 };
 
 #endif
