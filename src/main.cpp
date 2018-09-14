@@ -5,9 +5,11 @@
  */
 
 #include "Interface.h"
+#include<random>
 
 int main()
 {
+    srand(5);
 
     Inteface *interface = new Inteface();
 

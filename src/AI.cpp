@@ -14,7 +14,7 @@ const int INT_MAX = numeric_limits<int>::max();
 const int INT_MIN = numeric_limits<int>::min();
 
 const int MAX_DEPTH = 4;
-const int SHALLOW_DEPTH = 3;
+const int DEPTH_REDUCTION = 3;
 
 AI::AI(Board *board, bool player, int time, int n)
 {
@@ -348,11 +348,11 @@ void AI::rowMoves(Board &board, bool player, vector<Move> &removeRowMoves, vecto
                                     int retVal;
                                     if (player == this->player)
                                     {
-                                        retVal = minValue(INT_MIN, INT_MAX, depth - SHALLOW_DEPTH, board, m3, !player, 11).second;
+                                        retVal = minValue(INT_MIN, INT_MAX, depth - DEPTH_REDUCTION, board, m3, !player, 11).second;
                                     }
                                     else
                                     {
-                                        retVal = maxValue(INT_MIN, INT_MAX, depth - SHALLOW_DEPTH, board, m3, !player, 11).second;
+                                        retVal = maxValue(INT_MIN, INT_MAX, depth - DEPTH_REDUCTION, board, m3, !player, 11).second;
                                     }
                                     moveSequences.push_back(EvaluatedMoveSeq(moveSeq, retVal));
 
@@ -374,11 +374,11 @@ void AI::rowMoves(Board &board, bool player, vector<Move> &removeRowMoves, vecto
                                 int retVal;
                                 if (player == this->player)
                                 {
-                                    retVal = minValue(INT_MIN, INT_MAX, depth - SHALLOW_DEPTH, board, m2, !player, 11).second;
+                                    retVal = minValue(INT_MIN, INT_MAX, depth - DEPTH_REDUCTION, board, m2, !player, 11).second;
                                 }
                                 else
                                 {
-                                    retVal = maxValue(INT_MIN, INT_MAX, depth - SHALLOW_DEPTH, board, m2, !player, 11).second;
+                                    retVal = maxValue(INT_MIN, INT_MAX, depth - DEPTH_REDUCTION, board, m2, !player, 11).second;
                                 }
                                 moveSequences.push_back(EvaluatedMoveSeq(moveSeq, retVal));
 
@@ -409,11 +409,11 @@ void AI::rowMoves(Board &board, bool player, vector<Move> &removeRowMoves, vecto
                     int retVal;
                     if (player == this->player)
                     {
-                        retVal = minValue(INT_MIN, INT_MAX, depth - SHALLOW_DEPTH, board, m1, !player, 11).second;
+                        retVal = minValue(INT_MIN, INT_MAX, depth - DEPTH_REDUCTION, board, m1, !player, 11).second;
                     }
                     else
                     {
-                        retVal = maxValue(INT_MIN, INT_MAX, depth - SHALLOW_DEPTH, board, m1, !player, 11).second;
+                        retVal = maxValue(INT_MIN, INT_MAX, depth - DEPTH_REDUCTION, board, m1, !player, 11).second;
                     }
                     moveSequences.push_back(EvaluatedMoveSeq(moveSeq, retVal));
  
@@ -457,11 +457,11 @@ void AI::moveMarkerMoves(Board &board, vector<Move> &moveSeq, vector<EvaluatedMo
             int retVal;
             if (player == this->player)
             {
-                retVal = minValue(INT_MIN, INT_MAX, depth - SHALLOW_DEPTH, board, m, !player, 11).second;
+                retVal = minValue(INT_MIN, INT_MAX, depth - DEPTH_REDUCTION, board, m, !player, 11).second;
             }
             else
             {
-                retVal = maxValue(INT_MIN, INT_MAX, depth - SHALLOW_DEPTH, board, m, !player, 11).second;
+                retVal = maxValue(INT_MIN, INT_MAX, depth - DEPTH_REDUCTION, board, m, !player, 11).second;
             }
             moveSequences.push_back(EvaluatedMoveSeq(moveSeq, retVal));
             // moveSequences.push_back(moveSeq); //push this with evaluated value
