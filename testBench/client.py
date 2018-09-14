@@ -173,7 +173,7 @@ class Client(Communicator):
 		if(data == None):                                                               
 			# 1 Milli Second Default
 			time_delta = max(1,int((end_time - start_time) * 1000))
-			#self.GAME_TIMER -= time_delta
+			self.GAME_TIMER -= time_delta
 			if(self.GAME_TIMER > 0):
 				print 'ERROR : THIS CLIENT STOPPED UNEXPECTEDLY OR TIMED OUT'
 				super(Client,self).closeChildProcess()                  
@@ -184,7 +184,7 @@ class Client(Communicator):
 		else:                   
 			# 1 Milli Second Default
 			time_delta = max(1,int((end_time - start_time) * 1000))
-			#self.GAME_TIMER -= time_delta
+			self.GAME_TIMER -= time_delta
 			if(self.GAME_TIMER > 0):
 				retData = {'meta':'','action':'NORMAL','data':data}
 			else:

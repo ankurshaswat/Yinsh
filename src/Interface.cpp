@@ -30,8 +30,6 @@ Inteface::Inteface()
     board = new Board(n);
     ai = new AI(board, player, time, n);
 
-    // Debug("Got metadata");
-
     Move m;
 
     if (player == 1)

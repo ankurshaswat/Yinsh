@@ -200,15 +200,10 @@ bool Board::placeRing(pair<int, int> position, bool player)
 
     int playerRing = player ? PositionStates::whiteRing : PositionStates::blackRing;
 
-    // if (validPlaceRing(position))
-    // {
     int ringIndex = player ? 1 : 0;
     rings[ringIndex].push_back(position);
     setState(position, playerRing);
     return true;
-    // }
-
-    // return false;
 }
 
 bool Board::moveRing(pair<int, int> newPosition, pair<int, int> currentPosition, bool player)
@@ -216,11 +211,6 @@ bool Board::moveRing(pair<int, int> newPosition, pair<int, int> currentPosition,
     Debug("Board::moveRing - Player=" << player
                                       << " OldPosition=(" << currentPosition.first << ',' << currentPosition.second
                                       << ") NewPosition=(" << newPosition.first << ',' << newPosition.second << endl);
-
-    // if (!validMoveRing(newPosition, currentPosition, player))
-    // {
-    //     return false;
-    // }
 
     int playerRing = player ? PositionStates::whiteRing : PositionStates::blackRing;
     int playerMarker = player ? PositionStates::whiteMarker : PositionStates::blackMarker;
@@ -434,23 +424,24 @@ void Board::removeMarkers(pair<int, int> startSeries, pair<int, int> endSeries)
     Debug("# Board::removeMarkers - StartPosition=(" << startSeries.first << ',' << startSeries.second
                                                      << ") EndPosition=(" << endSeries.first << ',' << endSeries.second << endl);
 
+    int increment;
     if (startSeries.first == endSeries.first)
     {
-        int increment = startSeries.second < endSeries.second ? -1 : 1;
+        increment = startSeries.second < endSeries.second ? -1 : 1;
 
         for (int i = endSeries.second; i != startSeries.second + increment; i += increment)
             setState(endSeries.first, i, PositionStates::empty);
     }
     else if (startSeries.second == endSeries.second)
     {
-        int increment = startSeries.first < endSeries.first ? -1 : 1;
+        increment = startSeries.first < endSeries.first ? -1 : 1;
 
         for (int i = endSeries.first; i != startSeries.first + increment; i += increment)
             setState(i, endSeries.second, PositionStates::empty);
     }
     else
     {
-        int increment = startSeries.second < endSeries.second ? -1 : 1;
+        increment = startSeries.second < endSeries.second ? -1 : 1;
 
         for (int i1 = endSeries.first, i2 = endSeries.second; i1 != startSeries.first + increment; i1 += increment, i2 += increment)
             setState(i1, i2, PositionStates::empty);
@@ -460,23 +451,25 @@ void Board::removeMarkers(pair<int, int> startSeries, pair<int, int> endSeries)
 void Board::placeMarkers(pair<int, int> startSeries, pair<int, int> endSeries, bool player)
 {
     PositionStates marker = player ? whiteMarker : blackMarker;
+
+    int increment;
     if (startSeries.first == endSeries.first)
     {
-        int increment = startSeries.second < endSeries.second ? -1 : 1;
+        increment = startSeries.second < endSeries.second ? -1 : 1;
 
         for (int i = endSeries.second; i != startSeries.second + increment; i += increment)
             setState(endSeries.first, i, marker);
     }
     else if (startSeries.second == endSeries.second)
     {
-        int increment = startSeries.first < endSeries.first ? -1 : 1;
+        increment = startSeries.first < endSeries.first ? -1 : 1;
 
         for (int i = endSeries.first; i != startSeries.first + increment; i += increment)
             setState(i, endSeries.second, marker);
     }
     else
     {
-        int increment = startSeries.second < endSeries.second ? -1 : 1;
+        increment = startSeries.second < endSeries.second ? -1 : 1;
 
         for (int i1 = endSeries.first, i2 = endSeries.second; i1 != startSeries.first + increment; i1 += increment, i2 += increment)
             setState(i1, i2, marker);
@@ -598,7 +591,7 @@ void Board::getValidRingMoves(vector<Move> &moves, bool player)
 void Board::getValidPlaceRingMoves(vector<Move> &moves, bool player)
 {
     Debug("Board::getValidPlaceRingMoves - Player=" << player << endl);
-    // vector<Move> moves;
+
     int count = 0, i, j;
     while (count < 7)
     {
@@ -607,13 +600,10 @@ void Board::getValidPlaceRingMoves(vector<Move> &moves, bool player)
         pair<int, int> pos = make_pair(i, j);
         if (validPosition(pos) && getState(pos) == PositionStates::empty)
         {
-            // Debug( << "# " << i << ' ' << j << endl;
             moves.push_back(Move(MoveType::placeRing, pos, pos));
             count++;
         }
     }
-
-    // return moves;
 };
 
 void Board::getValidRemoveRingMoves(vector<Move> &moves, bool player)
@@ -633,68 +623,55 @@ int Board::evaluate(bool player)
     if (getRingsCount(!player) <= 2)
         return INT32_MIN;
 
-    vector<vector<int>> scores(2);
-    vector<int> scoreVec0(8, 0), scoreVec1(8, 0);
-    scores[0] = scoreVec0;
-    scores[1] = scoreVec1;
+    // vector<vector<int>> scores(2);
+    // vector<int> scoreVec0(8, 0), scoreVec1(8, 0);
+    // scores[0] = scoreVec0;
+    // scores[1] = scoreVec1;
 
-    for (int i = -n; i <= n; i++)
-    {
-        bool validStartFound = false;
-        int prevState = -3;
-        int countSingleType = 0, countWithRing = 0;
-        for (int j = -n; j <= n; j++)
-        {
-            pair<int, int> position = make_pair(i, j);
-            bool breaker = counter(position, validStartFound, prevState, countSingleType, countWithRing, scores);
-            if (breaker)
-                break;
-        }
-    }
-
-    for (int j = -n; j <= n; j++)
-    {
-        bool validStartFound = false;
-        int prevState = -3;
-        int countSingleType = 0, countWithRing = 0;
-        for (int i = -n; i <= n; i++)
-        {
-            pair<int, int> position = make_pair(i, j);
-            bool breaker = counter(position, validStartFound, prevState, countSingleType, countWithRing, scores);
-            if (breaker)
-                break;
-        }
-    }
-
-    for (int i = -n; i <= 0; i++)
-    {
-        for (int j = -n; j <= 0; j++)
-        {
-            bool validStartFound = false;
-            int prevState = -3;
-            int countWithRing = 0, countSingleType = 0;
-            for (int k = 0; k < 2 * n; k++)
-            {
-                pair<int, int> position = make_pair(i + k, j + k);
-                bool breaker = counter(position, validStartFound, prevState, countSingleType, countWithRing, scores);
-                if (breaker)
-                    break;
-            }
-        }
-    }
-
-    // cout << "#0 ";
-    // for (int i = 0; i < scores[0].size(); i++)
+    // for (int i = -n; i <= n; i++)
     // {
-    //     cout << scores[0][i] << ' ';
+    //     bool validStartFound = false;
+    //     int prevState = -3;
+    //     int countSingleType = 0, countWithRing = 0;
+    //     for (int j = -n; j <= n; j++)
+    //     {
+    //         pair<int, int> position = make_pair(i, j);
+    //         bool breaker = counter(position, validStartFound, prevState, countSingleType, countWithRing, scores);
+    //         if (breaker)
+    //             break;
+    //     }
     // }
-    // cout << endl;
-    // cout << "#1 ";
-    // for (int i = 0; i < scores[0].size(); i++)
+
+    // for (int j = -n; j <= n; j++)
     // {
-    //     cout << scores[1][i] << ' ';
+    //     bool validStartFound = false;
+    //     int prevState = -3;
+    //     int countSingleType = 0, countWithRing = 0;
+    //     for (int i = -n; i <= n; i++)
+    //     {
+    //         pair<int, int> position = make_pair(i, j);
+    //         bool breaker = counter(position, validStartFound, prevState, countSingleType, countWithRing, scores);
+    //         if (breaker)
+    //             break;
+    //     }
     // }
-    // cout << endl;
+
+    // for (int i = -n; i <= 0; i++)
+    // {
+    //     for (int j = -n; j <= 0; j++)
+    //     {
+    //         bool validStartFound = false;
+    //         int prevState = -3;
+    //         int countWithRing = 0, countSingleType = 0;
+    //         for (int k = 0; k < 2 * n; k++)
+    //         {
+    //             pair<int, int> position = make_pair(i + k, j + k);
+    //             bool breaker = counter(position, validStartFound, prevState, countSingleType, countWithRing, scores);
+    //             if (breaker)
+    //                 break;
+    //         }
+    //     }
+    // }
 
     int markersCount, ringsCount, score1, score0;
     int MARKERS_WEIGHT = 1, RINGS_WEIGHT = -2000, OWN_SCORE_WEIGHT = 2;
@@ -703,15 +680,15 @@ int Board::evaluate(bool player)
     ringsCount = this->counts[PositionStates::whiteRing];
     score1 = MARKERS_WEIGHT * markersCount + RINGS_WEIGHT * ringsCount;
 
-    for (int i = 0; i < featureWeights.size(); i++)
-        score1 += scores[1][i] * featureWeights[i];
+    // for (int i = 0; i < featureWeights.size(); i++)
+    //     score1 += scores[1][i] * featureWeights[i];
 
     markersCount = this->counts[PositionStates::blackMarker];
     ringsCount = this->counts[PositionStates::blackRing];
     score0 = MARKERS_WEIGHT * markersCount + RINGS_WEIGHT * ringsCount;
 
-    for (int i = 0; i < featureWeights.size(); i++)
-        score0 += scores[0][i] * featureWeights[i];
+    // for (int i = 0; i < featureWeights.size(); i++)
+    //     score0 += scores[0][i] * featureWeights[i];
 
     return player ? OWN_SCORE_WEIGHT * score1 - score0 : OWN_SCORE_WEIGHT * score0 - score1;
 }

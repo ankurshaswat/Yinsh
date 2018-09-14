@@ -43,24 +43,25 @@ private:
   void placeMarkers(pair<int, int> startPosition, pair<int, int> endPosition, bool player);
   bool counter(pair<int, int> &position, bool &validStartFound, int &prevState, int &countSingleType, int &countWithRing, vector<vector<int>> &scores);
 
-public:
-  Board();
-  Board(int n);
-  Board(int n, Board *board);
-
   vector<pair<int, int>> getRingPositions(bool player);
 
   int getState(pair<int, int> position);
   int getState(int pos1, int pos2);
 
+  vector<pair<pair<int, int>, pair<int, int>>> checkMarkers(pair<int, int> newPosition, pair<int, int> oldPosition, bool player);
+
+  /* Private member access functions */
+  int getSize();
+
+public:
+  Board();
+  Board(int n);
+  Board(int n, Board *board);
+
   void removeMarkers(pair<int, int> startPosition, pair<int, int> endPosition);
   void removeRing(pair<int, int> position);
   bool placeRing(pair<int, int> position, bool player);
   bool moveRing(pair<int, int> newPosition, pair<int, int> currentPosition, bool player); // Does not require player (Modify later)
-  vector<pair<pair<int, int>, pair<int, int>>> checkMarkers(pair<int, int> newPosition, pair<int, int> oldPosition, bool player);
-
-  void playMove(Move m, bool player);
-  void undoMove(Move m, bool player);
 
   /* Return valid moves for player (append to passed vector) */
   void getValidRingMoves(vector<Move> &moves, bool player);
@@ -68,16 +69,16 @@ public:
   void getValidPlaceRingMoves(vector<Move> &moves, bool player);
   void getValidRemoveRingMoves(vector<Move> &moves, bool player);
 
-  /* Return evaluation of board for player */
-  int evaluate(bool player);
-
   /* Check if it is a win for player */
   bool isWin(bool player);
 
-  /* Private member access functions */
-  int getSize();
+  /* Return evaluation of board for player */
+  int evaluate(bool player);
+
   int getRingsCount(bool player);
 
+  void playMove(Move m, bool player);
+  void undoMove(Move m, bool player);
   ~Board();
 };
 
