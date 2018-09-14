@@ -1,2 +1,2 @@
 #!/bin/bash
-./yinsh
+./a.out
