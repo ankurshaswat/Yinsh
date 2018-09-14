@@ -13,8 +13,8 @@
 const int INT_MAX = numeric_limits<int>::max();
 const int INT_MIN = numeric_limits<int>::min();
 
-const int MAX_DEPTH = 3;
-const int SHALLOW_DEPTH = 2;
+const int MAX_DEPTH = 4;
+const int SHALLOW_DEPTH = 3;
 
 AI::AI(Board *board, bool player, int time, int n)
 {
@@ -112,7 +112,7 @@ pair<vector<Move>, int> AI::maxValue(int alpha, int beta, int depth, Board &boar
     //Base case for depth
     if (depth <= 0)
     {
-        return make_pair(bestMoveSeq, board.evaluate(player));
+        return make_pair(bestMoveSeq, board.evaluate(this->player));
     }
 
     // vector<vector<Move>> moveSequences;
@@ -213,7 +213,7 @@ pair<vector<Move>, int> AI::minValue(int alpha, int beta, int depth, Board &boar
     //Base case for depth
     if (depth <= 0)
     {
-        return make_pair(bestMoveSeq, board.evaluate(player));
+        return make_pair(bestMoveSeq, board.evaluate(this->player));
     }
 
     // vector<vector<Move>> moveSequences;
