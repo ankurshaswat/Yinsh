@@ -22,7 +22,11 @@ AI::AI(Board *board, bool player, int time, int n)
     this->boardSize = n;
     this->player = player;
     this->time = 1.0 * time;
+    if(player) {
+    this->moveCount = 1;
+    } else {
     this->moveCount = 0;
+    }
 }
 
 void AI::printMove(Move move)
@@ -77,7 +81,16 @@ void AI::playMoveSeq(Move prevMove)
     // Debug( << "P 4 5" << endl;
     // // Stop Time
 
-    pair<vector<Move>, int> returnedMovePair = maxValue(INT_MIN, INT_MAX, MAX_DEPTH, *originalBoard, prevMove, player, moveCount);
+    pair<vector<Move>, int> returnedMovePair;
+    
+    // if(moveCount < 15) {
+    // returnedMovePair = maxValue(INT_MIN, INT_MAX, 4, *originalBoard, prevMove, player, moveCount);
+    // } else{
+    // returnedMovePair = maxValue(INT_MIN, INT_MAX, 5, *originalBoard, prevMove, player, moveCount); 
+    // }
+
+    returnedMovePair = maxValue(INT_MIN, INT_MAX, MAX_DEPTH, *originalBoard, prevMove, player, moveCount);
+    
     vector<Move> moves = returnedMovePair.first;
 
     // Debug("# Got Returned Moves" << endl);
