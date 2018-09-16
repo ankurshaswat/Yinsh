@@ -9,7 +9,7 @@
 
 int main()
 {
-    srand(9);
+    srand(5);
 
     Inteface *interface = new Inteface();
 

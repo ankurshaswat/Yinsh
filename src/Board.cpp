@@ -687,17 +687,25 @@ void Board::getValidRingMoves(vector<Move> &moves, bool player)
 void Board::getValidPlaceRingMoves(vector<Move> &moves, bool player)
 {
     Debug("Board::getValidPlaceRingMoves - Player=" << player << endl);
-    int count = 0, i, j;
-    while (count < 7)
+    int count = 0, i=0, j=0,a,b;
+
+    while (count < 1)
     {
-        i = (rand() % (2 * n + 1)) - n;
-        j = (rand() % (2 * n + 1)) - n;
+        // i = (rand() % (2 * n + 1)) - n;
+        // j = (rand() % (2 * n + 1)) - n;
         pair<int, int> pos = make_pair(i, j);
         if (validPosition(pos) && getState(pos) == PositionStates::empty)
         {
             moves.push_back(Move(MoveType::placeRing, pos, pos));
             count++;
         }
+        i = (rand() % (4)) - 2;
+        j = (rand() % (4)) - 2;
+
+        // a=(rand()%3)-1;
+        // b=(rand()%3)-1;
+        // i+=a;
+        // j+=b;
     }
 };
 
