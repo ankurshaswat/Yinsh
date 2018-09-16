@@ -39,7 +39,6 @@ vector<int> featureWeights = {1, 5, 25, 125, 2, 10, 50, 250};
 
 // vector<int> featureWeights = {1, 5, 25, 125, 2, 10, 50, 25, 5, 15, 0 };
 
-
 Board::Board() : Board(5) {}
 
 Board::Board(int n) : rings(2), directions(6)
@@ -618,28 +617,24 @@ void Board::getValidRowMoves(Move prevMoveRing, vector<Move> &moves, bool player
     {
         pair<pair<int, int>, pair<int, int>> row = rows[i];
         pair<int, int> start = row.first, end = row.second;
-        if (inclusiveMarkerCount(row.first, row.second) > 5)
+
+        pair<int, int> direction;
+        direction.first = end.first - start.first;
+        direction.second = end.second - start.second;
+        direction = makeUnit(direction);
+
+        int count = inclusiveMarkerCount(row.first, row.second) - 4;
+        for (int offset = 0; offset < count; offset++)
         {
-            pair<int, int> direction;
-            direction.first = end.first - start.first;
-            direction.second = end.second - start.second;
-            direction = makeUnit(direction);
+            pair<int, int> alternateStart;
+            alternateStart.first = start.first + offset * direction.first;
+            alternateStart.second = start.first + offset * direction.first;
 
             pair<int, int> alternateEnd;
-            alternateEnd.first = start.first + 4 * direction.first;
-            alternateEnd.second = start.second + 4 * direction.second;
+            alternateEnd.first = start.first + (offset + 4) * direction.first;
+            alternateEnd.second = start.first + (offset + 4) * direction.first;
 
-            moves.push_back(Move(MoveType::removeRow, start, alternateEnd));
-
-            pair<int, int> alternateStart;
-            alternateStart.first = end.first - 4 * direction.first;
-            alternateStart.second = end.second - 4 * direction.second;
-
-            moves.push_back(Move(MoveType::removeRow, alternateStart, end));
-        }
-        else
-        {
-            moves.push_back(Move(MoveType::removeRow, start, end));
+            moves.push_back(Move(MoveType::removeRow, alternateStart, alternateEnd));
         }
     }
 }
@@ -719,7 +714,7 @@ int Board::evaluate(bool player)
     if (getRingsCount(!player) <= 2)
         return INT32_MIN;
 
-    vector<vector<int>> scores(2,vector<int>(featureWeights.size()));
+    vector<vector<int>> scores(2, vector<int>(featureWeights.size()));
 
     // vector<vector<vector<int>>> features(2, vector<vector<int>>(5, vector<int>(featureSizes)));
 
@@ -736,7 +731,7 @@ int Board::evaluate(bool player)
     //     {
     //         ringPosition = rings[ringNum];
     //         prevCount = 0;
-    //         prevState = -3, 
+    //         prevState = -3,
     //         positionState = -3;
 
     //         for (int directionNum = 0; directionNum < directions.size(); directionNum++)
@@ -883,8 +878,6 @@ int Board::evaluate(bool player)
     //         score1 += features[1][j][i] * featureWeights[i];
     //     }
     // }
-        
-
 
     markersCount = this->counts[PositionStates::blackMarker];
     ringsCount = this->counts[PositionStates::blackRing];
@@ -898,8 +891,6 @@ int Board::evaluate(bool player)
     //         score0 += features[0][j][i] * featureWeights[i];
     //     }
     // }
-
-
 
     return player ? OWN_SCORE_WEIGHT * score1 - score0 : OWN_SCORE_WEIGHT * score0 - score1;
 }
