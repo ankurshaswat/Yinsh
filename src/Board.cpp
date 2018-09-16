@@ -624,15 +624,18 @@ void Board::getValidRowMoves(Move prevMoveRing, vector<Move> &moves, bool player
         direction = makeUnit(direction);
 
         int count = inclusiveMarkerCount(row.first, row.second) - 4;
+        // if(count<=0) {
+        //     cout<<"# "<<count<<endl;
+        // }
         for (int offset = 0; offset < count; offset++)
         {
             pair<int, int> alternateStart;
             alternateStart.first = start.first + offset * direction.first;
-            alternateStart.second = start.first + offset * direction.first;
+            alternateStart.second = start.second + offset * direction.second;
 
             pair<int, int> alternateEnd;
             alternateEnd.first = start.first + (offset + 4) * direction.first;
-            alternateEnd.second = start.first + (offset + 4) * direction.first;
+            alternateEnd.second = start.second + (offset + 4) * direction.second;
 
             moves.push_back(Move(MoveType::removeRow, alternateStart, alternateEnd));
         }
