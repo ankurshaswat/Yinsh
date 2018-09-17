@@ -35,7 +35,9 @@ enum FeatureIndexes
 // };
 // int featureSizes = 11;
 
-vector<int> featureWeights = {1, 5, 25, 125, 2, 10, 50, 250};
+vector<int> featureWeights = {1, 5, 25, 75, 2, 10, 50, 75};
+vector<int> featureWeightsOpp = {1, 5, 25, 75, 2, 10, 50, 75};
+// vector<int> featureWeightsOpp = { 2, 10, 50, 250, 1, 5, 25, 125,};
 
 // vector<int> featureWeights = {1, 5, 25, 125, 2, 10, 50, 25, 5, 15, 0 };
 
@@ -787,14 +789,19 @@ int Board::evaluate(bool player)
         }
 
     int markersCount, ringsCount, score1, score0;
-    int MARKERS_WEIGHT = 1, RINGS_WEIGHT = -2000, OWN_SCORE_WEIGHT = 2;
+    int MARKERS_WEIGHT = 1, RINGS_WEIGHT = -2000, OWN_SCORE_WEIGHT = 1;
 
     markersCount = this->counts[PositionStates::whiteMarker];
     ringsCount = this->counts[PositionStates::whiteRing];
     score1 = MARKERS_WEIGHT * markersCount + RINGS_WEIGHT * ringsCount;
 
-    for (int i = 0; i < featureWeights.size(); i++)
+    for (int i = 0; i < featureWeights.size(); i++) {
+        if(player) {
         score1 += scores[1][i] * featureWeights[i];
+        } else {
+        score1 += scores[1][i] * featureWeightsOpp[i];
+        }
+    }
 
     // for (int i = 0; i < featureWeights.size(); i++){
     //     for(int j=0;j<ringsCount;j++){
@@ -806,8 +813,13 @@ int Board::evaluate(bool player)
     ringsCount = this->counts[PositionStates::blackRing];
     score0 = MARKERS_WEIGHT * markersCount + RINGS_WEIGHT * ringsCount;
 
-    for (int i = 0; i < featureWeights.size(); i++)
+    for (int i = 0; i < featureWeights.size(); i++){
+        if(player) {
+        score0 += scores[0][i] * featureWeightsOpp[i];
+        } else {
         score0 += scores[0][i] * featureWeights[i];
+        }
+    }
 
     // for (int i = 0; i < featureWeights.size(); i++){
     //     for(int j=0;j<ringsCount;j++){

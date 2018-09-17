@@ -83,15 +83,18 @@ void AI::playMoveSeq(Move prevMove)
     // // Stop Time
 
     pair<vector<Move>, int> returnedMovePair;
+    
+    // if(this->originalBoard->getRingsCount(player)==3 && this->originalBoard->getRingsCount(!player)==3 && moveCount>10){
+    if(moveCount < 10 || (moveCount< 40  &&  this->originalBoard->getRingsCount(player)+this->originalBoard->getRingsCount(!player)>=7) ) {
+    returnedMovePair = maxValue(INT_MIN, INT_MAX, 4, *originalBoard, prevMove, player, moveCount);
+    } 
+    else{
+    cout<<"# POWER MODE ACTIVATED"<<endl;
+    returnedMovePair = maxValue(INT_MIN, INT_MAX, 5, *originalBoard, prevMove, player, moveCount); 
+    }
 
-    // if(moveCount < 15) {
-    // returnedMovePair = maxValue(INT_MIN, INT_MAX, 4, *originalBoard, prevMove, player, moveCount);
-    // } else{
-    // returnedMovePair = maxValue(INT_MIN, INT_MAX, 5, *originalBoard, prevMove, player, moveCount);
-    // }
-
-    returnedMovePair = maxValue(INT_MIN, INT_MAX, MAX_DEPTH, *originalBoard, prevMove, player, moveCount);
-
+    // returnedMovePair = maxValue(INT_MIN, INT_MAX, MAX_DEPTH, *originalBoard, prevMove, player, moveCount);
+    
     vector<Move> moves = returnedMovePair.first;
 
     for (int i = 0; i < moves.size(); i++)
@@ -110,12 +113,12 @@ pair<vector<Move>, int> AI::maxValue(int alpha, int beta, int depth, Board &boar
     Debug("# AI::maxValue - alpha=" << alpha << " Beta=" << beta << " Depth=" << depth << " Player=" << player << endl);
     vector<Move> bestMoveSeq;
     // Check for win
-    if (board.isWin(!player) && internalMoveCount > 10)
+    if (board.isWin(!this->player) && internalMoveCount > 10)
     {
         // cout << "# AI::maxValue 0 win state" << endl;
         return make_pair(bestMoveSeq, INT_MIN);
     }
-    else if (board.isWin(player) && internalMoveCount > 10)
+    else if (board.isWin(this->player) && internalMoveCount > 10)
     {
         // cout << "# AI::maxValue 1 win state" << endl;
         return make_pair(bestMoveSeq, INT_MAX);
@@ -210,15 +213,15 @@ pair<vector<Move>, int> AI::minValue(int alpha, int beta, int depth, Board &boar
 
     vector<Move> bestMoveSeq;
     // Check for win
-    if (board.isWin(!player) && internalMoveCount > 10)
+    if (board.isWin(!this->player) && internalMoveCount > 10)
     {
         // cout << "# AI::maxValue 0 win state" << endl;
-        return make_pair(bestMoveSeq, INT_MAX);
+        return make_pair(bestMoveSeq, INT_MIN);
     }
-    else if (board.isWin(player) && internalMoveCount > 10)
+    else if (board.isWin(this->player) && internalMoveCount > 10)
     {
         // cout << "# AI::maxValue 1 win state" << endl;
-        return make_pair(bestMoveSeq, INT_MIN);
+        return make_pair(bestMoveSeq, INT_MAX);
     }
 
     //Base case for depth
