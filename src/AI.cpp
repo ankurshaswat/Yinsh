@@ -21,7 +21,7 @@ AI::AI(Board *board, bool player, int time, int n)
     this->originalBoard = board;
     this->boardSize = n;
     this->player = player;
-    this->time = 1.0 * time;
+    this->timeMs = 1000.0 * time;
     if (player)
         this->moveCount = 1;
     else
@@ -64,6 +64,8 @@ void AI::playMoveSeq(Move prevMove)
 {
     Debug("# AI::playMoveSeq" << endl);
 
+    
+
     // Board *board = new Board(this->boardSize, this->originalBoard);
 
     // if (m.type == MoveType::moveRing)
@@ -91,8 +93,6 @@ void AI::playMoveSeq(Move prevMove)
     returnedMovePair = maxValue(INT_MIN, INT_MAX, MAX_DEPTH, *originalBoard, prevMove, player, moveCount);
 
     vector<Move> moves = returnedMovePair.first;
-
-    // Debug("# Got Returned Moves" << endl);
 
     for (int i = 0; i < moves.size(); i++)
     {
