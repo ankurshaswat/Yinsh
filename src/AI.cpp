@@ -70,7 +70,7 @@ void AI::playMoveSeq(Move prevMove)
 
     if (this->time < 10.0)
         returnedMovePair = maxValue(INT_MIN, INT_MAX, 3, *originalBoard, prevMove, player, moveCount);
-    else if (this->time > 10.0 && this->time < 27.0)
+    else if (this->time > 10.0 && this->time < 20.0)
         returnedMovePair = maxValue(INT_MIN, INT_MAX, 4, *originalBoard, prevMove, player, moveCount);
     else
     {
