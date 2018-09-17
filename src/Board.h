@@ -70,7 +70,7 @@ public:
   void getValidRemoveRingMoves(vector<Move> &moves, bool player);
 
   /* Return evaluation of board for player */
-  int evaluate(bool player);
+  int evaluate(bool player,int moveCount);
 
   /* Check if it is a win for player */
   bool isWin(bool player);

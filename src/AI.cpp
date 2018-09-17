@@ -4,14 +4,16 @@
 #include <algorithm>
 #include <limits>
 
+using namespace std;
+
 #ifdef USEDEBUG
 #define Debug(x) std::cout << "# " << x
 #else
 #define Debug(x)
 #endif
 
-const int INT_MAX = numeric_limits<int>::max();
-const int INT_MIN = numeric_limits<int>::min();
+const int INT_MAX = numeric_limits<int>::max() - 1000;
+const int INT_MIN = numeric_limits<int>::min() + 1000;
 
 const int MAX_DEPTH = 4;
 const int DEPTH_REDUCTION = 3;
@@ -21,7 +23,7 @@ AI::AI(Board *board, bool player, int time, int n)
     this->originalBoard = board;
     this->boardSize = n;
     this->player = player;
-    this->timeMs = 1000.0 * time;
+    this->time = 1.0 * time;
     if (player)
         this->moveCount = 1;
     else
@@ -62,39 +64,26 @@ void AI::printMove(Move move)
 
 void AI::playMoveSeq(Move prevMove)
 {
+    clock_t startClock = clock();
     Debug("# AI::playMoveSeq" << endl);
-
-    
-
-    // Board *board = new Board(this->boardSize, this->originalBoard);
-
-    // if (m.type == MoveType::moveRing)
-    // {
-
-    //     // This needs to be used.....
-    // }
-
-    // Start time
-
-    // pair<vector<Move>, int> maxValue(INT_MIN, INT_MAX, board, )
-
-    //Convert All moves to hex here and print
-    // Debug( << "P 4 5" << endl;
-    // // Stop Time
-
     pair<vector<Move>, int> returnedMovePair;
-    
-    // if(this->originalBoard->getRingsCount(player)==3 && this->originalBoard->getRingsCount(!player)==3 && moveCount>10){
-    if(moveCount < 10 || (moveCount< 40  &&  this->originalBoard->getRingsCount(player)+this->originalBoard->getRingsCount(!player)>=7) ) {
-    returnedMovePair = maxValue(INT_MIN, INT_MAX, 4, *originalBoard, prevMove, player, moveCount);
-    } 
-    else{
-    cout<<"# POWER MODE ACTIVATED"<<endl;
-    returnedMovePair = maxValue(INT_MIN, INT_MAX, 5, *originalBoard, prevMove, player, moveCount); 
+
+    if (this->time < 10.0)
+        returnedMovePair = maxValue(INT_MIN, INT_MAX, 3, *originalBoard, prevMove, player, moveCount);
+    else if (this->time > 10.0 && this->time < 27.0)
+        returnedMovePair = maxValue(INT_MIN, INT_MAX, 4, *originalBoard, prevMove, player, moveCount);
+    else
+    {
+
+        if (moveCount < 10 || (moveCount < 40 && this->originalBoard->getRingsCount(player) + this->originalBoard->getRingsCount(!player) >= 7))
+            returnedMovePair = maxValue(INT_MIN, INT_MAX, 4, *originalBoard, prevMove, player, moveCount);
+        else
+        {
+            cout << "# POWER MODE ACTIVATED" << endl;
+            returnedMovePair = maxValue(INT_MIN, INT_MAX, 5, *originalBoard, prevMove, player, moveCount);
+        }
     }
 
-    // returnedMovePair = maxValue(INT_MIN, INT_MAX, MAX_DEPTH, *originalBoard, prevMove, player, moveCount);
-    
     vector<Move> moves = returnedMovePair.first;
 
     for (int i = 0; i < moves.size(); i++)
@@ -105,6 +94,11 @@ void AI::playMoveSeq(Move prevMove)
     for (auto move : moves)
         printMove(move);
     cout << endl;
+
+    clock_t endClock = clock();
+    double timeTaken = double(endClock - startClock) / CLOCKS_PER_SEC;
+    this->time -= timeTaken;
+
     moveCount += 2;
 }
 
@@ -116,18 +110,18 @@ pair<vector<Move>, int> AI::maxValue(int alpha, int beta, int depth, Board &boar
     if (board.isWin(!this->player) && internalMoveCount > 10)
     {
         // cout << "# AI::maxValue 0 win state" << endl;
-        return make_pair(bestMoveSeq, INT_MIN);
+        return make_pair(bestMoveSeq, INT_MIN + internalMoveCount);
     }
     else if (board.isWin(this->player) && internalMoveCount > 10)
     {
         // cout << "# AI::maxValue 1 win state" << endl;
-        return make_pair(bestMoveSeq, INT_MAX);
+        return make_pair(bestMoveSeq, INT_MAX - internalMoveCount);
     }
 
     //Base case for depth
     if (depth <= 0)
     {
-        return make_pair(bestMoveSeq, board.evaluate(this->player));
+        return make_pair(bestMoveSeq, board.evaluate(this->player, internalMoveCount));
     }
 
     // vector<vector<Move>> moveSequences;
@@ -216,18 +210,18 @@ pair<vector<Move>, int> AI::minValue(int alpha, int beta, int depth, Board &boar
     if (board.isWin(!this->player) && internalMoveCount > 10)
     {
         // cout << "# AI::maxValue 0 win state" << endl;
-        return make_pair(bestMoveSeq, INT_MIN);
+        return make_pair(bestMoveSeq, INT_MIN + internalMoveCount);
     }
     else if (board.isWin(this->player) && internalMoveCount > 10)
     {
         // cout << "# AI::maxValue 1 win state" << endl;
-        return make_pair(bestMoveSeq, INT_MAX);
+        return make_pair(bestMoveSeq, INT_MAX - internalMoveCount);
     }
 
     //Base case for depth
     if (depth <= 0)
     {
-        return make_pair(bestMoveSeq, board.evaluate(this->player));
+        return make_pair(bestMoveSeq, board.evaluate(this->player,internalMoveCount));
     }
 
     // vector<vector<Move>> moveSequences;

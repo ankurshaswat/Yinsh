@@ -1,11 +1,15 @@
 #include "Board.h"
 #include "Util.h"
+#include <limits>
 
 #ifdef USEDEBUG
 #define Debug(x) std::cout << "# " << x
 #else
 #define Debug(x)
 #endif
+
+const int INT_MAX = numeric_limits<int>::max() - 1000;
+const int INT_MIN = numeric_limits<int>::min() + 1000;
 
 enum FeatureIndexes
 {
@@ -633,13 +637,13 @@ void Board::getValidRemoveRingMoves(vector<Move> &moves, bool player)
         moves.push_back(Move(MoveType::removeRing, pos, pos));
 }
 
-int Board::evaluate(bool player)
+int Board::evaluate(bool player,int moveCount)
 {
     if (getRingsCount(player) <= 2)
-        return INT32_MAX;
+        return INT_MAX - moveCount;
 
     if (getRingsCount(!player) <= 2)
-        return INT32_MIN;
+        return INT_MIN + moveCount;
 
     vector<vector<int>> scores(2, vector<int>(featureWeights.size()));
 

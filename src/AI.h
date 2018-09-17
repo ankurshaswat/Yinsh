@@ -9,7 +9,7 @@ class AI
 private:
   Board *originalBoard;
   bool player;
-  double timeMs;
+  double time;
   int moveCount;
   int boardSize;
   int n;
