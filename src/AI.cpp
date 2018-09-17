@@ -79,7 +79,7 @@ void AI::playMoveSeq(Move prevMove)
             returnedMovePair = maxValue(INT_MIN, INT_MAX, 4, *originalBoard, prevMove, player, moveCount);
         else
         {
-            cout << "# POWER MODE ACTIVATED" << endl;
+            // cout << "# POWER MODE ACTIVATED" << endl;
             returnedMovePair = maxValue(INT_MIN, INT_MAX, 5, *originalBoard, prevMove, player, moveCount);
         }
     }
