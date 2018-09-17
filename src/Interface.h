@@ -11,10 +11,10 @@ private:
   Board *board;
   AI *ai;
   bool currentPlayer = 0;
-  Move readInput();
 
 public:
   Inteface();
+  Move readInput();
 };
 
 #endif

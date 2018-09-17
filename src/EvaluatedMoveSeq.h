@@ -1,3 +1,7 @@
+#ifndef EVALUATEDMOVESEQ_H
+#define EVALUATEDMOVESEQ_H
+
+
 #include "Move.h"
 #include <vector>
 
@@ -10,3 +14,5 @@ struct EvaluatedMoveSeq
     bool operator<(const EvaluatedMoveSeq &other) const;
     bool operator>(const EvaluatedMoveSeq &other) const;
 };
+
+#endif

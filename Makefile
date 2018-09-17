@@ -1,7 +1,7 @@
 SRC=  src/Move.cpp src/EvaluatedMoveSeq.cpp src/Util.cpp src/Board.cpp src/AI.cpp src/Interface.cpp src/main.cpp 
 
 all: $(SRC)
-	  g++ -o yinsh $(SRC)
+	  g++ -O2 -o yinsh $(SRC)
 
 debug: $(SRC)
 	  g++ -g -o yinsh $(SRC)
