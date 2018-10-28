@@ -1,18 +1,17 @@
 SRC=  src/Move.cpp src/EvaluatedMoveSeq.cpp src/Util.cpp src/Board.cpp src/AI.cpp src/Interface.cpp src/main.cpp 
+COMMON_FLAGS = -std=c++11 -O3 -o yinsh $(SRC)
 
 all: $(SRC)
-	  g++ -O2 -o yinsh $(SRC)
+	  g++ $(COMMON_FLAGS)
 
 debug: $(SRC)
-	  g++ -g -o yinsh $(SRC)
+	  g++ -g $(COMMON_FLAGS)
 
 debug_out: $(SRC)
-	  g++ -DUSEDEBUG -g -o yinsh $(SRC)
+	  g++ -DUSEDEBUG -g $(COMMON_FLAGS)
 
 warnings: $(SRC)
-	  g++ -g -Wall -Wextra -o yinsh $(SRC)
+	  g++ -g -Wall -Wextra $(COMMON_FLAGS)
 
 clean:
-	rm -rf build
-	rm -rf main
-	rm -rf yinsh
+	rm -rf build main yinsh

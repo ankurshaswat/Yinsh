@@ -1,9 +1,8 @@
 #ifndef EVALUATEDMOVESEQ_H
 #define EVALUATEDMOVESEQ_H
 
-
-#include "Move.h"
 #include <vector>
+#include "Move.h"
 
 struct EvaluatedMoveSeq
 {
