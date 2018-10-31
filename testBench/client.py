@@ -106,9 +106,9 @@ class Client(Communicator):
 		success_flag =  super(Client,self).SendDataOnSocket(sendData)
 		if(not success_flag):
 			print 'ERROR : FAILED TO SEND DATA TO SERVER'
-			#super(Client,self).closeSocket()
-		#elif((data['action'] == 'KILLPROC') or (data['action'] == 'FINISH')):
-			#super(Client,self).closeSocket()
+			super(Client,self).closeSocket()
+		elif((data['action'] == 'KILLPROC') or (data['action'] == 'FINISH')):
+			super(Client,self).closeSocket()
 		return success_flag
 
 	

@@ -43,6 +43,7 @@ input.txt
 inputGame.txt
 *.log
 testBench/lastgame.txt
+testBench/yinsh_bots-master/
 yinsh2
 yinsh3
 yinsh4
