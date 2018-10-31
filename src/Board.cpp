@@ -1,6 +1,6 @@
+#include <limits>
 #include "Board.h"
 #include "Util.h"
-#include <limits>
 
 #ifdef USEDEBUG
 #define Debug(x) std::cout << "# " << x
@@ -40,10 +40,9 @@ enum FeatureIndexes
 // int featureSizes = 11;
 
 vector<int> featureWeights = {1, 5, 25, 75, 2, 10, 50, 75};
+// vector<int> featureWeights = {1, 5, 25, 125, 2, 10, 50, 25, 5, 15, 0 };
 vector<int> featureWeightsOpp = {1, 5, 25, 75, 2, 10, 50, 75};
 // vector<int> featureWeightsOpp = { 2, 10, 50, 250, 1, 5, 25, 125,};
-
-// vector<int> featureWeights = {1, 5, 25, 125, 2, 10, 50, 25, 5, 15, 0 };
 
 Board::Board() : Board(5) {}
 
@@ -75,10 +74,8 @@ Board::Board(int n) : rings(2), directions(6)
 Board::Board(int n, Board *board2Copy) : Board(n)
 {
     for (int i = 0; i < 2 * n + 2; i++)
-    {
         for (int j = 0; j < 2 * n + 2; j++)
             setState(i - n, j - n, board2Copy->getState(i - n, j - n));
-    }
 
     for (int i = 0; i < 2; i++)
     {
@@ -339,7 +336,6 @@ vector<pair<pair<int, int>, pair<int, int>>> Board::checkMarkersLine(pair<int, i
     newStartMarker.second += direction.second;
 
     while (validPosition(newStartMarker))
-    {
         if (getState(newStartMarker) != playerMarker)
         {
             newStartMarker.first += direction.first;
@@ -372,7 +368,6 @@ vector<pair<pair<int, int>, pair<int, int>>> Board::checkMarkersLine(pair<int, i
             newStartMarker.first = endMarker.first + 2 * direction.first;
             newStartMarker.second = endMarker.second + 2 * direction.second;
         }
-    }
 
     return combinationSequences;
 }
@@ -404,7 +399,6 @@ vector<pair<pair<int, int>, pair<int, int>>> Board::checkMarkers(pair<int, int> 
                 combinationSequences.push_back(returnedSequence.second);
         }
     }
-
     else if (newPosition.second == oldPosition.second)
     {
         int increment = newPosition.first < oldPosition.first ? -1 : 1;
@@ -637,7 +631,7 @@ void Board::getValidRemoveRingMoves(vector<Move> &moves, bool player)
         moves.push_back(Move(MoveType::removeRing, pos, pos));
 }
 
-int Board::evaluate(bool player,int moveCount)
+int Board::evaluate(bool player, int moveCount)
 {
     if (getRingsCount(player) <= 2)
         return INT_MAX - moveCount;
@@ -683,9 +677,7 @@ int Board::evaluate(bool player,int moveCount)
     //                     positionState = getState(checkPosition);
 
     //                 if (validPos && prevState == positionState)
-    //                 {
     //                     prevCount++;
-    //                 }
     //                 else
     //                 {
     //                     if (prevCount >= 1)
@@ -747,8 +739,6 @@ int Board::evaluate(bool player,int moveCount)
 
     // Give Feature Weights and Calculate Score for each player
 
-    //////  HERE HERE HERE HERE
-
     for (int i = -n; i <= n; i++)
     {
         bool validStartFound = false;
@@ -799,37 +789,29 @@ int Board::evaluate(bool player,int moveCount)
     ringsCount = this->counts[PositionStates::whiteRing];
     score1 = MARKERS_WEIGHT * markersCount + RINGS_WEIGHT * ringsCount;
 
-    for (int i = 0; i < featureWeights.size(); i++) {
-        if(player) {
-        score1 += scores[1][i] * featureWeights[i];
-        } else {
-        score1 += scores[1][i] * featureWeightsOpp[i];
-        }
-    }
+    for (int i = 0; i < featureWeights.size(); i++)
+        if (player)
+            score1 += scores[1][i] * featureWeights[i];
+        else
+            score1 += scores[1][i] * featureWeightsOpp[i];
 
-    // for (int i = 0; i < featureWeights.size(); i++){
-    //     for(int j=0;j<ringsCount;j++){
+    // for (int i = 0; i < featureWeights.size(); i++)
+    //     for (int j = 0; j < ringsCount; j++)
     //         score1 += features[1][j][i] * featureWeights[i];
-    //     }
-    // }
 
     markersCount = this->counts[PositionStates::blackMarker];
     ringsCount = this->counts[PositionStates::blackRing];
     score0 = MARKERS_WEIGHT * markersCount + RINGS_WEIGHT * ringsCount;
 
-    for (int i = 0; i < featureWeights.size(); i++){
-        if(player) {
-        score0 += scores[0][i] * featureWeightsOpp[i];
-        } else {
-        score0 += scores[0][i] * featureWeights[i];
-        }
-    }
+    for (int i = 0; i < featureWeights.size(); i++)
+        if (player)
+            score0 += scores[0][i] * featureWeightsOpp[i];
+        else
+            score0 += scores[0][i] * featureWeights[i];
 
-    // for (int i = 0; i < featureWeights.size(); i++){
-    //     for(int j=0;j<ringsCount;j++){
+    // for (int i = 0; i < featureWeights.size(); i++)
+    //     for (int j = 0; j < ringsCount; j++)
     //         score0 += features[0][j][i] * featureWeights[i];
-    //     }
-    // }
 
     return player ? OWN_SCORE_WEIGHT * score1 - score0 : OWN_SCORE_WEIGHT * score0 - score1;
 }

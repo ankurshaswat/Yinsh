@@ -93,7 +93,6 @@ pair<int, int> axial2hex(pair<int, int> axialCoord)
         }
     }
 
-    // Debug("# Util::axial2hex - Input=(" << a << ',' << b << ')' << " Output=(" << hex << ',' << pos << ')' << endl);
     return make_pair(hex, pos);
 }
 
@@ -104,15 +103,11 @@ pair<int, pair<int, int>> extractCoordinates(string str, int startPosition)
 
     int coord1 = 0;
     while (str[i] != ' ')
-    {
         coord1 = 10 * coord1 + str[i++] - '0';
-    }
     i++;
     int coord2 = 0;
     while (str[i] != ' ' && i < str.length())
-    {
         coord2 = 10 * coord2 + str[i++] - '0';
-    }
 
     return make_pair(i, hex2axial(make_pair(coord1, coord2)));
 }
@@ -127,14 +122,10 @@ int inclusiveMarkerCount(pair<int, int> p1, pair<int, int> p2)
 pair<int, int> makeUnit(pair<int, int> pos)
 {
     if (pos.first != 0)
-    {
         pos.first = pos.first / abs(pos.first);
-    }
 
     if (pos.second != 0)
-    {
         pos.second = pos.second / abs(pos.second);
-    }
 
     return pos;
 }
@@ -145,9 +136,7 @@ void printPointers(vector<vector<Move>> moveSequences)
     {
         Debug("# ");
         for (int j = 0; j < moveSequences[i].size(); j++)
-        {
             Debug(&moveSequences[i][j] << ' ');
-        }
         Debug(endl);
     }
 }
@@ -182,23 +171,17 @@ bool isIntersecting(Move m, Move n)
         if (pos1.first == pos2.first)
         {
             if (checkPosition.first == pos1.first && (checkPosition.second >= minV && checkPosition.second <= maxV))
-            {
                 return true;
-            }
         }
         else if (pos1.second == pos2.second)
         {
             if (checkPosition.second == pos1.second && (checkPosition.first >= minV && checkPosition.first <= maxV))
-            {
                 return true;
-            }
         }
         else
         {
             if (checkPosition.first - checkPosition.second == coordDiff && (checkPosition.first >= minV && checkPosition.first <= maxV))
-            {
                 return true;
-            }
         }
 
         checkPosition.first += direction.first;

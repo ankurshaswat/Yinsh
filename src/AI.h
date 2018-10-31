@@ -14,10 +14,6 @@ private:
   int boardSize;
   int n;
 
-public:
-  AI(Board *board, bool player, int time, int n);
-
-  void playMoveSeq(Move m);
   void printMove(Move m);
 
   /* Returns best move for min node (and its evaluation) */
@@ -28,6 +24,11 @@ public:
 
   void rowMoves(Board &board, bool player, vector<Move> &removeRowMoves, vector<Move> &moveSeq, vector<EvaluatedMoveSeq> &moveSequences, bool continuePlaying, int depth);
   void moveMarkerMoves(Board &board, vector<Move> &moveSeq, vector<EvaluatedMoveSeq> &moveSequences, bool player, int depth);
+
+public:
+  AI(Board *board, bool player, int time, int n);
+
+  void playMoveSeq(Move m);
 };
 
 #endif

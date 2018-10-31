@@ -34,6 +34,7 @@
         "typeinfo": "cpp",
         "utility": "cpp",
         "deque": "cpp",
-        "algorithm": "cpp"
+        "algorithm": "cpp",
+        "numeric": "cpp"
     }
 }
