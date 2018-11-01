@@ -1,3 +1,3 @@
 #!/bin/bash
-./yinsh2
+./yinsh6
 #./a.out

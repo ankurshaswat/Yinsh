@@ -127,6 +127,7 @@ class Client(Communicator):
 		retData = None
 		if(data == None):                       
 			print 'ERROR : TIMEOUT ON SERVER END'
+			sys.stdin.read(1)
 			super(Client,self).closeChildProcess()
 			super(Client,self).closeSocket()
 		else:
@@ -314,17 +315,27 @@ def game_loop(args):
 			success = game.execute_move(move)
 			if success == 2:
 				print 'OTHER PLAYER WINS!'
+				sys.stdin.read(1)
+			
+			
 				if player_id == '1':
 					print 'Your Score : ' + str(game.get_score(1))
 					print 'Opponent\'s Score : ' + str(game.get_score(2))
 				else:
 					print 'Your Score : ' + str(game.get_score(2))
 					print 'Opponent\'s Score : ' + str(game.get_score(1))
+			
+					
+
+			
 				break
 			else:                                   
 				client.SendData2Process(move)
 		else:
 			break
+		if not args.wait == 'F':
+			sys.stdin.read(1)
+		
 	client.closeChildProcess()
 	client.closeSocket()
 
@@ -334,5 +345,7 @@ if __name__ == '__main__':
 		parser.add_argument('port', metavar = '10000', type = int, help = 'Server port')
 		parser.add_argument('exe', metavar = 'run.sh', type = str, help = 'Your executable')
 		parser.add_argument('-mode', dest = 'mode', type = str, default = 'CUI', help = 'How to render. Set to "GUI" mode to render, else set to "CUI"')
+		parser.add_argument('-wait', dest = 'wait', type = str, default = 'F', help = 'Wait for key press')
+		
 		args = parser.parse_args()
 		game_loop(args)
