@@ -1,0 +1,274 @@
+Time remaining is: 150s
+You played : P 0 0
+Player 2 played : P 1 5
+Time remaining is: 150s
+You played : P 2 7
+Player 2 played : P 1 3
+Time remaining is: 150s
+You played : P 1 1
+Player 2 played : P 1 0
+Time remaining is: 150s
+You played : P 2 5
+Player 2 played : P 1 2
+Time remaining is: 150s
+You played : P 2 10
+Player 2 played : P 2 8
+Time remaining is: 150s
+You played : S 0 0 M 1 4
+Player 2 played : S 1 0 M 2 11
+Time remaining is: 150s
+You played : S 2 10 M 3 15
+Player 2 played : S 1 2 M 2 3
+Time remaining is: 149s
+You played : S 2 5 M 4 9
+Player 2 played : S 2 3 M 3 5
+Time remaining is: 149s
+You played : S 1 4 M 5 24
+Player 2 played : S 2 11 M 3 14
+Time remaining is: 148s
+You played : S 4 9 M 3 7
+Player 2 played : S 3 5 M 2 4
+Time remaining is: 147s
+You played : S 5 24 M 4 22
+Player 2 played : S 3 14 M 2 9
+Time remaining is: 146s
+You played : S 4 22 M 2 0
+Player 2 played : S 2 9 M 3 16
+Time remaining is: 145s
+You played : S 3 7 M 5 13
+Player 2 played : S 1 3 M 5 11
+Time remaining is: 145s
+You played : S 2 0 M 2 6
+Player 2 played : S 1 5 M 2 1
+Time remaining is: 144s
+You played : S 2 7 M 3 17
+Player 2 played : S 2 1 M 3 4
+Time remaining is: 144s
+You played : S 5 13 M 3 11
+Player 2 played : S 3 16 M 5 28
+Time remaining is: 144s
+You played : S 3 17 M 4 23
+Player 2 played : S 3 4 M 5 3
+Time remaining is: 143s
+You played : S 4 23 M 3 1
+Player 2 played : S 5 28 M 5 29
+Time remaining is: 143s
+You played : S 2 6 M 3 10
+Player 2 played : S 5 29 M 4 0
+Time remaining is: 142s
+You played : S 1 1 M 3 8
+Player 2 played : S 5 11 M 5 14
+Time remaining is: 142s
+You played : S 3 11 M 4 15
+Player 2 played : S 2 8 M 4 14
+Time remaining is: 114s
+You played : S 3 10 M 3 12
+Player 2 played : S 2 4 M 2 2
+Time remaining is: 91s
+
+
+
+From 2-0 to 2-3??
+
+***********************************
+
+-> You are player 2
+-> You are alloted a time of 150s
+
+***********************************
+
+Player 1 played : P 1 3
+Time remaining is: 150s
+You played : P 0 0
+Player 1 played : P 3 4
+Time remaining is: 150s
+You played : P 1 2
+Player 1 played : P 2 3
+Time remaining is: 150s
+You played : P 3 8
+Player 1 played : P 2 1
+Time remaining is: 150s
+You played : P 1 5
+Player 1 played : P 3 11
+Time remaining is: 150s
+You played : P 2 5
+Player 1 played : S 3 11 M 3 10
+Time remaining is: 150s
+You played : S 3 8 M 3 6
+Player 1 played : S 3 10 M 2 6
+Time remaining is: 150s
+You played : S 1 5 M 4 13
+Player 1 played : S 2 6 M 4 14
+Time remaining is: 149s
+You played : S 2 5 M 2 4
+Player 1 played : S 1 3 M 2 7
+Time remaining is: 149s
+You played : S 0 0 M 3 9
+Player 1 played : S 2 3 M 1 0
+Time remaining is: 149s
+You played : S 3 9 M 4 12
+Player 1 played : S 2 7 M 4 10
+Time remaining is: 148s
+You played : S 4 13 M 1 4
+Player 1 played : S 4 10 M 3 7
+Time remaining is: 148s
+You played : S 1 4 M 2 8 RS 1 5 RE 4 13 X 3 6
+Player 1 played : S 3 4 M 5 12
+Time remaining is: 148s
+You played : S 2 8 M 1 4
+Player 1 played : S 4 14 M 3 10
+Time remaining is: 147s
+You played : S 1 2 M 4 5
+Player 1 played : S 2 1 M 4 11
+Time remaining is: 147s
+You played : S 1 4 M 1 1
+Player 1 played : S 3 7 M 4 13
+Time remaining is: 147s
+You played : S 2 4 M 1 5
+Player 1 played : S 5 12 M 3 3
+Time remaining is: 146s
+You played : S 4 5 M 4 6
+Player 1 played : S 3 10 M 2 7
+Time remaining is: 146s
+You played : S 4 6 M 2 2 RS 4 5 RE 1 3 X 2 2
+Player 1 played : S 2 7 M 3 13 RS 2 7 RE 5 12 X 4 11
+Time remaining is: 146s
+You played : S 4 12 M 4 11
+Player 1 played : S 3 13 M 3 12
+Time remaining is: 146s
+You played : S 1 5 M 2 9
+Player 1 played : S 4 13 M 5 17
+Time remaining is: 146s
+You played : S 4 11 M 1 2
+Player 1 played : S 1 0 M 1 3
+Time remaining is: 145s
+You played : S 2 9 M 3 2
+Player 1 played : S 5 17 M 5 16
+Time remaining is: 144s
+You played : S 3 2 M 2 2
+Player 1 played : S 3 3 M 3 1
+Time remaining is: 144s
+You played : S 2 2 M 4 4
+Player 1 played : S 3 1 M 2 10
+Time remaining is: 144s
+You played : S 4 4 M 5 29
+Player 1 played : S 3 12 M 4 16
+Time remaining is: 143s
+You played : S 1 1 M 4 1
+Player 1 played : S 5 16 M 4 10 RS 3 12 RE 4 11 X 4 10
+Time remaining is: 142s
+You played : S 4 1 M 4 19
+Player 1 played : S 4 16 M 4 15
+Time remaining is: 141s
+You played : S 4 19 M 5 26
+Player 1 played : S 1 3 M 3 14
+Time remaining is: 141s
+You played : S 1 2 M 3 8
+ERROR : TIMEOUT ON CLIENT NETWORK ,ON OTHER CLIENT
+
+
+
+HOW DID IT LOSE??
+
+
+***********************************
+
+-> You are player 1
+-> You are alloted a time of 150s
+
+***********************************
+
+Time remaining is: 150s
+You played : P 0 0
+Player 2 played : P 3 10
+Time remaining is: 150s
+You played : P 2 9
+Player 2 played : P 2 8
+Time remaining is: 150s
+You played : P 3 8
+Player 2 played : P 1 2
+Time remaining is: 150s
+You played : P 1 0
+Player 2 played : P 3 1
+Time remaining is: 150s
+You played : P 2 11
+Player 2 played : P 2 7
+Time remaining is: 150s
+You played : S 2 9 M 3 16
+Player 2 played : S 2 7 M 1 4
+Time remaining is: 150s
+You played : S 3 16 M 4 21
+Player 2 played : S 1 4 M 3 14
+Time remaining is: 148s
+You played : S 4 21 M 5 27
+Player 2 played : S 1 2 M 1 3
+Time remaining is: 148s
+You played : S 5 27 M 2 2
+Player 2 played : S 1 3 M 2 6
+Time remaining is: 146s
+You played : S 3 8 M 1 1
+Player 2 played : S 3 14 M 4 18
+Time remaining is: 146s
+You played : S 1 0 M 3 13
+Player 2 played : S 2 8 M 2 10
+Time remaining is: 145s
+You played : S 2 11 M 2 0
+Player 2 played : S 2 10 M 4 22
+Time remaining is: 145s
+You played : S 3 13 M 1 5
+Player 2 played : S 2 6 M 4 10
+Time remaining is: 145s
+You played : S 0 0 M 3 9
+Player 2 played : S 4 22 M 5 28
+Time remaining is: 145s
+You played : S 3 9 M 4 13 RS 1 0 RE 3 9 X 2 0
+Player 2 played : S 5 28 M 5 26
+Time remaining is: 144s
+You played : S 1 1 M 1 0
+Player 2 played : S 3 1 M 2 5
+Time remaining is: 143s
+You played : S 2 2 M 2 1
+Player 2 played : S 4 10 M 3 2
+Time remaining is: 142s
+You played : S 1 5 M 3 15
+Player 2 played : S 3 10 M 3 17
+Time remaining is: 142s
+You played : S 4 13 M 5 16
+Player 2 played : S 5 26 M 4 19
+Time remaining is: 142s
+You played : S 1 0 M 4 17
+Player 2 played : S 4 18 M 2 6
+Time remaining is: 142s
+You played : S 5 16 M 5 19
+Player 2 played : S 2 6 M 0 0
+Time remaining is: 141s
+You played : S 4 17 M 3 12
+Player 2 played : S 0 0 M 1 3
+Time remaining is: 140s
+You played : S 3 12 M 4 16
+Player 2 played : S 1 3 M 3 11
+Time remaining is: 140s
+You played : S 4 16 M 4 12
+Player 2 played : S 3 11 M 5 22
+Time remaining is: 139s
+You played : S 2 1 M 5 21
+Player 2 played : S 3 17 M 2 0
+Time remaining is: 139s
+You played : S 5 19 M 2 3
+Player 2 played : S 2 0 M 3 0
+Time remaining is: 138s
+You played : S 4 12 M 4 14
+Player 2 played : S 2 5 M 2 4
+Time remaining is: 137s
+You played : S 2 3 M 4 15
+Player 2 played : RS 2 6 RE 2 0 X 3 2 S 4 19 M 1 3
+Time remaining is: 136s
+You played : S 5 21 M 1 0
+Player 2 played : S 5 22 M 2 0 RS 5 22 RE 3 10 X 2 4
+Time remaining is: 136s
+You played : S 1 0 M 3 5 RS 2 1 RE 3 13 X 3 5
+Player 2 played : S 1 3 M 3 11
+Time remaining is: 136s
+You played : S 4 15 M 5 18
+Player 2 played : S 3 11 M 2 9 RS 3 11 RE 2 3 X 3 0
+OTHER PLAYER WINS!

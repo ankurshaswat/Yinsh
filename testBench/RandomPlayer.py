@@ -7,9 +7,9 @@ class RandomPlayer:
 
 	def __init__(self):
 		data = sys.stdin.readline().strip().split() # Initialize Environment
-		self.player = int(data[0]) - 1 # player can have values 0 and 1
-		self.n = int(data[1]) # n can have values 5, 6, or 7
-		self.time_left = int(data[2])
+		self.player = 0 #int(data[0]) - 1 # player can have values 0 and 1
+		self.n = 5 #int(data[1]) # n can have values 5, 6, or 7
+		self.time_left = 150 # int(data[2])
 		self.game = Game(self.n)
 		self.RingPos = {}
 		self.play()
@@ -70,59 +70,50 @@ class RandomPlayer:
 	def play(self):
 		if self.player == 1:
 			move = sys.stdin.readline().strip()
-			self.game.execute_move(move)
+			# self.game.execute_move(move)
 
-		print('# TEST MESSAGE')
+		counter=0
+
+		moveList1=['P 1 3',
+		'P 3 4',
+		'P 2 3',
+		'P 2 1',
+		'P 3 11',
+		'S 3 11 M 3 10',
+		'S 3 10 M 2 6',
+		'S 2 6 M 4 14',
+		'S 1 3 M 2 7',
+		'S 2 3 M 1 0',
+		'S 2 7 M 4 10',
+		'S 4 10 M 3 7',
+		'S 3 4 M 5 12',
+		'S 4 14 M 3 10',
+		'S 2 1 M 4 11',
+		'S 3 7 M 4 13',
+		'S 5 12 M 3 3',
+		'S 3 10 M 2 7',
+		'S 2 7 M 3 13 RS 2 7 RE 5 12 X 4 11',
+		'S 3 13 M 3 12',
+		'S 4 13 M 5 17',
+		'S 1 0 M 1 3',
+		'S 5 17 M 5 16',
+		'S 3 3 M 3 1',
+		'S 3 1 M 2 10',
+		'S 3 12 M 4 16',
+		'S 5 16 M 4 10 RS 3 12 RE 4 11 X 4 10',
+		'S 4 16 M 4 15',
+		'S 1 3 M 3 14']
+
 		while True: # Keep playing moves till game is over
-			move_seq = []
-			while True: # Loop till valid move sequence is found
-				state = self.game.check_player_state()
-				if state == 0: ## Place Rings
-					moveP, i, hex, pos = self.placeRing()
-					success = self.game.execute_move(moveP)
-					if success != 0:
-						self.RingPos[i] = (hex, pos)
-						move_seq.append(moveP)
-						break
-				elif state == 1: ## Select a Ring and the Move to Valid Postion
-					moveS, i = self.selectRing()
-					moveM, hex, pos = self.moveRing()
-					self.game.execute_move(moveS)
-					state = self.game.check_player_state()
-					success = self.game.execute_move(moveM)
-					if success != 0:
-						self.RingPos[i] = (hex, pos)
-						state = self.game.check_player_state()
-						move_seq.append(moveS); move_seq.append(moveM)
-						if state != 3:
-							break
-				elif state == 2:
-					raise AssertionError("The player state cannot be 2 after a sequence of valid moves")
-				elif state == 3 or state == 6: ## Select Row to Remove (State 6 if other players your row)
-					move_start = self.removeRowStart()
-					success = self.game.execute_move(move_start)
-					if success != 0:
-						while True:
-							move_end = self.removeRowEnd()
-							success = self.game.execute_move(move_end)
-							if success != 0:
-								break
-						state = self.game.check_player_state()
-						move_seq.append(move_start); move_seq.append(move_end);
-				elif state == 4 or state == 7: ## Select Ring to Remove (State 7 if other players your row)
-					move, i = self.removeRing()
-					del self.RingPos[i]
-					self.game.execute_move(move)
-					move_seq.append(move)
-					if state == 7:
-						continue
-					state = self.game.check_player_state()
-					if state != 3:
-						break
-			self.play_move_seq(move_seq)
-			
-			## Execute Other Player Move Sequence
+			print('#'+str(counter) )
+			if(counter==len(moveList1)):
+				print("#Moves exhausted")
+				time.sleep(1000)
+			sys.stdout.write(moveList1[counter]+'\n')
+			sys.stdout.flush()
+			counter+=1
+
+
 			move = sys.stdin.readline().strip()
-			self.game.execute_move(move)
 
 random_player = RandomPlayer()
