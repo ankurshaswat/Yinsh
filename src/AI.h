@@ -12,7 +12,8 @@ private:
   double time;
   int moveCount;
   int boardSize;
-  int n;
+  int maxRings;
+  int consecutiveMarkers;
 
   void printMove(Move m);
 
@@ -26,7 +27,7 @@ private:
   void moveMarkerMoves(Board &board, vector<Move> &moveSeq, vector<EvaluatedMoveSeq> &moveSequences, bool player, int depth);
 
 public:
-  AI(Board *board, bool player, int time, int n);
+  AI(Board *board, bool player, int time, int n, int k);
 
   void playMoveSeq(Move m);
 };

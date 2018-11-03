@@ -10,7 +10,7 @@
 
 Inteface::Inteface()
 {
-    int playerInt = 0, n = 0, time = 0;
+    int playerInt = 0, n = 0, time_ = 0, k = 0;
     string str;
     getline(cin, str);
     int i = 0;
@@ -20,16 +20,18 @@ Inteface::Inteface()
     while (str[i] != ' ')
         n = 10 * n + str[i++] - '0';
     i++;
+    while (str[i] != ' ')
+        time_ = 10 * time_ + str[i++] - '0';
     while (str[i] != ' ' && i < str.length())
-        time = 10 * time + str[i++] - '0';
+        k = 10 * k + str[i++] - '0';
     playerInt--;
 
     bool player = playerInt == 1 ? true : false;
 
-    Debug("# Interface::Interface - n=" << n << " Player=" << player << " Time=" << time << endl);
+    Debug("# Interface::Interface - n=" << n << " Player=" << player << " Time=" << time_ << endl);
 
-    board = new Board(n);
-    ai = new AI(board, player, time, n);
+    board = new Board(n, k);
+    ai = new AI(board, player, time_, n, k);
 
     Move m;
 
