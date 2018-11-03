@@ -42,9 +42,9 @@ enum FeatureIndexes
 // };
 // int featureSizes = 11;
 
-vector<double> featureWeights = {0, 0, 25, 75, 150, 0, 0, 50, 75, 150};
+vector<double> featureWeights = {1, 5, 25, 75, 150, 2, 10, 50, 75, 150};
 // vector<int> featureWeights = {1, 5, 25, 125, 2, 10, 50, 25, 5, 15, 0 };
-vector<double> featureWeightsOpp = {0, 0, 25, 75, 150, 0, 0, 50, 75, 150};
+vector<double> featureWeightsOpp = {1, 5, 25, 75, 150, 2, 10, 50, 75, 150};
 // vector<int> featureWeightsOpp = { 2, 10, 50, 250, 1, 5, 25, 125,};
 
 Board::Board() : Board(5, 5) {}
@@ -604,7 +604,7 @@ void Board::getValidPlaceRingMoves(vector<Move> &moves, bool player)
     Debug("Board::getValidPlaceRingMoves - Player=" << player << endl);
     int count = 0, i = 0, j = 0, a, b;
 
-    vector<pair<int, int>> ringMoves{make_pair(0, 0), make_pair(1, 2), make_pair(3, 8), make_pair(1, 5), make_pair(2, 5)};
+    vector<pair<int, int>> ringMoves{make_pair(1, 0), make_pair(1, 1), make_pair(3, 0), make_pair(1, 4), make_pair(2, 0)};
 
     while (count < 1)
     {
@@ -788,7 +788,7 @@ int Board::evaluate(bool player, int moveCount)
 
     int markersCount, ringsCount;
     double score1, score0;
-    double MARKERS_WEIGHT = 1, RINGS_WEIGHT = -2000, OWN_SCORE_WEIGHT = 1.4;
+    double MARKERS_WEIGHT = 1, RINGS_WEIGHT = -2000, OWN_SCORE_WEIGHT = 1;
 
     markersCount = this->counts[PositionStates::whiteMarker];
     ringsCount = this->counts[PositionStates::whiteRing];
