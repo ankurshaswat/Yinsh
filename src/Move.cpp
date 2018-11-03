@@ -1,6 +1,6 @@
 #include "Move.h"
 
-Move::Move() : type(MoveType::placeRing), initPosition(make_pair(-9, -9)), finalPosition(make_pair(-9, -9)) {}
+Move::Move() : type(MoveType::placeRing), initPosition(make_pair(-100, -100)), finalPosition(make_pair(-100, -100)) {}
 Move::Move(const Move &other) : type(other.type), initPosition(other.initPosition), finalPosition(other.finalPosition) {}
 Move &Move::operator=(const Move &other)
 {

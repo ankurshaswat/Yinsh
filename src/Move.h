@@ -13,10 +13,10 @@ using namespace std;
 
 enum class MoveType
 {
-    placeRing = 0,
-    moveRing = 1,
-    removeRow = 2,
-    removeRing = 3
+    placeRing,
+    moveRing,
+    removeRow,
+    removeRing
 };
 
 struct Move

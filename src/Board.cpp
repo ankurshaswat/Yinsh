@@ -14,14 +14,16 @@ const int INT_MIN = numeric_limits<int>::min() + 1000;
 
 enum FeatureIndexes
 {
-    TwoMarker = 0,
-    ThreeMarker = 1,
-    FourMarker = 2,
-    FiveOrMoreMarker = 3,
-    TwoMarkerRing = 4,
-    ThreeMarkerRing = 5,
-    FourMarkerRing = 6,
-    FiveOrMoreMarkerRing = 7,
+    TwoMarker,
+    ThreeMarker,
+    FourMarker,
+    FiveMarker,
+    SixOrMoreMarker,
+    TwoMarkerRing,
+    ThreeMarkerRing,
+    FourMarkerRing,
+    FiveMarkerRing,
+    SixOrMoreMarkerRing
 };
 
 // enum Features
@@ -40,24 +42,27 @@ enum FeatureIndexes
 // };
 // int featureSizes = 11;
 
-vector<int> featureWeights = {1, 5, 25, 75, 2, 10, 50, 75};
+vector<int> featureWeights = {1, 5, 25, 75, 150, 2, 10, 50, 75, 150};
 // vector<int> featureWeights = {1, 5, 25, 125, 2, 10, 50, 25, 5, 15, 0 };
-vector<int> featureWeightsOpp = {1, 5, 25, 75, 2, 10, 50, 75};
+vector<int> featureWeightsOpp = {1, 5, 25, 75, 150, 2, 10, 50, 75, 150};
 // vector<int> featureWeightsOpp = { 2, 10, 50, 250, 1, 5, 25, 125,};
 
-Board::Board() : Board(5) {}
+Board::Board() : Board(5, 5) {}
 
-Board::Board(int n) : rings(2), directions(6)
+Board::Board(int N, int K) : rings(2), directions(6)
 {
-    this->n = n;
-    board = new int *[2 * n + 1];
-    for (int i = 0; i < 2 * n + 2; i++)
+    this->board_size = N;
+    this->consecutiveMarkers = K;
+    this->max_rings = (this->board_size == 5 && this->consecutiveMarkers == 5) ? 5 : 6;
+    board = new int *[2 * N + 1];
+    for (int i = 0; i < 2 * N + 2; i++)
     {
-        board[i] = new int[2 * n + 1];
-        for (int j = 0; j < 2 * n + 2; j++)
+        board[i] = new int[2 * N + 1];
+        for (int j = 0; j < 2 * N + 2; j++)
             board[i][j] = PositionStates::empty;
     }
 
+    // Counts for 5 different types of markers
     counts = new int[5];
     for (int i = 0; i < 5; i++)
         counts[i] = 0;
@@ -72,28 +77,14 @@ Board::Board(int n) : rings(2), directions(6)
     directions[5] = make_pair(-1, -1);
 }
 
-Board::Board(int n, Board *board2Copy) : Board(n)
-{
-    for (int i = 0; i < 2 * n + 2; i++)
-        for (int j = 0; j < 2 * n + 2; j++)
-            setState(i - n, j - n, board2Copy->getState(i - n, j - n));
-
-    for (int i = 0; i < 2; i++)
-    {
-        vector<pair<int, int>> tempRings = board2Copy->getRingPositions(i);
-        for (int j = 0; j < tempRings.size(); j++)
-            rings[i].push_back(tempRings[j]);
-    }
-}
-
 int Board::getState(pair<int, int> position)
 {
-    return board[position.first + n][position.second + n];
+    return board[position.first + this->board_size][position.second + this->board_size];
 }
 
 int Board::getState(int pos1, int pos2)
 {
-    return board[pos1 + n][pos2 + n];
+    return board[pos1 + this->board_size][pos2 + this->board_size];
 }
 
 bool Board::validPosition(pair<int, int> position)
@@ -101,11 +92,11 @@ bool Board::validPosition(pair<int, int> position)
     int absPos1 = abs(position.first);
     int absPos2 = abs(position.second);
     if (position.first == 0 || position.second == 0 || position.first == position.second)
-        return (absPos1 < n && absPos2 < n);
+        return (absPos1 < this->board_size && absPos2 < this->board_size);
     else if (position.first * position.second > 0)
-        return (absPos1 <= n && absPos2 <= n);
+        return (absPos1 <= this->board_size && absPos2 <= this->board_size);
     else
-        return (absPos1 + absPos2 <= n);
+        return (absPos1 + absPos2 <= this->board_size);
 }
 
 bool Board::validPlaceRing(pair<int, int> position)
@@ -193,25 +184,25 @@ void Board::removeRing(pair<int, int> position)
 
 void Board::setState(pair<int, int> position, int positionVal)
 {
-    int initialVal = board[position.first + n][position.second + n];
+    int initialVal = board[position.first + this->board_size][position.second + this->board_size];
     counts[initialVal]--;
-    board[position.first + n][position.second + n] = positionVal;
+    board[position.first + this->board_size][position.second + this->board_size] = positionVal;
     counts[positionVal]++;
 }
 
 void Board::setState(int position1, int position2, int positionVal)
 {
-    int initialVal = board[position1 + n][position2 + n];
+    int initialVal = board[position1 + this->board_size][position2 + this->board_size];
     counts[initialVal]--;
-    board[position1 + n][position2 + n] = positionVal;
+    board[position1 + this->board_size][position2 + this->board_size] = positionVal;
     counts[positionVal]++;
 }
 
 void Board::invertState(int pos1, int pos2)
 {
-    int initialVal = board[pos1 + n][pos2 + n];
+    int initialVal = board[pos1 + this->board_size][pos2 + this->board_size];
     counts[initialVal]--;
-    board[pos1 + n][pos2 + n] = -1 * initialVal;
+    board[pos1 + this->board_size][pos2 + this->board_size] = -1 * initialVal;
     counts[-initialVal]++;
 }
 
@@ -320,7 +311,7 @@ pair<bool, pair<pair<int, int>, pair<int, int>>> Board::checkMarkersLocal(pair<i
         endMarker.first += direction.first;
         endMarker.second += direction.second;
 
-        if (count >= 5)
+        if (count >= this->consecutiveMarkers)
             return make_pair(true, make_pair(startMarker, endMarker));
     }
 
@@ -363,7 +354,7 @@ vector<pair<pair<int, int>, pair<int, int>>> Board::checkMarkersLine(pair<int, i
             endMarker.first -= direction.first;
             endMarker.second -= direction.second;
 
-            if (count >= 5)
+            if (count >= this->consecutiveMarkers)
                 combinationSequences.push_back(make_pair(startMarker, endMarker));
 
             newStartMarker.first = endMarker.first + 2 * direction.first;
@@ -543,7 +534,7 @@ void Board::getValidRowMoves(Move prevMoveRing, vector<Move> &moves, bool player
         direction.second = end.second - start.second;
         direction = makeUnit(direction);
 
-        int count = inclusiveMarkerCount(row.first, row.second) - 4;
+        int count = inclusiveMarkerCount(row.first, row.second) - (this->consecutiveMarkers - 1);
         for (int offset = 0; offset < count; offset++)
         {
             pair<int, int> alternateStart;
@@ -551,8 +542,8 @@ void Board::getValidRowMoves(Move prevMoveRing, vector<Move> &moves, bool player
             alternateStart.second = start.second + offset * direction.second;
 
             pair<int, int> alternateEnd;
-            alternateEnd.first = start.first + (offset + 4) * direction.first;
-            alternateEnd.second = start.second + (offset + 4) * direction.second;
+            alternateEnd.first = start.first + (offset + (this->consecutiveMarkers - 1)) * direction.first;
+            alternateEnd.second = start.second + (offset + (this->consecutiveMarkers - 1)) * direction.second;
 
             moves.push_back(Move(MoveType::removeRow, alternateStart, alternateEnd));
         }
@@ -742,12 +733,12 @@ int Board::evaluate(bool player, int moveCount)
 
     // Give Feature Weights and Calculate Score for each player
 
-    for (int i = -n; i <= n; i++)
+    for (int i = -this->board_size; i <= this->board_size; i++)
     {
         bool validStartFound = false;
         int prevState = -3;
         int countSingleType = 0, countWithRing = 0;
-        for (int j = -n; j <= n; j++)
+        for (int j = -this->board_size; j <= this->board_size; j++)
         {
             pair<int, int> position = make_pair(i, j);
             bool breaker = counter(position, validStartFound, prevState, countSingleType, countWithRing, scores);
@@ -756,12 +747,12 @@ int Board::evaluate(bool player, int moveCount)
         }
     }
 
-    for (int j = -n; j <= n; j++)
+    for (int j = -this->board_size; j <= this->board_size; j++)
     {
         bool validStartFound = false;
         int prevState = -3;
         int countSingleType = 0, countWithRing = 0;
-        for (int i = -n; i <= n; i++)
+        for (int i = -this->board_size; i <= this->board_size; i++)
         {
             pair<int, int> position = make_pair(i, j);
             bool breaker = counter(position, validStartFound, prevState, countSingleType, countWithRing, scores);
@@ -770,13 +761,13 @@ int Board::evaluate(bool player, int moveCount)
         }
     }
 
-    for (int i = -n; i <= 0; i++)
-        for (int j = -n; j <= 0; j++)
+    for (int i = -this->board_size; i <= 0; i++)
+        for (int j = -this->board_size; j <= 0; j++)
         {
             bool validStartFound = false;
             int prevState = -3;
             int countWithRing = 0, countSingleType = 0;
-            for (int k = 0; k < 2 * n; k++)
+            for (int k = 0; k < 2 * this->board_size; k++)
             {
                 pair<int, int> position = make_pair(i + k, j + k);
                 bool breaker = counter(position, validStartFound, prevState, countSingleType, countWithRing, scores);
@@ -837,13 +828,13 @@ bool Board::counter(pair<int, int> &position, bool &validStartFound, int &prevSt
                 {
                 case PositionStates::whiteMarker:
                 case PositionStates::whiteRing:
-                    scores[1][min(countSingleType - 2, 3)] += 1;
+                    scores[1][min(countSingleType - 2, 4)] += 1;
                     countSingleType = 1;
 
                     break;
                 case PositionStates::blackMarker:
                 case PositionStates::blackRing:
-                    scores[0][min(countSingleType - 2, 3)] += 1;
+                    scores[0][min(countSingleType - 2, 4)] += 1;
                     countSingleType = 1;
 
                     break;
@@ -864,7 +855,7 @@ bool Board::counter(pair<int, int> &position, bool &validStartFound, int &prevSt
                         countWithRing++;
                     else
                     {
-                        scores[1][min(countWithRing + 2, 7)] += 1;
+                        scores[1][min(countWithRing + 3, 9)] += 1;
                         countWithRing = 1;
                     }
                     break;
@@ -874,7 +865,7 @@ bool Board::counter(pair<int, int> &position, bool &validStartFound, int &prevSt
                         countWithRing++;
                     else
                     {
-                        scores[0][min(countWithRing + 2, 7)] += 1;
+                        scores[0][min(countWithRing + 3, 9)] += 1;
                         countWithRing = 1;
                     }
                     break;
@@ -894,11 +885,11 @@ bool Board::counter(pair<int, int> &position, bool &validStartFound, int &prevSt
             {
             case PositionStates::whiteMarker:
             case PositionStates::whiteRing:
-                scores[1][min(countSingleType - 2, 3)] += 1;
+                scores[1][min(countSingleType - 2, 4)] += 1;
                 break;
             case PositionStates::blackMarker:
             case PositionStates::blackRing:
-                scores[0][min(countSingleType - 2, 3)] += 1;
+                scores[0][min(countSingleType - 2, 4)] += 1;
                 break;
             default:
                 break;
@@ -909,11 +900,11 @@ bool Board::counter(pair<int, int> &position, bool &validStartFound, int &prevSt
             {
             case PositionStates::whiteMarker:
             case PositionStates::whiteRing:
-                scores[1][min(countWithRing + 2, 7)] += 1;
+                scores[1][min(countWithRing + 3, 9)] += 1;
                 break;
             case PositionStates::blackMarker:
             case PositionStates::blackRing:
-                scores[0][min(countWithRing + 2, 7)] += 1;
+                scores[0][min(countWithRing + 3, 9)] += 1;
                 break;
             default:
                 break;
@@ -927,7 +918,7 @@ bool Board::counter(pair<int, int> &position, bool &validStartFound, int &prevSt
 
 int Board::getSize()
 {
-    return n;
+    return this->board_size;
 }
 
 int Board::getRingsCount(bool player)
@@ -938,7 +929,7 @@ int Board::getRingsCount(bool player)
 
 Board::~Board()
 {
-    for (int i = 0; i < 2 * n + 2; i++)
+    for (int i = 0; i < 2 * this->board_size + 2; i++)
         delete[] board[i];
     delete[] board;
     delete[] counts;

@@ -25,7 +25,9 @@ private:
   };
 
   int **board;
-  int n;
+  int board_size;
+  int max_rings;
+  int consecutiveMarkers;
   int *counts;
 
   int test=0; //for testing
@@ -57,8 +59,7 @@ private:
 
 public:
   Board();
-  Board(int n);
-  Board(int n, Board *board);
+  Board(int n,int k);
 
   void playMove(Move m, bool player);
   void undoMove(Move m, bool player);
