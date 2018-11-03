@@ -42,9 +42,9 @@ enum FeatureIndexes
 // };
 // int featureSizes = 11;
 
-vector<int> featureWeights = {1, 5, 25, 75, 150, 2, 10, 50, 75, 150};
+vector<int> featureWeights = {0, 0, 25, 75, 150, 0, 0, 50, 75, 150};
 // vector<int> featureWeights = {1, 5, 25, 125, 2, 10, 50, 25, 5, 15, 0 };
-vector<int> featureWeightsOpp = {1, 5, 25, 75, 150, 2, 10, 50, 75, 150};
+vector<int> featureWeightsOpp = {0, 0, 25, 75, 150, 0, 0, 50, 75, 150};
 // vector<int> featureWeightsOpp = { 2, 10, 50, 250, 1, 5, 25, 125,};
 
 Board::Board() : Board(5, 5) {}
@@ -164,13 +164,11 @@ bool Board::validMoveRing(pair<int, int> newPosition, pair<int, int> currentPosi
 
 void Board::removeMarker(pair<int, int> position)
 {
-    Debug("Board::removeMarker - (" << position.first << ',' << position.second << ')' << endl);
     setState(position, PositionStates::empty);
 }
 
 void Board::removeRing(pair<int, int> position)
 {
-    Debug("Board::removeRing - (" << position.first << ',' << position.second << ')' << endl);
     bool player = getState(position) > 0;
     int ringIndex = player ? 1 : 0;
     for (auto it = rings[ringIndex].begin(); it != rings[ringIndex].end(); ++it)
@@ -208,9 +206,6 @@ void Board::invertState(int pos1, int pos2)
 
 bool Board::placeRing(pair<int, int> position, bool player)
 {
-    Debug("Board::placeRing - Player=" << player
-                                       << " Position=(" << position.first << ',' << position.second << ')' << endl);
-
     int playerRing = player ? PositionStates::whiteRing : PositionStates::blackRing;
 
     int ringIndex = player ? 1 : 0;
@@ -221,10 +216,6 @@ bool Board::placeRing(pair<int, int> position, bool player)
 
 bool Board::moveRing(pair<int, int> newPosition, pair<int, int> currentPosition, bool player)
 {
-    Debug("Board::moveRing - Player=" << player
-                                      << " OldPosition=(" << currentPosition.first << ',' << currentPosition.second
-                                      << ") NewPosition=(" << newPosition.first << ',' << newPosition.second << endl);
-
     int playerRing = player ? PositionStates::whiteRing : PositionStates::blackRing;
     int playerMarker = player ? PositionStates::whiteMarker : PositionStates::blackMarker;
     setState(currentPosition, playerMarker);
@@ -431,9 +422,6 @@ vector<pair<pair<int, int>, pair<int, int>>> Board::checkMarkers(pair<int, int> 
 
 void Board::removeMarkers(pair<int, int> startSeries, pair<int, int> endSeries)
 {
-    Debug("# Board::removeMarkers - StartPosition=(" << startSeries.first << ',' << startSeries.second
-                                                     << ") EndPosition=(" << endSeries.first << ',' << endSeries.second << endl);
-
     if (startSeries.first == endSeries.first)
     {
         int increment = startSeries.second < endSeries.second ? -1 : 1;
@@ -485,33 +473,54 @@ void Board::placeMarkers(pair<int, int> startSeries, pair<int, int> endSeries, b
 
 void Board::playMove(Move m, bool player)
 {
-
     MoveType type = m.type;
     if (type == MoveType::placeRing)
+    {
+        Debug("Board::playMove PlaceRing - Position=(" << m.initPosition.first << ',' << m.initPosition.second << ')' << endl);
         placeRing(m.initPosition, player);
+    }
     else if (type == MoveType::moveRing)
+    {
+        Debug("Board::playMove MoveRing - CurrentPosition=(" << m.initPosition.first << ',' << m.initPosition.second << ") NewPosition=(" << m.finalPosition.first << ',' << m.finalPosition.second << ')' << endl);
         moveRing(m.finalPosition, m.initPosition, player);
+    }
     else if (type == MoveType::removeRing)
+    {
+        Debug("Board::playMove RemoveRing - Position=(" << m.initPosition.first << ',' << m.initPosition.second << ')' << endl);
         removeRing(m.initPosition);
+    }
     else
+    {
+        Debug("Board::playMove RemoveMarkers - StartPosition=(" << m.initPosition.first << ',' << m.initPosition.second << ") EndPosition=(" << m.finalPosition.first << ',' << m.finalPosition.second << ')' << endl);
         removeMarkers(m.initPosition, m.finalPosition);
+    }
 }
 
 void Board::undoMove(Move m, bool player)
 {
     MoveType type = m.type;
     if (type == MoveType::placeRing)
+    {
+        Debug("Board::undoMove PlaceRing - Position=(" << m.initPosition.first << ',' << m.initPosition.second << ')' << endl);
         removeRing(m.initPosition);
+    }
     else if (type == MoveType::moveRing)
     {
+        Debug("Board::undoMove MoveRing - CurrentPosition=(" << m.initPosition.first << ',' << m.initPosition.second << ") NewPosition=(" << m.finalPosition.first << ',' << m.finalPosition.second << ')' << endl);
         setState(m.initPosition, PositionStates::empty);
         moveRing(m.initPosition, m.finalPosition, player);
         setState(m.finalPosition, PositionStates::empty);
     }
     else if (type == MoveType::removeRing)
+    {
+        Debug("Board::undoMove RemoveRing - Position=(" << m.initPosition.first << ',' << m.initPosition.second << ')' << endl);
         placeRing(m.initPosition, player);
+    }
     else
+    {
+        Debug("Board::undoMove RemoveMarkers - StartPosition=(" << m.initPosition.first << ',' << m.initPosition.second << ") EndPosition=(" << m.finalPosition.first << ',' << m.finalPosition.second << ')' << endl);
         placeMarkers(m.initPosition, m.finalPosition, player);
+    }
 }
 
 bool Board::isWin(bool player)
@@ -595,13 +604,13 @@ void Board::getValidPlaceRingMoves(vector<Move> &moves, bool player)
     Debug("Board::getValidPlaceRingMoves - Player=" << player << endl);
     int count = 0, i = 0, j = 0, a, b;
 
-    vector<pair<int,int>> ringMoves{make_pair(0,0),make_pair(1,2), make_pair(3,8), make_pair(1,5),make_pair(2,5)};
+    vector<pair<int, int>> ringMoves{make_pair(0, 0), make_pair(1, 2), make_pair(3, 8), make_pair(1, 5), make_pair(2, 5)};
 
     while (count < 1)
     {
-        std::cout<<"#TEST: "<< test<<"\n";
-        i=ringMoves[test].first;
-        j=ringMoves[test].second;
+        std::cout << "#TEST: " << test << "\n";
+        i = ringMoves[test].first;
+        j = ringMoves[test].second;
 
         pair<int, int> pos = hex2axial(make_pair(i, j));
         if (validPosition(pos) && getState(pos) == PositionStates::empty)
@@ -611,9 +620,8 @@ void Board::getValidPlaceRingMoves(vector<Move> &moves, bool player)
         }
         // i = (rand() % (4)) - 2;
         // j = (rand() % (4)) - 2;
-
     }
-    std::cout<<"#Ring Moves: "<< moves.size()<<"\n";
+    std::cout << "#Ring Moves: " << moves.size() << "\n";
     test++;
 };
 
