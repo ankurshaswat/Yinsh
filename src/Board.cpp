@@ -42,9 +42,9 @@ enum FeatureIndexes
 // };
 // int featureSizes = 11;
 
-vector<int> featureWeights = {0, 0, 25, 75, 150, 0, 0, 50, 75, 150};
+vector<double> featureWeights = {0, 0, 25, 75, 150, 0, 0, 50, 75, 150};
 // vector<int> featureWeights = {1, 5, 25, 125, 2, 10, 50, 25, 5, 15, 0 };
-vector<int> featureWeightsOpp = {0, 0, 25, 75, 150, 0, 0, 50, 75, 150};
+vector<double> featureWeightsOpp = {0, 0, 25, 75, 150, 0, 0, 50, 75, 150};
 // vector<int> featureWeightsOpp = { 2, 10, 50, 250, 1, 5, 25, 125,};
 
 Board::Board() : Board(5, 5) {}
@@ -641,7 +641,7 @@ int Board::evaluate(bool player, int moveCount)
     if (getRingsCount(!player) <= 2)
         return INT_MIN + moveCount;
 
-    vector<vector<int>> scores(2, vector<int>(featureWeights.size()));
+    vector<vector<int>> featureCounts(2, vector<int>(featureWeights.size()));
 
     // vector<vector<vector<int>>> features(2, vector<vector<int>>(5, vector<int>(featureSizes)));
 
@@ -749,7 +749,7 @@ int Board::evaluate(bool player, int moveCount)
         for (int j = -this->board_size; j <= this->board_size; j++)
         {
             pair<int, int> position = make_pair(i, j);
-            bool breaker = counter(position, validStartFound, prevState, countSingleType, countWithRing, scores);
+            bool breaker = counter(position, validStartFound, prevState, countSingleType, countWithRing, featureCounts);
             if (breaker)
                 break;
         }
@@ -763,7 +763,7 @@ int Board::evaluate(bool player, int moveCount)
         for (int i = -this->board_size; i <= this->board_size; i++)
         {
             pair<int, int> position = make_pair(i, j);
-            bool breaker = counter(position, validStartFound, prevState, countSingleType, countWithRing, scores);
+            bool breaker = counter(position, validStartFound, prevState, countSingleType, countWithRing, featureCounts);
             if (breaker)
                 break;
         }
@@ -772,20 +772,23 @@ int Board::evaluate(bool player, int moveCount)
     for (int i = -this->board_size; i <= 0; i++)
         for (int j = -this->board_size; j <= 0; j++)
         {
+            if (abs(i) != this->board_size && abs(j) != this->board_size)
+                continue;
             bool validStartFound = false;
             int prevState = -3;
             int countWithRing = 0, countSingleType = 0;
             for (int k = 0; k < 2 * this->board_size; k++)
             {
                 pair<int, int> position = make_pair(i + k, j + k);
-                bool breaker = counter(position, validStartFound, prevState, countSingleType, countWithRing, scores);
+                bool breaker = counter(position, validStartFound, prevState, countSingleType, countWithRing, featureCounts);
                 if (breaker)
                     break;
             }
         }
 
-    int markersCount, ringsCount, score1, score0;
-    int MARKERS_WEIGHT = 1, RINGS_WEIGHT = -2000, OWN_SCORE_WEIGHT = 1;
+    int markersCount, ringsCount;
+    double score1, score0;
+    double MARKERS_WEIGHT = 1, RINGS_WEIGHT = -2000, OWN_SCORE_WEIGHT = 1.4;
 
     markersCount = this->counts[PositionStates::whiteMarker];
     ringsCount = this->counts[PositionStates::whiteRing];
@@ -793,9 +796,9 @@ int Board::evaluate(bool player, int moveCount)
 
     for (int i = 0; i < featureWeights.size(); i++)
         if (player)
-            score1 += scores[1][i] * featureWeights[i];
+            score1 += featureCounts[1][i] * featureWeights[i];
         else
-            score1 += scores[1][i] * featureWeightsOpp[i];
+            score1 += featureCounts[1][i] * featureWeightsOpp[i];
 
     // for (int i = 0; i < featureWeights.size(); i++)
     //     for (int j = 0; j < ringsCount; j++)
@@ -807,9 +810,9 @@ int Board::evaluate(bool player, int moveCount)
 
     for (int i = 0; i < featureWeights.size(); i++)
         if (player)
-            score0 += scores[0][i] * featureWeightsOpp[i];
+            score0 += featureCounts[0][i] * featureWeightsOpp[i];
         else
-            score0 += scores[0][i] * featureWeights[i];
+            score0 += featureCounts[0][i] * featureWeights[i];
 
     // for (int i = 0; i < featureWeights.size(); i++)
     //     for (int j = 0; j < ringsCount; j++)
