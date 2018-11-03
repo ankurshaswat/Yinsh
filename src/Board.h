@@ -28,6 +28,8 @@ private:
   int n;
   int *counts;
 
+  int test=0; //for testing
+
   vector<pair<int, int>> directions;
   vector<vector<pair<int, int>>> rings;
 

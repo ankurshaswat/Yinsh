@@ -1,4 +1,5 @@
 #include <limits>
+#include <iostream>
 #include "Board.h"
 #include "Util.h"
 
@@ -603,24 +604,26 @@ void Board::getValidPlaceRingMoves(vector<Move> &moves, bool player)
     Debug("Board::getValidPlaceRingMoves - Player=" << player << endl);
     int count = 0, i = 0, j = 0, a, b;
 
+    vector<pair<int,int>> ringMoves{make_pair(0,0),make_pair(1,2), make_pair(3,8), make_pair(1,5),make_pair(2,5)};
+
     while (count < 1)
     {
-        // i = (rand() % (2 * n + 1)) - n;
-        // j = (rand() % (2 * n + 1)) - n;
-        pair<int, int> pos = make_pair(i, j);
+        std::cout<<"#TEST: "<< test<<"\n";
+        i=ringMoves[test].first;
+        j=ringMoves[test].second;
+
+        pair<int, int> pos = hex2axial(make_pair(i, j));
         if (validPosition(pos) && getState(pos) == PositionStates::empty)
         {
             moves.push_back(Move(MoveType::placeRing, pos, pos));
             count++;
         }
-        i = (rand() % (4)) - 2;
-        j = (rand() % (4)) - 2;
+        // i = (rand() % (4)) - 2;
+        // j = (rand() % (4)) - 2;
 
-        // a=(rand()%3)-1;
-        // b=(rand()%3)-1;
-        // i+=a;
-        // j+=b;
     }
+    std::cout<<"#Ring Moves: "<< moves.size()<<"\n";
+    test++;
 };
 
 void Board::getValidRemoveRingMoves(vector<Move> &moves, bool player)
