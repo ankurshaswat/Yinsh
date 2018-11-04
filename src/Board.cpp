@@ -1,5 +1,6 @@
 #include <limits>
 #include <iostream>
+#include <math.h>
 #include "Board.h"
 #include "Util.h"
 
@@ -23,29 +24,31 @@ enum FeatureIndexes
     ThreeMarkerRing,
     FourMarkerRing,
     FiveMarkerRing,
-    SixOrMoreMarkerRing
+    SixOrMoreMarkerRing,
+    DistRing1,
+    DistRing2,
+    DistRing3,
+    DistRing4,
+    DistRing5,
+    DistRing6,
+    MarkersCount,
+    RingsCount,
+    Ring1Freedom,
+    Ring2Freedom,
+    Ring3Freedom,
+    Ring4Freedom,
+    Ring5Freedom,
+    Ring6Freedom,
+    Ring1JumpPositions,
+    Ring2JumpPositions,
+    Ring3JumpPositions,
+    Ring4JumpPositions,
+    Ring5JumpPositions,
+    Ring6JumpPositions,
 };
 
-// enum Features
-// {
-//     OneMarkerSelf = 0,
-//     TwoMarkerSelf = 1,
-//     ThreeMarkerSelf = 2,
-//     FourMarkerSelf = 3,
-//     OneMarkerOpp = 4,
-//     TwoMarkerOpp = 5,
-//     ThreeMarkerOpp = 6,
-//     FourMarkerOpp = 7,
-//     SelfRing = 8,
-//     OppRing = 9,
-//     Empty = 10,
-// };
-// int featureSizes = 11;
-
-vector<double> featureWeights = {1, 5, 25, 75, 150, 2, 10, 50, 75, 150};
-// vector<int> featureWeights = {1, 5, 25, 125, 2, 10, 50, 25, 5, 15, 0 };
-vector<double> featureWeightsOpp = {1, 5, 25, 75, 150, 2, 10, 50, 75, 150};
-// vector<int> featureWeightsOpp = { 2, 10, 50, 250, 1, 5, 25, 125,};
+vector<double> featureWeights = {1, 5, 25, 75, 150, 2, 10, 50, 75, 150, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+vector<double> featureWeightsOpp = {1, 5, 25, 75, 150, 2, 10, 50, 75, 150, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
 Board::Board() : Board(5, 5) {}
 
@@ -641,105 +644,37 @@ int Board::evaluate(bool player, int moveCount)
     if (getRingsCount(!player) <= 2)
         return INT_MIN + moveCount;
 
-    vector<vector<int>> featureCounts(2, vector<int>(featureWeights.size()));
+    vector<vector<double>> featureCounts(2, vector<double>(featureWeights.size()));
 
-    // vector<vector<vector<int>>> features(2, vector<vector<int>>(5, vector<int>(featureSizes)));
+    this->featureGenerator(featureCounts);
 
-    // vector<pair<int, int>> rings;
-    // pair<int, int> ringPosition, direction, checkPosition;
-    // bool jumpedMarker, validPos;
-    // int prevCount, prevState, positionState;
-    // vector<vector<int>> possibleMoves(2, vector<int>(5));
+    double score1 = 0, score0 = 0;
 
-    // for (int player = 0; player < 2; player++)
-    // {
-    //     rings = getRingPositions(player);
-    //     for (int ringNum = 0; ringNum < rings.size(); ringNum++)
-    //     {
-    //         ringPosition = rings[ringNum];
-    //         prevCount = 0;
-    //         prevState = -3,
-    //         positionState = -3;
+    for (int i = 0; i < featureWeights.size(); i++)
+        if (player)
+            score1 += featureCounts[1][i] * featureWeights[i];
+        else
+            score1 += featureCounts[1][i] * featureWeightsOpp[i];
 
-    //         for (int directionNum = 0; directionNum < directions.size(); directionNum++)
-    //         {
-    //             direction = directions[directionNum];
-    //             checkPosition = ringPosition;
+    for (int i = 0; i < featureWeights.size(); i++)
+        if (player)
+            score0 += featureCounts[0][i] * featureWeightsOpp[i];
+        else
+            score0 += featureCounts[0][i] * featureWeights[i];
 
-    //             jumpedMarker = false;
+    return player ? score1 - score0 : score0 - score1;
+}
 
-    //             while (true)
-    //             {
-    //                 checkPosition.first += direction.first;
-    //                 checkPosition.second += direction.second;
+void Board::featureGenerator(vector<vector<double>> &featureCounts)
+{
+    // Marker and ring count
 
-    //                 validPos = validPosition(checkPosition);
+    featureCounts[0][FeatureIndexes::MarkersCount] = this->counts[PositionStates::blackMarker];
+    featureCounts[0][FeatureIndexes::RingsCount] = this->counts[PositionStates::blackRing];
+    featureCounts[1][FeatureIndexes::MarkersCount] = this->counts[PositionStates::whiteMarker];
+    featureCounts[1][FeatureIndexes::RingsCount] = this->counts[PositionStates::whiteRing];
 
-    //                 if (validPos)
-    //                     positionState = getState(checkPosition);
-
-    //                 if (validPos && prevState == positionState)
-    //                     prevCount++;
-    //                 else
-    //                 {
-    //                     if (prevCount >= 1)
-    //                         switch (prevState)
-    //                         {
-    //                         case PositionStates::whiteMarker:
-    //                             if (player)
-    //                                 features[player][ringNum][min(prevCount - 1, 3)]++;
-    //                             else
-    //                                 features[player][ringNum][min(prevCount + 3, 7)]++;
-    //                             break;
-    //                         case PositionStates::blackMarker:
-    //                             if (player)
-    //                                 features[player][ringNum][min(prevCount + 3, 7)]++;
-    //                             else
-    //                                 features[player][ringNum][min(prevCount - 1, 3)]++;
-    //                             break;
-    //                         case PositionStates::whiteRing:
-    //                             if (player)
-    //                                 features[player][ringNum][Features::SelfRing] += 1;
-    //                             else
-    //                                 features[player][ringNum][Features::OppRing] += 1;
-    //                             break;
-    //                         case PositionStates::blackRing:
-    //                             if (player)
-    //                                 features[player][ringNum][Features::OppRing] += 1;
-    //                             else
-    //                                 features[player][ringNum][Features::SelfRing] += 1;
-    //                             break;
-    //                         case PositionStates::empty:
-    //                             features[player][ringNum][Features::Empty] += prevCount;
-    //                             break;
-    //                         default:
-    //                             break;
-    //                         }
-    //                     prevCount = 1;
-
-    //                     if (!validPos)
-    //                         break;
-    //                 }
-
-    //                 jumpedMarker = jumpedMarker || (positionState == PositionStates::blackMarker) || (positionState == PositionStates::whiteMarker);
-
-    //                 if (positionState == PositionStates::whiteRing || positionState == PositionStates::blackRing)
-    //                     break;
-    //                 else if (positionState == PositionStates::empty)
-    //                 {
-    //                     possibleMoves[player][ringNum]++;
-
-    //                     if (jumpedMarker)
-    //                         break;
-    //                 }
-
-    //                 prevState = positionState;
-    //             }
-    //         }
-    //     }
-    // }
-
-    // Give Feature Weights and Calculate Score for each player
+    // Calculate counts for structures
 
     for (int i = -this->board_size; i <= this->board_size; i++)
     {
@@ -786,42 +721,66 @@ int Board::evaluate(bool player, int moveCount)
             }
         }
 
-    int markersCount, ringsCount;
-    double score1, score0;
-    double MARKERS_WEIGHT = 1, RINGS_WEIGHT = -2000, OWN_SCORE_WEIGHT = 1;
+    // Calculate Counts for distances
 
-    markersCount = this->counts[PositionStates::whiteMarker];
-    ringsCount = this->counts[PositionStates::whiteRing];
-    score1 = MARKERS_WEIGHT * markersCount + RINGS_WEIGHT * ringsCount;
+    for (int i = 0; i < 2; i++)
+        for (int j = 0; j < rings[i].size(); j++)
+        {
+            pair<int, int> position = rings[i][j];
+            double dist = sqrt(pow(position.first, 2) + pow(position.second, 2));
+            featureCounts[i][j + 10] = dist;
+        }
 
-    for (int i = 0; i < featureWeights.size(); i++)
-        if (player)
-            score1 += featureCounts[1][i] * featureWeights[i];
-        else
-            score1 += featureCounts[1][i] * featureWeightsOpp[i];
+    // Calculate degree of freedom and available Jump spaces
 
-    // for (int i = 0; i < featureWeights.size(); i++)
-    //     for (int j = 0; j < ringsCount; j++)
-    //         score1 += features[1][j][i] * featureWeights[i];
+    for (int player = 0; player < 2; player++)
+    {
+        for (int i = 0; i < rings[player].size(); i++)
+        {
+            pair<int, int> ringPosition = rings[player][i];
+            int jumpPositions = 0;
+            vector<bool> freedoms(6);
 
-    markersCount = this->counts[PositionStates::blackMarker];
-    ringsCount = this->counts[PositionStates::blackRing];
-    score0 = MARKERS_WEIGHT * markersCount + RINGS_WEIGHT * ringsCount;
+            for (int j = 0; j < directions.size(); j++)
+            {
+                pair<int, int> direction = directions[j];
+                pair<int, int> checkPosition = ringPosition;
 
-    for (int i = 0; i < featureWeights.size(); i++)
-        if (player)
-            score0 += featureCounts[0][i] * featureWeightsOpp[i];
-        else
-            score0 += featureCounts[0][i] * featureWeights[i];
+                bool jumpedMarker = false;
 
-    // for (int i = 0; i < featureWeights.size(); i++)
-    //     for (int j = 0; j < ringsCount; j++)
-    //         score0 += features[0][j][i] * featureWeights[i];
+                while (true)
+                {
+                    checkPosition.first += direction.first;
+                    checkPosition.second += direction.second;
 
-    return player ? OWN_SCORE_WEIGHT * score1 - score0 : OWN_SCORE_WEIGHT * score0 - score1;
+                    if (!validPosition(checkPosition))
+                        break;
+
+                    int positionState = getState(checkPosition);
+
+                    jumpedMarker = jumpedMarker || (positionState == PositionStates::blackMarker) || (positionState == PositionStates::whiteMarker);
+
+                    if (positionState == PositionStates::whiteRing || positionState == PositionStates::blackRing)
+                        break;
+                    else if (positionState == PositionStates::empty)
+                    {
+                        jumpPositions++;
+                        freedoms[j] = true;
+                        if (jumpedMarker)
+                            break;
+                    }
+                }
+            }
+
+            featureCounts[player][FeatureIndexes::Ring1JumpPositions + i] = jumpPositions;
+            for (int freedomsCount = 0; freedomsCount < freedoms.size(); freedomsCount++)
+                if (freedoms[freedomsCount])
+                    featureCounts[player][FeatureIndexes::Ring1Freedom + i]++;
+        }
+    }
 }
 
-bool Board::counter(pair<int, int> &position, bool &validStartFound, int &prevState, int &countSingleType, int &countWithRing, vector<vector<int>> &scores)
+bool Board::counter(pair<int, int> &position, bool &validStartFound, int &prevState, int &countSingleType, int &countWithRing, vector<vector<double>> &featureCounts)
 {
     if (validPosition(position))
     {
@@ -839,13 +798,13 @@ bool Board::counter(pair<int, int> &position, bool &validStartFound, int &prevSt
                 {
                 case PositionStates::whiteMarker:
                 case PositionStates::whiteRing:
-                    scores[1][min(countSingleType - 2, 4)] += 1;
+                    featureCounts[1][min(countSingleType - 2, 4)] += 1;
                     countSingleType = 1;
 
                     break;
                 case PositionStates::blackMarker:
                 case PositionStates::blackRing:
-                    scores[0][min(countSingleType - 2, 4)] += 1;
+                    featureCounts[0][min(countSingleType - 2, 4)] += 1;
                     countSingleType = 1;
 
                     break;
@@ -866,7 +825,7 @@ bool Board::counter(pair<int, int> &position, bool &validStartFound, int &prevSt
                         countWithRing++;
                     else
                     {
-                        scores[1][min(countWithRing + 3, 9)] += 1;
+                        featureCounts[1][min(countWithRing + 3, 9)] += 1;
                         countWithRing = 1;
                     }
                     break;
@@ -876,7 +835,7 @@ bool Board::counter(pair<int, int> &position, bool &validStartFound, int &prevSt
                         countWithRing++;
                     else
                     {
-                        scores[0][min(countWithRing + 3, 9)] += 1;
+                        featureCounts[0][min(countWithRing + 3, 9)] += 1;
                         countWithRing = 1;
                     }
                     break;
@@ -896,11 +855,11 @@ bool Board::counter(pair<int, int> &position, bool &validStartFound, int &prevSt
             {
             case PositionStates::whiteMarker:
             case PositionStates::whiteRing:
-                scores[1][min(countSingleType - 2, 4)] += 1;
+                featureCounts[1][min(countSingleType - 2, 4)] += 1;
                 break;
             case PositionStates::blackMarker:
             case PositionStates::blackRing:
-                scores[0][min(countSingleType - 2, 4)] += 1;
+                featureCounts[0][min(countSingleType - 2, 4)] += 1;
                 break;
             default:
                 break;
@@ -911,11 +870,11 @@ bool Board::counter(pair<int, int> &position, bool &validStartFound, int &prevSt
             {
             case PositionStates::whiteMarker:
             case PositionStates::whiteRing:
-                scores[1][min(countWithRing + 3, 9)] += 1;
+                featureCounts[1][min(countWithRing + 3, 9)] += 1;
                 break;
             case PositionStates::blackMarker:
             case PositionStates::blackRing:
-                scores[0][min(countWithRing + 3, 9)] += 1;
+                featureCounts[0][min(countWithRing + 3, 9)] += 1;
                 break;
             default:
                 break;

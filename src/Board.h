@@ -45,7 +45,7 @@ private:
   pair<bool, pair<pair<int, int>, pair<int, int>>> checkMarkersLocal(pair<int, int> position, pair<int, int> direction, bool player);
   vector<pair<pair<int, int>, pair<int, int>>> checkMarkersLine(pair<int, int> oldPosition, pair<int, int> newPosition, bool player);
   void placeMarkers(pair<int, int> startPosition, pair<int, int> endPosition, bool player);
-  bool counter(pair<int, int> &position, bool &validStartFound, int &prevState, int &countSingleType, int &countWithRing, vector<vector<int>> &scores);
+  bool counter(pair<int, int> &position, bool &validStartFound, int &prevState, int &countSingleType, int &countWithRing, vector<vector<double>> &featureCounts);
 
   vector<pair<int, int>> getRingPositions(bool player);
 
@@ -56,6 +56,8 @@ private:
 
   /* Private member access functions */
   int getSize();
+
+  void featureGenerator(vector<vector<double>> &featureCounts);
 
 public:
   Board();
