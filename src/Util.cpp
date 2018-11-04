@@ -5,6 +5,7 @@
  */
 
 #include "Util.h"
+#include <iostream>
 
 #ifdef USEDEBUG
 #define Debug(x) std::cout << "# " << x
@@ -14,7 +15,7 @@
 
 pair<int, int> hex2axial(pair<int, int> hexCoord)
 {
-    Debug("# Util::hex2axial - Input=(" << hexCoord.first << ',' << hexCoord.second << ')' << endl);
+    Debug("Util::hex2axial - Input=(" << hexCoord.first << ',' << hexCoord.second << ')' << endl);
 
     int c1 = hexCoord.first;
     if (c1 == 0)
@@ -39,7 +40,7 @@ pair<int, int> hex2axial(pair<int, int> hexCoord)
     case 5:
         return make_pair(c2 - c1, c2);
     default:
-        Debug("# Util::hex2axial Unknown Case" << endl);
+        Debug("Util::hex2axial Unknown Case" << endl);
         return make_pair(0, 0);
     }
 }
@@ -134,7 +135,6 @@ void printPointers(vector<vector<Move>> moveSequences)
 {
     for (int i = 0; i < moveSequences.size(); i++)
     {
-        Debug("# ");
         for (int j = 0; j < moveSequences[i].size(); j++)
             Debug(&moveSequences[i][j] << ' ');
         Debug(endl);

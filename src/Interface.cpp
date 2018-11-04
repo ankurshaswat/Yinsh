@@ -22,13 +22,14 @@ Inteface::Inteface()
     i++;
     while (str[i] != ' ')
         time_ = 10 * time_ + str[i++] - '0';
+    i++;
     while (str[i] != ' ' && i < str.length())
         k = 10 * k + str[i++] - '0';
     playerInt--;
 
     bool player = playerInt == 1 ? true : false;
 
-    Debug("# Interface::Interface - n=" << n << " Player=" << player << " Time=" << time_ << endl);
+    Debug("Interface::Interface - n=" << n << " Player=" << player << " Time=" << time_ << " K=" << k << endl);
 
     board = new Board(n, k);
     ai = new AI(board, player, time_, n, k);
@@ -45,9 +46,10 @@ Inteface::Inteface()
     {
         Debug("Moving on to get AI output" << endl);
 
-        ai->playMoveSeq(m);
+        string move = ai->playMoveSeq(m);
+        cout << move;
         currentPlayer = !currentPlayer;
-        Debug("# Moving on to get input" << endl);
+        Debug("Moving on to get input" << endl);
         m = readInput();
         currentPlayer = !currentPlayer;
     }
@@ -55,7 +57,7 @@ Inteface::Inteface()
 
 Move Inteface::readInput()
 {
-    Debug("# Inteface::readInput" << endl);
+    Debug("Inteface::readInput" << endl);
 
     Move m;
     string str;
@@ -124,7 +126,7 @@ Move Inteface::readInput()
                 i += 1;
             }
             else
-                Debug("# Inteface::readInput Shouldn't be here" << endl);
+                Debug("Inteface::readInput Shouldn't be here" << endl);
     }
 
     return m;

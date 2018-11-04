@@ -1,4 +1,4 @@
-SRC=  src/Move.cpp src/EvaluatedMoveSeq.cpp src/Util.cpp src/Board.cpp src/AI.cpp src/Interface.cpp src/main.cpp 
+SRC=  src/Move.cpp src/EvaluatedMoveSeq.cpp src/Util.cpp src/Board.cpp src/AI.cpp src/Interface.cpp src/Simulator.cpp src/main.cpp 
 COMMON_FLAGS = -std=c++11 -O3 -o yinsh $(SRC)
 
 all: $(SRC)
