@@ -866,6 +866,7 @@ Board::~Board()
     for (int i = 0; i < 2 * this->board_size + 2; i++)
         delete[] board[i];
     delete[] board;
+    counts -= 2;
     delete[] counts;
 }
 

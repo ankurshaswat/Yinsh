@@ -16,8 +16,8 @@ private:
   int maxRings;
   int consecutiveMarkers;
 
-  vector<double> featureWeights = {1, 5, 25, 75, 150, 2, 10, 50, 75, 150, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-  vector<double> featureWeightsOpp = {1, 5, 25, 75, 150, 2, 10, 50, 75, 150, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+  vector<double> featureWeights = {1, 5, 25, 75, 150, 2, 10, 50, 75, 150, 1, 1, 1, 1, 1, 1, 1, -2000, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
+  vector<double> featureWeightsOpp = {1, 5, 25, 75, 150, 2, 10, 50, 75, 150, 1, 1, 1, 1, 1, 1, 1, -2000, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
 
   string convertMoveToString(Move m);
 
@@ -35,7 +35,6 @@ public:
 
   string playMoveSeq(Move m);
   void setWeights(vector<double> featureWeights, vector<double> featureWeighsOpp);
-
 };
 
 #endif
