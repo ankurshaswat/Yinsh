@@ -114,7 +114,7 @@ void Simulator::simulate(int numGames)
 
         gameFile.close();
 
-        delete ai1;    
+        delete ai1;
         delete ai2;
         delete board;
     }
