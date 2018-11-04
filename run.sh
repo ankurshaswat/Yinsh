@@ -1,2 +1,2 @@
 #!/bin/bash
-./yinsh
+./yinsh 0

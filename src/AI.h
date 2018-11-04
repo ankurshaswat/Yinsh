@@ -1,6 +1,7 @@
 #ifndef AI_H
 #define AI_H
 
+#include <string>
 #include "Board.h"
 #include "EvaluatedMoveSeq.h"
 
@@ -15,7 +16,10 @@ private:
   int maxRings;
   int consecutiveMarkers;
 
-  void printMove(Move m);
+  vector<double> featureWeights = {1, 5, 25, 75, 150, 2, 10, 50, 75, 150, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+  vector<double> featureWeightsOpp = {1, 5, 25, 75, 150, 2, 10, 50, 75, 150, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+
+  string convertMoveToString(Move m);
 
   /* Returns best move for min node (and its evaluation) */
   pair<vector<Move>, int> minValue(int alpha, int beta, int depth, Board &board, Move prevMove, bool player, int moveCount);
@@ -29,7 +33,8 @@ private:
 public:
   AI(Board *board, bool player, int time, int n, int k);
 
-  void playMoveSeq(Move m);
+  string playMoveSeq(Move m);
+  void setWeights(vector<double> featureWeights, vector<double> featureWeighsOpp);
 };
 
 #endif

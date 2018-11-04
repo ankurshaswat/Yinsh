@@ -13,43 +13,6 @@
 const int INT_MAX = numeric_limits<int>::max() - 1000;
 const int INT_MIN = numeric_limits<int>::min() + 1000;
 
-enum FeatureIndexes
-{
-    TwoMarker,
-    ThreeMarker,
-    FourMarker,
-    FiveMarker,
-    SixOrMoreMarker,
-    TwoMarkerRing,
-    ThreeMarkerRing,
-    FourMarkerRing,
-    FiveMarkerRing,
-    SixOrMoreMarkerRing,
-    DistRing1,
-    DistRing2,
-    DistRing3,
-    DistRing4,
-    DistRing5,
-    DistRing6,
-    MarkersCount,
-    RingsCount,
-    Ring1Freedom,
-    Ring2Freedom,
-    Ring3Freedom,
-    Ring4Freedom,
-    Ring5Freedom,
-    Ring6Freedom,
-    Ring1JumpPositions,
-    Ring2JumpPositions,
-    Ring3JumpPositions,
-    Ring4JumpPositions,
-    Ring5JumpPositions,
-    Ring6JumpPositions,
-};
-
-vector<double> featureWeights = {1, 5, 25, 75, 150, 2, 10, 50, 75, 150, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-vector<double> featureWeightsOpp = {1, 5, 25, 75, 150, 2, 10, 50, 75, 150, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-
 Board::Board() : Board(5, 5) {}
 
 Board::Board(int N, int K) : rings(2), directions(6)
@@ -529,7 +492,7 @@ void Board::undoMove(Move m, bool player)
 bool Board::isWin(bool player)
 {
     PositionStates ring = player ? whiteRing : blackRing;
-    return counts[ring] <= 2;
+    return counts[ring] <= (this->max_rings - 3);
 }
 
 void Board::getValidRowMoves(Move prevMoveRing, vector<Move> &moves, bool player)
@@ -607,22 +570,23 @@ void Board::getValidPlaceRingMoves(vector<Move> &moves, bool player)
     Debug("Board::getValidPlaceRingMoves - Player=" << player << endl);
     int count = 0, i = 0, j = 0, a, b;
 
-    vector<pair<int, int>> ringMoves{make_pair(1, 0), make_pair(1, 1), make_pair(3, 0), make_pair(1, 4), make_pair(2, 0)};
+    // vector<pair<int, int>> ringMoves{make_pair(1, 0), make_pair(1, 1), make_pair(3, 0), make_pair(1, 4), make_pair(2, 0)};
 
     while (count < 1)
     {
-        std::cout << "#TEST: " << test << "\n";
-        i = ringMoves[test].first;
-        j = ringMoves[test].second;
+        // std::cout << "#TEST: " << test << "\n";
+        // i = ringMoves[test].first;
+        // j = ringMoves[test].second;
 
-        pair<int, int> pos = hex2axial(make_pair(i, j));
+        // pair<int, int> pos = hex2axial(make_pair(i, j));
+        pair<int, int> pos = make_pair(i, j);
         if (validPosition(pos) && getState(pos) == PositionStates::empty)
         {
             moves.push_back(Move(MoveType::placeRing, pos, pos));
             count++;
         }
-        // i = (rand() % (4)) - 2;
-        // j = (rand() % (4)) - 2;
+        i = (rand() % (4)) - 2;
+        j = (rand() % (4)) - 2;
     }
     std::cout << "#Ring Moves: " << moves.size() << "\n";
     test++;
@@ -636,7 +600,7 @@ void Board::getValidRemoveRingMoves(vector<Move> &moves, bool player)
         moves.push_back(Move(MoveType::removeRing, pos, pos));
 }
 
-int Board::evaluate(bool player, int moveCount)
+int Board::evaluate(bool player, int moveCount, vector<double> &featureWeights, vector<double> &featureWeightsOpp)
 {
     if (getRingsCount(player) <= 2)
         return INT_MAX - moveCount;
@@ -644,7 +608,7 @@ int Board::evaluate(bool player, int moveCount)
     if (getRingsCount(!player) <= 2)
         return INT_MIN + moveCount;
 
-    vector<vector<double>> featureCounts(2, vector<double>(featureWeights.size()));
+    vector<vector<double>> featureCounts(2, vector<double>(this->numFeatures));
 
     this->featureGenerator(featureCounts);
 
