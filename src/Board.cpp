@@ -588,7 +588,7 @@ void Board::getValidPlaceRingMoves(vector<Move> &moves, bool player)
         i = (rand() % (4)) - 2;
         j = (rand() % (4)) - 2;
     }
-    std::cout << "#Ring Moves: " << moves.size() << "\n";
+    // std::cout << "#Ring Moves: " << moves.size() << "\n";
     test++;
 };
 
