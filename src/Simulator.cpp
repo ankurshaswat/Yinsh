@@ -65,7 +65,6 @@ void Simulator::simulate(int numGames)
             move = ai1->playMoveSeq(m);
 
             gameFile << move;
-            // cout << move;
             vector<vector<double>> featuresCounts(2, vector<double>(board->numFeatures));
             board->featureGenerator(featuresCounts);
             for (int player = 0; player < 2; player++)
@@ -81,7 +80,6 @@ void Simulator::simulate(int numGames)
 
             currentPlayer = !currentPlayer;
             m = extractLastMoveRing(move);
-            gameFile.flush();
 
             if ((board->getRingsCount(1) <= 2 || board->getRingsCount(0) <= 2) && moveCount > 15)
             {
@@ -91,7 +89,6 @@ void Simulator::simulate(int numGames)
             move = ai2->playMoveSeq(m);
 
             gameFile << move;
-            // cout << move;
 
             vector<vector<double>> featuresCounts_(2, vector<double>(board->numFeatures));
             board->featureGenerator(featuresCounts_);
@@ -108,8 +105,6 @@ void Simulator::simulate(int numGames)
 
             currentPlayer = !currentPlayer;
             m = extractLastMoveRing(move);
-
-            gameFile.flush();
         }
         gameFile << "END\n";
         gameFile.flush();
