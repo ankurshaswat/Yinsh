@@ -572,7 +572,7 @@ void Board::getValidPlaceRingMoves(vector<Move> &moves, bool player)
 
     // vector<pair<int, int>> ringMoves{make_pair(1, 0), make_pair(1, 1), make_pair(3, 0), make_pair(1, 4), make_pair(2, 0)};
 
-    while (count < 1)
+    while (count < 4)
     {
         // std::cout << "#TEST: " << test << "\n";
         // i = ringMoves[test].first;
@@ -585,8 +585,11 @@ void Board::getValidPlaceRingMoves(vector<Move> &moves, bool player)
             moves.push_back(Move(MoveType::placeRing, pos, pos));
             count++;
         }
-        i = (rand() % (4)) - 2;
-        j = (rand() % (4)) - 2;
+        // i = (rand() % (4)) - 2;
+        // j = (rand() % (4)) - 2;
+
+        i = (rand() % 13) - 6;
+        j = (rand() % 13) - 6;
     }
     // std::cout << "#Ring Moves: " << moves.size() << "\n";
     test++;

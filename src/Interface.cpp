@@ -47,7 +47,7 @@ Inteface::Inteface()
         Debug("Moving on to get AI output" << endl);
 
         string move = ai->playMoveSeq(m);
-        // cout << move;
+        cout << move;
         currentPlayer = !currentPlayer;
         Debug("Moving on to get input" << endl);
         m = readInput();

@@ -1,5 +1,6 @@
 #!/bin/bash
 #./simulateLoop.sh infRun4 &> simulations.log
+mkdir gameRes
 make
 i=1
 while :
