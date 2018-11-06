@@ -1,12 +1,34 @@
+def init():
+    #path
+    global logs_dir,games_dir
+    logs_dir='./logs/run1'
+    games_dir='./logs/run1'
+    
+    global lamda,learning_rate,num_epochs
+    lamda=0.1
+    learning_rate=0.001
+    num_epochs=100
+
+    global scaling_factor #scale weights
+    scaling_factor=0.0001
+
+    global comment
+    comment="" #Comment to store logs with
+
+
+
+
 paramList=[
     'n','selfPolicy','oppPolicy'
 ]
 
 features=[   
-    'ThreeMarkerRing',
-    'FourMarkerRing',
-    'FiveMarkerRing',
-    'SixOrMoreMarkerRing',
+    'TwoMarker',
+    'ThreeMarker',
+    'FourMarker',
+    'FiveMarker',
+    'SixOrMoreMarker',
+    'TwoMarkerRing',
     'ThreeMarkerRing',
     'FourMarkerRing',
     'FiveMarkerRing',
@@ -31,10 +53,13 @@ features=[
     'Ring4JumpPositions',
     'Ring5JumpPositions',
     'Ring6JumpPositions',
-    'OppThreeMarkerRing',
-    'OppFourMarkerRing',
-    'OppFiveMarkerRing',
-    'OppSixOrMoreMarkerRing',
+
+    'OppTwoMarker',
+    'OppThreeMarker',
+    'OppFourMarker',
+    'OppFiveMarker',
+    'OppSixOrMoreMarker',
+    'OppTwoMarkerRing',
     'OppThreeMarkerRing',
     'OppFourMarkerRing',
     'OppFiveMarkerRing',
@@ -59,6 +84,6 @@ features=[
     'OppRing4JumpPositions',
     'OppRing5JumpPositions',
     'OppRing6JumpPositions',
-
 ]
+
 

@@ -1,2 +1,3 @@
 #!/bin/bash
-./a.out
+./yinsh44 0
+# ./a.out
