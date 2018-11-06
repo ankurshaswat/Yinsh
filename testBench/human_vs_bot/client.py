@@ -8,7 +8,7 @@ from game import Game
 class Client(Communicator):
 	def __init__(self):
 		self.GAME_TIMER = 100000 # in Milli Seconds
-		self.NETWORK_TIMER = 150
+		self.NETWORK_TIMER = 150 # this is to decide time per move
 		super(Client,self).__init__()
 		pass    
 	
@@ -127,7 +127,6 @@ class Client(Communicator):
 		retData = None
 		if(data == None):                       
 			print 'ERROR : TIMEOUT ON SERVER END'
-			# sys.stdin.read(1)
 			super(Client,self).closeChildProcess()
 			super(Client,self).closeSocket()
 		else:
@@ -144,7 +143,7 @@ class Client(Communicator):
 					retData = data['data']
 		return retData
 	
-	def RecvDataFromProcess(self):
+	def RecvDataFromProcess(self, flask=False):
 		"""Receives Data from the process. This does not implement checks 
 				on the validity of game moves. Hence, the retData from here is not final
 				, i.e, it may be different than what is sent to the server.
@@ -167,7 +166,8 @@ class Client(Communicator):
 		"""             
 		start_time = time.time()
 		BUFFER_TIMER = int(math.ceil(self.GAME_TIMER / 1000.0))
-		print 'Time remaining is: ' + str(BUFFER_TIMER) + 's'
+		if not flask:
+			print 'Time remaining is: ' + str(BUFFER_TIMER) + 's'
 		data = super(Client,self).RecvDataOnPipe(BUFFER_TIMER)
 		end_time = time.time()
 		retData = None          
@@ -208,7 +208,17 @@ class Client(Communicator):
 			print 'ERROR : FAILED TO SEND DATA TO PROCESS'
 			super(Client,self).closeChildProcess()                                  
 		return success_flag
-
+#######
+def check_success(game):
+	valid = game.check_move_validity()
+	won = game.check_won()
+	success = 1
+	if(valid == False):
+		success = 0
+	elif(won == True):
+		success = 2
+	return success
+#######
 def game_loop(args):
 	## Create Client Process
 	client = Client()
@@ -237,7 +247,7 @@ def game_loop(args):
 	print '-> You are player ' + str(player_id)
 	print '-> You are alloted a time of ' + str(game_timer) + 's\n'
 	print '***********************************\n'
-	game = Game(board_size,seq_length, args.mode, game_timer)        
+	game = Game(board_size, seq_length, args.mode, game_timer)        
 
 	client.SendData2Process(server_string) ## Initialize Process
 
@@ -246,12 +256,21 @@ def game_loop(args):
 		move = client.RecvDataFromServer()
 		if move:
 			move = move.strip()
-			print "Player 1 played : " + move
-			success = game.execute_move(move)                       
+			print "Player 1 played : " + move                       
 			client.SendData2Process(move)
+			success = game.execute_move(move)
 		else:
 			sys.exit(0)     
-	
+
+	##### ignore flask prints from human.py
+	if args.exe == "human.py":
+		client.RecvDataFromProcess(True)
+		client.RecvDataFromProcess(True)
+		client.RecvDataFromProcess(True)
+		client.RecvDataFromProcess(True)
+		client.RecvDataFromProcess(True)
+
+	#####
 	while(True):
 		### Execute Current Player's Move
 		move = client.RecvDataFromProcess()                                             
@@ -268,11 +287,15 @@ def game_loop(args):
 			client.SendData2Server(move)
 			break
 		move['data'] = move['data'].strip()
-		if(move['data'][0]=='#'):
-			print(move['data'])
-			continue
 		print "You played : " + move['data']
-		success = game.execute_move(move['data'])
+
+		success = 1
+		# human dont click own moves
+		if args.exe == "human.py":
+			success = check_success(game)
+		else:
+			success = game.execute_move(move['data'])
+
 		message = {}
 		
 		### Success
@@ -285,7 +308,8 @@ def game_loop(args):
 			message['meta'] = 'INVALID MOVE BY PLAYER ' + player_id + \
 								' : Player ' +  str(player_id) + ' SCORE : ' + str(game.get_score(player_id, player_id)) +  \
 								' : Player ' +  str(int(player_id)%2+1) + ' SCORE : ' + str(game.get_score(int(player_id)%2+1, player_id))
-			print 'INVALID MOVE ON THIS CLIENT'
+			print 'INVALID MOVE ON TH CLIENT'
+			# print move['data']
 		elif success == 1:
 			message = move
 		elif success == 2:
@@ -313,30 +337,22 @@ def game_loop(args):
 				print "Player 2 played : " + move
 			else:
 				print "Player 1 played : " + move
+
 			success = game.execute_move(move)
+
 			if success == 2:
 				print 'OTHER PLAYER WINS!'
-				# sys.stdin.read(1)
-			
-			
 				if player_id == '1':
 					print 'Your Score : ' + str(game.get_score(1))
 					print 'Opponent\'s Score : ' + str(game.get_score(2))
 				else:
 					print 'Your Score : ' + str(game.get_score(2))
 					print 'Opponent\'s Score : ' + str(game.get_score(1))
-			
-					
-
-			
 				break
-			else:                                   
+			else:                                 
 				client.SendData2Process(move)
 		else:
 			break
-		if not args.wait == 'F':
-			sys.stdin.read(1)
-		
 	client.closeChildProcess()
 	client.closeSocket()
 
@@ -346,7 +362,5 @@ if __name__ == '__main__':
 		parser.add_argument('port', metavar = '10000', type = int, help = 'Server port')
 		parser.add_argument('exe', metavar = 'run.sh', type = str, help = 'Your executable')
 		parser.add_argument('-mode', dest = 'mode', type = str, default = 'CUI', help = 'How to render. Set to "GUI" mode to render, else set to "CUI"')
-		parser.add_argument('-wait', dest = 'wait', type = str, default = 'F', help = 'Wait for key press')
-		
 		args = parser.parse_args()
 		game_loop(args)
