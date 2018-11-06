@@ -316,7 +316,7 @@ def game_loop(args):
 			success = game.execute_move(move)
 			if success == 2:
 				print 'OTHER PLAYER WINS!'
-				sys.stdin.read(1)
+				# sys.stdin.read(1)
 			
 			
 				if player_id == '1':

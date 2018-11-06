@@ -17,7 +17,7 @@ class Server:
                 self.log_file_handle = None
 
         def setLogFile(self, filename):
-                self.log_file_handle = open(filename,'wb')
+                self.log_file_handle = open(filename,'ab')
 
         def BuildServer(self,ip,port_no,num_clients):
                 """Builds The server on the port_number port_no for num_clients
@@ -157,7 +157,7 @@ class Server:
                                 data = json.loads(data)
                                 if data['action'] == 'FINISH' or data['action'] == 'KILLPROC':
                                         if not self.log_file_handle is None:
-                                                self.log_file_handle.write(data['meta'])
+                                                self.log_file_handle.write(data['meta']+'\n')
                                         break           
                                 data = self.RecvDataFromClient(client_1)
                                 self.SendData2Client(client_0, data)
@@ -167,7 +167,7 @@ class Server:
                                 data = json.loads(data)
                                 if data['action'] == 'FINISH' or data['action'] == 'KILLPROC':
                                         if not self.log_file_handle is None:
-                                                self.log_file_handle.write(data['meta'])
+                                                self.log_file_handle.write(data['meta']+'\n')
                                         break
                         self.CloseClient(client_0)
                         self.CloseClient(client_1)
