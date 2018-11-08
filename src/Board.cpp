@@ -739,6 +739,18 @@ void Board::featureGenerator(vector<vector<double>> &featureCounts)
                     featureCounts[player][FeatureIndexes::Ring1Freedom + i]++;
         }
     }
+
+    // Ring removed binary features
+
+    featureCounts[0][FeatureIndexes::FirstRingRemoved] = int(this->counts[PositionStates::blackRing] <= this->max_rings - 1);
+    featureCounts[0][FeatureIndexes::SecondRingRemoved] = int(this->counts[PositionStates::blackRing] <= this->max_rings - 2);
+    featureCounts[1][FeatureIndexes::FirstRingRemoved] = int(this->counts[PositionStates::whiteRing] <= this->max_rings - 1);
+    featureCounts[1][FeatureIndexes::SecondRingRemoved] = int(this->counts[PositionStates::whiteRing] <= this->max_rings - 2);
+}
+
+int Board::getNumFeatures()
+{
+    return this->numFeatures;
 }
 
 bool Board::counter(pair<int, int> &position, bool &validStartFound, int &prevState, int &countSingleType, int &countWithRing, vector<vector<double>> &featureCounts)

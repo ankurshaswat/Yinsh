@@ -56,8 +56,11 @@ private:
     Ring4JumpPositions,
     Ring5JumpPositions,
     Ring6JumpPositions,
+    FirstRingRemoved,
+    SecondRingRemoved,
   };
 
+  const int numFeatures = FeatureIndexes::SecondRingRemoved + 1;
 
   int **board;
   int board_size;
@@ -92,14 +95,13 @@ private:
   /* Private member access functions */
   int getSize();
 
-
 public:
   Board();
   Board(int n, int k);
 
   void featureGenerator(vector<vector<double>> &featureCounts);
 
-  const int numFeatures = FeatureIndexes::Ring6JumpPositions + 1;
+  int getNumFeatures();
 
   void playMove(Move m, bool player);
   void undoMove(Move m, bool player);

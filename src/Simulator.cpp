@@ -44,7 +44,7 @@ void Simulator::simulate(int numGames)
             move = ai2->playMoveSeq(m);
 
             gameFile << move;
-            vector<vector<double>> featuresCounts(2, vector<double>(board->numFeatures));
+            vector<vector<double>> featuresCounts(2, vector<double>(board->getNumFeatures()));
             board->featureGenerator(featuresCounts);
             for (int player = 0; player < 2; player++)
             {
@@ -65,7 +65,7 @@ void Simulator::simulate(int numGames)
             move = ai1->playMoveSeq(m);
 
             gameFile << move;
-            vector<vector<double>> featuresCounts(2, vector<double>(board->numFeatures));
+            vector<vector<double>> featuresCounts(2, vector<double>(board->getNumFeatures()));
             board->featureGenerator(featuresCounts);
             for (int player = 0; player < 2; player++)
             {
@@ -90,7 +90,7 @@ void Simulator::simulate(int numGames)
 
             gameFile << move;
 
-            vector<vector<double>> featuresCounts_(2, vector<double>(board->numFeatures));
+            vector<vector<double>> featuresCounts_(2, vector<double>(board->getNumFeatures()));
             board->featureGenerator(featuresCounts_);
             for (int player = 0; player < 2; player++)
             {
