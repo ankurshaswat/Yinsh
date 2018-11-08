@@ -30,9 +30,9 @@ void Simulator::simulate(int numGames)
 
         Board *board = new Board(n, k);
         AI *ai1 = new AI(board, 0, time_, n, k);
-        ai1->setWeights(featureWeights, featureWeightsOpp);
+        ai1->setWeights(featureWeights);
         AI *ai2 = new AI(board, 1, time_, n, k);
-        ai2->setWeights(featureWeights, featureWeightsOpp);
+        ai2->setWeights(featureWeights);
 
         Move m;
         bool currentPlayer = false;
@@ -125,12 +125,6 @@ void Simulator::readWeights(string weightsFilePath)
     {
         weightsFile >> temp;
         this->featureWeights.push_back(temp);
-    }
-
-    for (int i = 0; i < numFeatures; i++)
-    {
-        weightsFile >> temp;
-        this->featureWeightsOpp.push_back(temp);
     }
 
     weightsFile.close();

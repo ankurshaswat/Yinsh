@@ -108,7 +108,7 @@ string AI::playMoveSeq(Move prevMove)
     return moveString;
 }
 
-pair<vector<Move>, int> AI::maxValue(int alpha, int beta, int depth, Board &board, Move prevMove, bool player, int internalMoveCount)
+pair<vector<Move>, double> AI::maxValue(int alpha, int beta, int depth, Board &board, Move prevMove, bool player, int internalMoveCount)
 {
     Debug("AI::maxValue - alpha=" << alpha << " Beta=" << beta << " Depth=" << depth << " Player=" << player << endl);
     vector<Move> bestMoveSeq;
@@ -120,7 +120,7 @@ pair<vector<Move>, int> AI::maxValue(int alpha, int beta, int depth, Board &boar
 
     //Base case for depth
     if (depth <= 0)
-        return make_pair(bestMoveSeq, board.evaluate(this->player, internalMoveCount, this->featureWeights, this->featureWeightsOpp));
+        return make_pair(bestMoveSeq, board.evaluate(this->player, internalMoveCount, this->featureWeights));
 
     vector<EvaluatedMoveSeq> moveSequences;
     if (internalMoveCount < this->maxRings * 2)
@@ -191,7 +191,7 @@ pair<vector<Move>, int> AI::maxValue(int alpha, int beta, int depth, Board &boar
     return make_pair(bestMoveSeq, bestEval);
 }
 
-pair<vector<Move>, int> AI::minValue(int alpha, int beta, int depth, Board &board, Move prevMove, bool player, int internalMoveCount)
+pair<vector<Move>, double> AI::minValue(int alpha, int beta, int depth, Board &board, Move prevMove, bool player, int internalMoveCount)
 {
     Debug("AI::minValue - alpha=" << alpha << " Beta=" << beta << " Depth=" << depth << " Player=" << player << endl);
 
@@ -204,7 +204,7 @@ pair<vector<Move>, int> AI::minValue(int alpha, int beta, int depth, Board &boar
 
     //Base case for depth
     if (depth <= 0)
-        return make_pair(bestMoveSeq, board.evaluate(this->player, internalMoveCount, this->featureWeights, this->featureWeightsOpp));
+        return make_pair(bestMoveSeq, board.evaluate(this->player, internalMoveCount, this->featureWeights));
 
     vector<EvaluatedMoveSeq> moveSequences;
 
@@ -423,8 +423,7 @@ void AI::moveMarkerMoves(Board &board, vector<Move> &moveSeq, vector<EvaluatedMo
     }
 }
 
-void AI::setWeights(vector<double> featureWeights, vector<double> featureWeighsOpp)
+void AI::setWeights(vector<double> featureWeights)
 {
     this->featureWeights = featureWeights;
-    this->featureWeightsOpp = featureWeighsOpp;
 }

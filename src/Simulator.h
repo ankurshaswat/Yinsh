@@ -12,7 +12,7 @@ enum Policy
 class Simulator
 {
 private:
-  vector<double> featureWeights, featureWeightsOpp;
+  vector<double> featureWeights;
   string resultsPath;
 
   void readWeights(string weightsFilePath);

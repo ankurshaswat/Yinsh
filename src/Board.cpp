@@ -603,7 +603,7 @@ void Board::getValidRemoveRingMoves(vector<Move> &moves, bool player)
         moves.push_back(Move(MoveType::removeRing, pos, pos));
 }
 
-int Board::evaluate(bool player, int moveCount, vector<double> &featureWeights, vector<double> &featureWeightsOpp)
+double Board::evaluate(bool player, int moveCount, vector<double> &featureWeights)
 {
     if (getRingsCount(player) <= 2)
         return INT_MAX - moveCount;
@@ -618,16 +618,10 @@ int Board::evaluate(bool player, int moveCount, vector<double> &featureWeights, 
     double score1 = 0, score0 = 0;
 
     for (int i = 0; i < featureWeights.size(); i++)
-        if (player)
-            score1 += featureCounts[1][i] * featureWeights[i];
-        else
-            score1 += featureCounts[1][i] * featureWeightsOpp[i];
+        score1 += featureCounts[1][i] * featureWeights[i];
 
     for (int i = 0; i < featureWeights.size(); i++)
-        if (player)
-            score0 += featureCounts[0][i] * featureWeightsOpp[i];
-        else
-            score0 += featureCounts[0][i] * featureWeights[i];
+        score0 += featureCounts[0][i] * featureWeights[i];
 
     return player ? score1 - score0 : score0 - score1;
 }

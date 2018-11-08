@@ -110,7 +110,7 @@ public:
   int getRingsCount(bool player);
 
   /* Return evaluation of board for player */
-  int evaluate(bool player, int moveCount, vector<double> &featureWeights, vector<double> &featureWeightsOpp);
+  double evaluate(bool player, int moveCount, vector<double> &featureWeights);
 
   /* Return valid moves for player (append to passed vector) */
   void getValidRingMoves(vector<Move> &moves, bool player);

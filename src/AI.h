@@ -17,15 +17,14 @@ private:
   int consecutiveMarkers;
 
   vector<double> featureWeights = {1, 5, 25, 75, 150, 2, 10, 50, 75, 150, 1, 1, 1, 1, 1, 1, 1, -2000, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
-  vector<double> featureWeightsOpp = {1, 5, 25, 75, 150, 2, 10, 50, 75, 150, 1, 1, 1, 1, 1, 1, 1, -2000, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
 
   string convertMoveToString(Move m);
 
   /* Returns best move for min node (and its evaluation) */
-  pair<vector<Move>, int> minValue(int alpha, int beta, int depth, Board &board, Move prevMove, bool player, int moveCount);
+  pair<vector<Move>, double> minValue(int alpha, int beta, int depth, Board &board, Move prevMove, bool player, int moveCount);
 
   /* Returns best move for max node (and its evaluation) */
-  pair<vector<Move>, int> maxValue(int alpha, int beta, int depth, Board &board, Move prevMove, bool player, int moveCount);
+  pair<vector<Move>, double> maxValue(int alpha, int beta, int depth, Board &board, Move prevMove, bool player, int moveCount);
 
   void rowMoves(Board &board, bool player, vector<Move> &removeRowMoves, vector<Move> &moveSeq, vector<EvaluatedMoveSeq> &moveSequences, bool continuePlaying, int depth);
   void moveMarkerMoves(Board &board, vector<Move> &moveSeq, vector<EvaluatedMoveSeq> &moveSequences, bool player, int depth);
@@ -34,7 +33,7 @@ public:
   AI(Board *board, bool player, int time, int n, int k);
 
   string playMoveSeq(Move m);
-  void setWeights(vector<double> featureWeights, vector<double> featureWeighsOpp);
+  void setWeights(vector<double> featureWeights);
 };
 
 #endif
