@@ -45,7 +45,7 @@ void Simulator::simulate(int numGames)
 
             gameFile << move;
             vector<vector<double>> featuresCounts(2, vector<double>(board->getNumFeatures()));
-            board->featureGenerator(featuresCounts);
+            board->featureGenerator(featuresCounts, moveCount);
             for (int player = 0; player < 2; player++)
             {
                 for (int featureNum = 0; featureNum < featuresCounts[player].size(); featureNum++)
@@ -66,7 +66,7 @@ void Simulator::simulate(int numGames)
 
             gameFile << move;
             vector<vector<double>> featuresCounts(2, vector<double>(board->getNumFeatures()));
-            board->featureGenerator(featuresCounts);
+            board->featureGenerator(featuresCounts, moveCount);
             for (int player = 0; player < 2; player++)
             {
                 for (int featureNum = 0; featureNum < featuresCounts[player].size(); featureNum++)
@@ -91,7 +91,7 @@ void Simulator::simulate(int numGames)
             gameFile << move;
 
             vector<vector<double>> featuresCounts_(2, vector<double>(board->getNumFeatures()));
-            board->featureGenerator(featuresCounts_);
+            board->featureGenerator(featuresCounts_, moveCount);
             for (int player = 0; player < 2; player++)
             {
                 for (int featureNum = 0; featureNum < featuresCounts_[player].size(); featureNum++)
@@ -109,7 +109,6 @@ void Simulator::simulate(int numGames)
         gameFile << "END\n";
         gameFile.flush();
         gameFile.close();
-
     }
 }
 

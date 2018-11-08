@@ -613,7 +613,7 @@ double Board::evaluate(bool player, int moveCount, vector<double> &featureWeight
 
     vector<vector<double>> featureCounts(2, vector<double>(this->numFeatures));
 
-    this->featureGenerator(featureCounts);
+    this->featureGenerator(featureCounts, moveCount);
 
     double score1 = 0, score0 = 0;
 
@@ -626,7 +626,7 @@ double Board::evaluate(bool player, int moveCount, vector<double> &featureWeight
     return player ? score1 - score0 : score0 - score1;
 }
 
-void Board::featureGenerator(vector<vector<double>> &featureCounts)
+void Board::featureGenerator(vector<vector<double>> &featureCounts, int moveCount)
 {
     // Marker and ring count
 
@@ -742,10 +742,10 @@ void Board::featureGenerator(vector<vector<double>> &featureCounts)
 
     // Ring removed binary features
 
-    featureCounts[0][FeatureIndexes::FirstRingRemoved] = int(this->counts[PositionStates::blackRing] <= this->max_rings - 1);
-    featureCounts[0][FeatureIndexes::SecondRingRemoved] = int(this->counts[PositionStates::blackRing] <= this->max_rings - 2);
-    featureCounts[1][FeatureIndexes::FirstRingRemoved] = int(this->counts[PositionStates::whiteRing] <= this->max_rings - 1);
-    featureCounts[1][FeatureIndexes::SecondRingRemoved] = int(this->counts[PositionStates::whiteRing] <= this->max_rings - 2);
+    featureCounts[0][FeatureIndexes::FirstRingRemoved] = int(moveCount > 13 && this->counts[PositionStates::blackRing] <= this->max_rings - 1);
+    featureCounts[0][FeatureIndexes::SecondRingRemoved] = int(moveCount > 13 && this->counts[PositionStates::blackRing] <= this->max_rings - 2);
+    featureCounts[1][FeatureIndexes::FirstRingRemoved] = int(moveCount > 13 && this->counts[PositionStates::whiteRing] <= this->max_rings - 1);
+    featureCounts[1][FeatureIndexes::SecondRingRemoved] = int(moveCount > 13 && this->counts[PositionStates::whiteRing] <= this->max_rings - 2);
 }
 
 int Board::getNumFeatures()

@@ -99,7 +99,7 @@ public:
   Board();
   Board(int n, int k);
 
-  void featureGenerator(vector<vector<double>> &featureCounts);
+  void featureGenerator(vector<vector<double>> &featureCounts, int moveCount);
 
   int getNumFeatures();
 
