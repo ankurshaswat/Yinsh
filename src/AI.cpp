@@ -342,7 +342,7 @@ void AI::rowMoves(Board &board, bool player, vector<Move> &removeRowMoves, vecto
                         if (!moveSeqFound)
                         {
                             moveSeqFound = true;
-                            if (board.getRingsCount(player) == 2 || !continuePlaying)
+                            if (board.getRingsCount(player) == this->maxRings - 3 || !continuePlaying)
                             {
                                 // Evaluate new board position till shallow depth (for move ordering)
 
@@ -368,7 +368,7 @@ void AI::rowMoves(Board &board, bool player, vector<Move> &removeRowMoves, vecto
             if (!moveSeqFound)
             {
                 // Evaluate new board position till shallow depth (for move ordering)
-                if (board.getRingsCount(player) == 2 || !continuePlaying)
+                if (board.getRingsCount(player) == this->maxRings - 3 || !continuePlaying)
                 {
                     // Evaluate new board position till shallow depth (for move ordering)
                     int retVal;
