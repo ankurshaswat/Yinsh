@@ -894,11 +894,11 @@ pair<pair<int, int>, pair<int, int>> Board::setBoard(string boardPath)
 
             if (state == PositionStates::blackRing)
             {
-                rings[0].push_back(make_pair(i, j));
+                rings[0].push_back(make_pair(i - this->board_size, j - this->board_size));
             }
             else if (state == PositionStates::whiteRing)
             {
-                rings[1].push_back(make_pair(i, j));
+                rings[1].push_back(make_pair(i - this->board_size, j - this->board_size));
             }
         }
 
