@@ -85,9 +85,9 @@ f.write("3-1 "+str(p1Wins_S[1])+" " + str(p1Wins_I[1])+"\n")
 f.write("3-2 "+str(p1Wins_S[2])+" " + str(p1Wins_I[2])+"\n")
 
 f.write("S2 "+p2Name+" wins "+str(100.0*(p2W_S+p2W_I)/totalGames)+"% " + "\n")
-f.write("S2 "+p1Name+" wins " + str(100.0*(p2W_S)/(totalGames/2)) +
+f.write("S2 "+p2Name+" wins " + str(100.0*(p2W_S)/(totalGames/2)) +
         "% of games played as player1" + "\n")
-f.write("S2 "+p1Name+" wins " + str(100.0*(p2W_I)/(totalGames/2)) +
+f.write("S2 "+p2Name+" wins " + str(100.0*(p2W_I)/(totalGames/2)) +
         "% of games played as player2" + "\n")
 f.write("Win numbers\n")
 f.write("Score AsP1 AsP2\n")
