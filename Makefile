@@ -10,6 +10,9 @@ debug: $(SRC)
 debug_out: $(SRC)
 	  g++ -DUSEDEBUG -g $(COMMON_FLAGS)
 
+debug_mem: $(SRC)
+	  g++ -fsanitize=address $(COMMON_FLAGS)
+
 warnings: $(SRC)
 	  g++ -g -Wall -Wextra $(COMMON_FLAGS)
 
