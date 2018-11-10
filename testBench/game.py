@@ -60,6 +60,8 @@ class Game:
 
 		self.timer = time # Useful to optimise bot strategy
 
+		self.lastMoveRing="" #Needed for simulations
+
 	def get_corner_coord(self, corner, hexagon) :
 		x_mov = self.spacing * hexagon * math.sin(math.radians(corner * 60))
 		y_mov = -(self.spacing * hexagon * math.cos(math.radians(corner * 60)))
@@ -257,14 +259,38 @@ class Game:
 	def simulate(self, filename):
 		with open(filename) as f:
 			for line in f.readlines():
+				if(line.strip()=="XX"):
+					break
 				parts = line.split('}')
 				part = parts[0] + '}'
 				out = json.loads(part)
+				x,index=out['data'].split(' '),None
+				for i in reversed(range(len(x))): #Update last moveRing
+					if(x[i]=="S"):
+						index=i
+						break
+				if(index is not None):
+					self.lastMoveRing=str(x[index+1])+" "+str(x[index+2])+" "+str(x[index+4])+" "+str(x[index+5])
+					print(x)
+					print(self.lastMoveRing)
 				exec("self.execute_move(\"" + out['data'] + "\")")
 
+	def writeBoard(self,filename="board.txt"):
+		gameBoard,_=game.getGameRep()
+		with open(filename,'w') as f:
+			f.write(self.lastMoveRing+'\n')
+			for col in gameBoard:
+				for j in col:
+					f.write(str(j)+' ') 
+				f.write('\n')
+
+
 if __name__ == "__main__":
-	game = Game(6, 6, 'GUI')
+	game = Game(5, 5, 'GUI')
 	game.simulate(sys.argv[1])
+	print("Last Move Ring:"+game.lastMoveRing)
+	game.writeBoard()
+
 
 
 
