@@ -15,8 +15,11 @@ int main(int argc, char const *argv[])
 
     string arg = argv[1];
     if (arg == "0")
+        Interface *interface = new Interface(false, "");
+    else if (arg == "2")
     {
-        Inteface *interface = new Inteface();
+        string boardPath = argv[2];
+        Interface *inteface = new Interface(true, boardPath);
     }
     else
     {

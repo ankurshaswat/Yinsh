@@ -3,7 +3,7 @@
 
 #include "AI.h"
 
-class Inteface
+class Interface
 {
 private:
   Board *board;
@@ -12,7 +12,7 @@ private:
   Move readInput();
 
 public:
-  Inteface();
+  Interface(bool initBoard,string boardPath);
 };
 
 #endif

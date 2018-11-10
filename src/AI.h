@@ -34,6 +34,7 @@ public:
 
   string playMoveSeq(Move m);
   void setWeights(vector<double> featureWeights);
+  void setMoveCount(int moveCount);
 };
 
 #endif

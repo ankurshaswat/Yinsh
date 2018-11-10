@@ -8,7 +8,7 @@
 #define Debug(x)
 #endif
 
-Inteface::Inteface()
+Interface::Interface(bool initBoard, string boardPath)
 {
     int playerInt = 0, n = 0, time_ = 0, k = 0;
     string str;
@@ -36,6 +36,15 @@ Inteface::Inteface()
 
     Move m;
 
+    if (initBoard)
+    {
+        pair<pair<int, int>, pair<int, int>> movePos = board->setBoard(boardPath);
+        ai->setMoveCount(15);
+        m.type = MoveType::moveRing;
+        m.initPosition = movePos.first;
+        m.finalPosition = movePos.second;
+    }
+
     if (player == 1)
     {
         readInput();
@@ -55,7 +64,7 @@ Inteface::Inteface()
     }
 }
 
-Move Inteface::readInput()
+Move Interface::readInput()
 {
     Debug("Inteface::readInput" << endl);
 

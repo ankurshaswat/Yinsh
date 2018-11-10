@@ -427,3 +427,8 @@ void AI::setWeights(vector<double> featureWeights)
 {
     this->featureWeights = featureWeights;
 }
+
+void AI::setMoveCount(int moveCount)
+{
+    this->moveCount = moveCount;
+}

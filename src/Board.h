@@ -8,6 +8,7 @@
 #define BOARD_H
 
 #include <vector>
+#include <string>
 #include "Move.h"
 
 using namespace std;
@@ -68,8 +69,6 @@ private:
   int consecutiveMarkers;
   int *counts;
 
-  int test = 0; //for testing
-
   vector<pair<int, int>> directions;
   vector<vector<pair<int, int>>> rings;
 
@@ -98,6 +97,8 @@ private:
 public:
   Board();
   Board(int n, int k);
+
+  pair<pair<int, int>, pair<int, int>> setBoard(string boardPath);
 
   void featureGenerator(vector<vector<double>> &featureCounts, int moveCount);
 

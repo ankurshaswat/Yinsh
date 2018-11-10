@@ -1,5 +1,6 @@
 #include <limits>
 #include <iostream>
+#include <fstream>
 #include <math.h>
 #include "Board.h"
 #include "Util.h"
@@ -570,15 +571,8 @@ void Board::getValidPlaceRingMoves(vector<Move> &moves, bool player)
     Debug("Board::getValidPlaceRingMoves - Player=" << player << endl);
     int count = 0, i = 0, j = 0, a, b;
 
-    // vector<pair<int, int>> ringMoves{make_pair(1, 0), make_pair(1, 1), make_pair(3, 0), make_pair(1, 4), make_pair(2, 0)};
-
     while (count < 4)
     {
-        // std::cout << "#TEST: " << test << "\n";
-        // i = ringMoves[test].first;
-        // j = ringMoves[test].second;
-
-        // pair<int, int> pos = hex2axial(make_pair(i, j));
         pair<int, int> pos = make_pair(i, j);
         if (validPosition(pos) && getState(pos) == PositionStates::empty)
         {
@@ -591,8 +585,6 @@ void Board::getValidPlaceRingMoves(vector<Move> &moves, bool player)
         // i = (rand() % 13) - 6;
         // j = (rand() % 13) - 6;
     }
-    // std::cout << "#Ring Moves: " << moves.size() << "\n";
-    test++;
 };
 
 void Board::getValidRemoveRingMoves(vector<Move> &moves, bool player)
@@ -883,4 +875,34 @@ vector<pair<int, int>> Board::getRingPositions(bool player)
 {
     int ringIndex = player ? 1 : 0;
     return rings[ringIndex];
+}
+
+pair<pair<int, int>, pair<int, int>> Board::setBoard(string boardPath)
+{
+    ifstream boardFile(boardPath);
+
+    int pos0, pos1, pos2, pos3;
+    boardFile >> pos0 >> pos1 >> pos2 >> pos3;
+
+    int state;
+    for (int i = 0; i < 2 * this->board_size + 2; i++)
+        for (int j = 0; j < 2 * this->board_size + 2; j++)
+        {
+            boardFile >> state;
+            board[i][j] = state;
+            counts[state]++;
+
+            if (state == PositionStates::blackRing)
+            {
+                rings[0].push_back(make_pair(i, j));
+            }
+            else if (state == PositionStates::whiteRing)
+            {
+                rings[1].push_back(make_pair(i, j));
+            }
+        }
+
+    boardFile.close();
+
+    return make_pair(hex2axial(make_pair(pos0, pos1)), hex2axial(make_pair(pos2, pos3)));
 }
