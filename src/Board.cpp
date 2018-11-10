@@ -22,10 +22,10 @@ Board::Board(int N, int K) : rings(2), directions(6)
     this->consecutiveMarkers = K;
     this->max_rings = (this->board_size == 5 && this->consecutiveMarkers == 5) ? 5 : 6;
     board = new int *[2 * N + 1];
-    for (int i = 0; i < 2 * N + 2; i++)
+    for (int i = 0; i < 2 * N + 1; i++)
     {
         board[i] = new int[2 * N + 1];
-        for (int j = 0; j < 2 * N + 2; j++)
+        for (int j = 0; j < 2 * N + 1; j++)
             board[i][j] = PositionStates::empty;
     }
 
@@ -864,7 +864,7 @@ int Board::getRingsCount(bool player)
 
 Board::~Board()
 {
-    for (int i = 0; i < 2 * this->board_size + 2; i++)
+    for (int i = 0; i < 2 * this->board_size + 1; i++)
         delete[] board[i];
     delete[] board;
     counts -= 2;
@@ -885,8 +885,8 @@ pair<pair<int, int>, pair<int, int>> Board::setBoard(string boardPath)
     boardFile >> pos0 >> pos1 >> pos2 >> pos3;
 
     int state;
-    for (int i = 0; i < 2 * this->board_size + 2; i++)
-        for (int j = 0; j < 2 * this->board_size + 2; j++)
+    for (int i = 0; i < 2 * this->board_size + 1; i++)
+        for (int j = 0; j < 2 * this->board_size + 1; j++)
         {
             boardFile >> state;
             board[i][j] = state;
