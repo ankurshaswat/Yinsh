@@ -341,7 +341,7 @@ function RemoveBlackGuides(xring,yring,destx,desty,asign,bsign){
 
 function CheckRows(){
 	for(var i=0;i<rows;i++){
-		for(var j=0;j+seq-1<rows;j++){
+		for(var j=0;j+seq-1<11;j++){
 			if(Math.abs(positions[i][j].piece)!=1||positions[i][j].x==-1)
 				continue;
 			var isrow=true;
@@ -607,7 +607,16 @@ function RemoveRing(xcoord,ycoord,state=4){
 
 var startX = null;
 var startY = null;
+var temp = new Object();
+temp.type = ""
+temp.x = ""
+temp.y = ""
+
 function IsClickValid(mouse){
+
+	var move = new Object();
+	var old_player = current_player;
+
 	for(var i=0;i<rows;i++){
 		for(var j=0;j<rows;j++){
 			if(positions[i][j].x==-1){
@@ -618,36 +627,64 @@ function IsClickValid(mouse){
                     valid = false
 					if(required_move==0){
 						valid = PlaceRings(i,j);
+						move.type = "P";
 					}
 					else if(required_move==1){
 						valid = SelectRings(i,j);
+						move.type = "S";
 					}
 					else if(required_move==2){
 						valid = MoveRings(i,j);
+						move.type = "M";
 					}
                     else if(required_move==3){
                     	valid = RemoveRow(i,j);
                     	startX = i;
                     	startY = j;
+                    	move.type = "RS";
                     }
                     else if(required_move==3.5){
                         valid = RemoveRowEnd(startX, startY, i,j);
+                        move.type = "RE";
                     }
 					else if(required_move==4){
 						valid = RemoveRing(i,j);
+						move.type = "X";
 					}
 					else if(required_move==6){ // Other player first removes row and then plays move
 						valid = RemoveRow(i,j,7);
 						startX = i;
                     	startY = j;
+                    	move.type = "RS";
 					}
 					else if(required_move==6.5){
 						valid = RemoveRowEnd(startX, startY, i,j, 7);
+						move.type = "RE";
                     }
 					else if(required_move==7){ // Other player first removes ring and then plays move
 						valid = RemoveRing(i,j,7);
+						move.type = "X";
 					}
                     is_valid = valid
+                    if(valid){
+                    	temp.type += move.type + " "; 
+                    	temp.x += i + " ";
+                    	temp.y += j + " ";
+                    	temp.player = old_player
+                    	// post request if player changes
+                    	if(old_player!=current_player){
+                    		$.ajax({
+							type: "POST",
+							url: "http://127.0.0.1:5001/",
+							data: temp,
+							});
+
+							temp.type = ""
+							temp.x = ""
+							temp.y = ""
+							temp.player = 0
+                    	}
+                    }
 			}
 		}
 	}

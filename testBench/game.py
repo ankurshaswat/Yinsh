@@ -281,6 +281,10 @@ class Game:
 			f.write(self.lastMoveRing+'\n')
 			for col in gameBoard:
 				for j in col:
+					if(abs(j)>1):
+						j/=2
+					else:
+						j*=2
 					f.write(str(j)+' ') 
 				f.write('\n')
 
