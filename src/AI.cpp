@@ -79,10 +79,10 @@ string AI::playMoveSeq(Move prevMove)
         if (moveCount < this->maxRings * 2)
             returnedMovePair = maxValue(INT_MIN, INT_MAX, 1, *originalBoard, prevMove, player, moveCount);
 
-        else if (moveCount < this->maxRings * 2 || (moveCount < 40 && this->originalBoard->getRingsCount(player) + this->originalBoard->getRingsCount(!player) >= 7))
+        else if (moveCount < this->maxRings * 2 || (moveCount < 40 && this->originalBoard->getRingsCount(player) + this->originalBoard->getRingsCount(!player) >= this->maxRings * 2 - 3))
             returnedMovePair = maxValue(INT_MIN, INT_MAX, 4, *originalBoard, prevMove, player, moveCount);
         else
-            returnedMovePair = maxValue(INT_MIN, INT_MAX, 4, *originalBoard, prevMove, player, moveCount);
+            returnedMovePair = maxValue(INT_MIN, INT_MAX, 5, *originalBoard, prevMove, player, moveCount);
     }
 
     vector<Move> moves = returnedMovePair.first;

@@ -585,11 +585,11 @@ void Board::getValidPlaceRingMoves(vector<Move> &moves, bool player)
             moves.push_back(Move(MoveType::placeRing, pos, pos));
             count++;
         }
-        // i = (rand() % (4)) - 2;
-        // j = (rand() % (4)) - 2;
+        i = (rand() % (4)) - 2;
+        j = (rand() % (4)) - 2;
 
-        i = (rand() % 13) - 6;
-        j = (rand() % 13) - 6;
+        // i = (rand() % 13) - 6;
+        // j = (rand() % 13) - 6;
     }
     // std::cout << "#Ring Moves: " << moves.size() << "\n";
     test++;
@@ -605,10 +605,10 @@ void Board::getValidRemoveRingMoves(vector<Move> &moves, bool player)
 
 double Board::evaluate(bool player, int moveCount, vector<double> &featureWeights)
 {
-    if (getRingsCount(player) <= 2)
+    if (getRingsCount(player) <= this->max_rings - 3)
         return INT_MAX - moveCount;
 
-    if (getRingsCount(!player) <= 2)
+    if (getRingsCount(!player) <= this->max_rings - 3)
         return INT_MIN + moveCount;
 
     vector<vector<double>> featureCounts(2, vector<double>(this->numFeatures));
