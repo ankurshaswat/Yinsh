@@ -70,6 +70,8 @@ string AI::playMoveSeq(Move prevMove)
     Debug("AI::playMoveSeq" << endl);
     pair<vector<Move>, int> returnedMovePair;
 
+    this->originalBoard->sortRingPositions();// For deterministic moves in simulation
+
     if (this->time < 10.0)
         returnedMovePair = maxValue(INT_MIN, INT_MAX, 3, *originalBoard, prevMove, player, moveCount);
     else if (this->time > 10.0 && this->time < 20.0)

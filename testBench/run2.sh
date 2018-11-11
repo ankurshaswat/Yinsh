@@ -1,3 +1,3 @@
 #!/bin/bash
-./yinsh44 0
+./yinsh_old 
 # ./a.out

@@ -2,6 +2,7 @@
 #include <iostream>
 #include <fstream>
 #include <math.h>
+#include <algorithm>
 #include "Board.h"
 #include "Util.h"
 
@@ -905,4 +906,10 @@ pair<pair<int, int>, pair<int, int>> Board::setBoard(string boardPath)
     boardFile.close();
 
     return make_pair(hex2axial(make_pair(pos0, pos1)), hex2axial(make_pair(pos2, pos3)));
+}
+
+void Board::sortRingPositions(){
+    sort(this->rings[0].begin(),this->rings[0].begin());
+    sort(this->rings[1].begin(),this->rings[1].begin());
+    
 }

@@ -257,6 +257,7 @@ class Game:
 		return success
 
 	def simulate(self, filename):
+		count=0
 		with open(filename) as f:
 			for line in f.readlines():
 				if(line.strip()=="XX"):
@@ -274,6 +275,9 @@ class Game:
 					print(x)
 					print(self.lastMoveRing)
 				exec("self.execute_move(\"" + out['data'] + "\")")
+				count+=1
+				print("Move: ",count)
+				sys.stdin.read(1)
 
 	def writeBoard(self,filename="board.txt"):
 		gameBoard,_=game.getGameRep()
@@ -285,6 +289,7 @@ class Game:
 						j/=2
 					else:
 						j*=2
+					j=-j
 					f.write(str(j)+' ') 
 				f.write('\n')
 
@@ -294,6 +299,11 @@ if __name__ == "__main__":
 	game.simulate(sys.argv[1])
 	print("Last Move Ring:"+game.lastMoveRing)
 	game.writeBoard()
+	# while(True):
+		# m=raw_input('Enter next move:')
+		# exec("game.execute_move(\"" + m.strip() + "\")")
+		
+
 
 
 
