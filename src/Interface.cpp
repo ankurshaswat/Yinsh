@@ -57,11 +57,11 @@ Interface::Interface(bool initBoard, string boardPath)
 
         string move = ai->playMoveSeq(m);
         cout << move;
-        cout<<"# "<<ai->getEvaluation()<<endl;
+        // cout<<"# "<<ai->getEvaluation()<<endl;
         currentPlayer = !currentPlayer;
         Debug("Moving on to get input" << endl);
         m = readInput();
-        cout<<"# "<<ai->getEvaluation()<<endl;
+        // cout<<"# "<<ai->getEvaluation()<<endl;
         currentPlayer = !currentPlayer;
     }
 }
