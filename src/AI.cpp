@@ -70,19 +70,23 @@ string AI::playMoveSeq(Move prevMove)
     Debug("AI::playMoveSeq" << endl);
     pair<vector<Move>, int> returnedMovePair;
 
-    if (this->time < 20.0)
+    if (this->time < 15.0)
         returnedMovePair = maxValue(INT_MIN, INT_MAX, 3, *originalBoard, prevMove, player, moveCount);
-    else if (this->time > 20.0 && this->time < 30.0)
+    else if (this->time > 15.0 && this->time < 30.0)
         returnedMovePair = maxValue(INT_MIN, INT_MAX, 4, *originalBoard, prevMove, player, moveCount);
     else
     {
+        // && this->originalBoard->getRingsCount(player) + this->originalBoard->getRingsCount(!player) >= this->maxRings * 2 - 3)
         if (moveCount < this->maxRings * 2)
             returnedMovePair = maxValue(INT_MIN, INT_MAX, 1, *originalBoard, prevMove, player, moveCount);
-
-        else if (moveCount < this->maxRings * 2 || (moveCount < 40 && this->originalBoard->getRingsCount(player) + this->originalBoard->getRingsCount(!player) >= this->maxRings * 2 - 3))
+        else if (moveCount < this->maxRings * 2 || moveCount < 35)
             returnedMovePair = maxValue(INT_MIN, INT_MAX, 4, *originalBoard, prevMove, player, moveCount);
-        else
+        else if (moveCount < 50 && this->originalBoard->getRingsCount(player) + this->originalBoard->getRingsCount(!player) >= this->maxRings * 2 - 2)
             returnedMovePair = maxValue(INT_MIN, INT_MAX, 5, *originalBoard, prevMove, player, moveCount);
+        else if (this->originalBoard->getRingsCount(player) + this->originalBoard->getRingsCount(!player) <= this->maxRings * 2 - 3)
+            returnedMovePair = maxValue(INT_MIN, INT_MAX, 6, *originalBoard, prevMove, player, moveCount);
+        else
+            returnedMovePair = maxValue(INT_MIN, INT_MAX, 4, *originalBoard, prevMove, player, moveCount);
     }
 
     vector<Move> moves = returnedMovePair.first;
@@ -182,7 +186,7 @@ pair<vector<Move>, double> AI::maxValue(int alpha, int beta, int depth, Board &b
             bestEval = evaluation;
         }
         alpha = max(alpha, evaluation);
-        if (alpha >= beta)
+        if (alpha > beta)
         {
             Debug("AI::maxValue Returning alpha>=beta Alpha=" << alpha << " Beta=" << beta << endl);
             return make_pair(moveSeq.moveSequence, evaluation);
@@ -257,7 +261,7 @@ pair<vector<Move>, double> AI::minValue(int alpha, int beta, int depth, Board &b
             bestEval = evaluation;
         }
         beta = min(beta, evaluation);
-        if (beta <= alpha)
+        if (beta < alpha)
         {
             Debug("AI::maxValue Returning alpha>=beta Alpha=" << alpha << " Beta=" << beta << endl);
             return make_pair(moveSeq.moveSequence, evaluation);
@@ -433,6 +437,7 @@ void AI::setMoveCount(int moveCount)
     this->moveCount = moveCount;
 }
 
-double AI::getEvaluation() {
-    return originalBoard->evaluate(this->player,this->moveCount,this->featureWeights);
+double AI::getEvaluation()
+{
+    return originalBoard->evaluate(this->player, this->moveCount, this->featureWeights);
 }

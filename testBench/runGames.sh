@@ -6,13 +6,17 @@ source env/bin/activate
 COUNTER=0
 while [  $COUNTER -lt $3 ]; 
     do
-        python server.py 10000 -n 5 -s 5 -NC 2 -TL 150 -LOG selfPlay_$timee/gameRun_straight.log > selfPlay_$timee/serverData_runA$COUNTER.log &
+        echo "As player 1"
+        
+        python server.py 10000 -n 5 -s 5 -NC 2 -TL 120 -LOG selfPlay_$timee/gameRun_straight.log > selfPlay_$timee/serverData_runA$COUNTER.log &
         sleep 1
         python client.py 0.0.0.0 10000 $1 -mode GUI > selfPlay_$timee/script1_runA$COUNTER.log &
         sleep 1
         python client.py 0.0.0.0 10000 $2 > selfPlay_$timee/script2_runA$COUNTER.log
 
-        python server.py 10000 -n 5 -NC 2 -TL 150 -LOG selfPlay_$timee/gameRun_inverted.log > selfPlay_$timee/serverData_runB$COUNTER.log &
+        echo "As player 2"
+
+        python server.py 10000 -n 5 -s 5 -NC 2 -TL 120 -LOG selfPlay_$timee/gameRun_inverted.log > selfPlay_$timee/serverData_runB$COUNTER.log &
         sleep 1
         python client.py 0.0.0.0 10000 $2 -mode GUI > selfPlay_$timee/script2_runB$COUNTER.log &
         sleep 1

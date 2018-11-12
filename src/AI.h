@@ -16,7 +16,11 @@ private:
   int maxRings;
   int consecutiveMarkers;
 
-  vector<double> featureWeights = {1, 5, 25, 75, 150, 2, 10, 50, 75, 150, -1, -1, -1, -1, -1, -1, 1, -2000, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1500, 2500};
+  double distanceWeight = -1;
+  double freedomWeight = 1;
+  double jumpPositionsWeight = 1;
+
+  vector<double> featureWeights = {1, 5, 25, 75, 150, 2, 10, 50, 75, 150, distanceWeight, distanceWeight, distanceWeight, distanceWeight, distanceWeight, distanceWeight, 1, -2000, freedomWeight, freedomWeight, freedomWeight, freedomWeight, freedomWeight, freedomWeight, jumpPositionsWeight, jumpPositionsWeight, jumpPositionsWeight, jumpPositionsWeight, jumpPositionsWeight, jumpPositionsWeight, 1500, 2500};
 
   string convertMoveToString(Move m);
 
