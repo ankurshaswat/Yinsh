@@ -70,9 +70,9 @@ string AI::playMoveSeq(Move prevMove)
     Debug("AI::playMoveSeq" << endl);
     pair<vector<Move>, int> returnedMovePair;
 
-    if (this->time < 10.0)
+    if (this->time < 20.0)
         returnedMovePair = maxValue(INT_MIN, INT_MAX, 3, *originalBoard, prevMove, player, moveCount);
-    else if (this->time > 10.0 && this->time < 20.0)
+    else if (this->time > 20.0 && this->time < 30.0)
         returnedMovePair = maxValue(INT_MIN, INT_MAX, 4, *originalBoard, prevMove, player, moveCount);
     else
     {
