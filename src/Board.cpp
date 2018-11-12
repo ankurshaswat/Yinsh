@@ -1,4 +1,4 @@
-#include <limits>
+// #include <limits>
 #include <iostream>
 #include <fstream>
 #include <math.h>
@@ -12,8 +12,8 @@
 #define Debug(x)
 #endif
 
-const int INT_MAX = numeric_limits<int>::max() - 1000;
-const int INT_MIN = numeric_limits<int>::min() + 1000;
+const int INF = 1000000;
+const int MINUS_INF = -1000000;
 
 Board::Board() : Board(5, 5) {}
 
@@ -599,10 +599,10 @@ void Board::getValidRemoveRingMoves(vector<Move> &moves, bool player)
 double Board::evaluate(bool player, int moveCount, vector<double> &featureWeights)
 {
     if (getRingsCount(player) <= this->max_rings - 3)
-        return INT_MAX - moveCount;
+        return INF - moveCount;
 
     if (getRingsCount(!player) <= this->max_rings - 3)
-        return INT_MIN + moveCount;
+        return MINUS_INF + moveCount;
 
     vector<vector<double>> featureCounts(2, vector<double>(this->numFeatures));
 
