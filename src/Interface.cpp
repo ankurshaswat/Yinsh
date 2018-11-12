@@ -39,7 +39,7 @@ Interface::Interface(bool initBoard, string boardPath)
     if (initBoard)
     {
         pair<pair<int, int>, pair<int, int>> movePos = board->setBoard(boardPath);
-        ai->setMoveCount(15);
+        ai->setMoveCount(26);
         m.type = MoveType::moveRing;
         m.initPosition = movePos.first;
         m.finalPosition = movePos.second;
@@ -57,9 +57,11 @@ Interface::Interface(bool initBoard, string boardPath)
 
         string move = ai->playMoveSeq(m);
         cout << move;
+        cout<<"# "<<ai->getEvaluation()<<endl;
         currentPlayer = !currentPlayer;
         Debug("Moving on to get input" << endl);
         m = readInput();
+        cout<<"# "<<ai->getEvaluation()<<endl;
         currentPlayer = !currentPlayer;
     }
 }

@@ -126,6 +126,7 @@ public:
   void removeMarkers(pair<int, int> startPosition, pair<int, int> endPosition);
   void removeRing(pair<int, int> position);
 
+  void sortRingPositions();
   ~Board();
 };
 

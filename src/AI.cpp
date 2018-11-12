@@ -432,3 +432,7 @@ void AI::setMoveCount(int moveCount)
 {
     this->moveCount = moveCount;
 }
+
+double AI::getEvaluation() {
+    return originalBoard->evaluate(this->player,this->moveCount,this->featureWeights);
+}

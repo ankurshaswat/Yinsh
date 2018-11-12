@@ -5,14 +5,15 @@ import logging
 
 app = Flask(__name__)
 log = logging.getLogger('werkzeug')
-log.disabled = True
-app.logger.disabled = True
+# log.disabled = True
+# app.logger.disabled = True
 
 
 @app.route('/',methods = ['POST'])
 def play():
     global game,player,last_move
     
+    print("POST REQUEST")
     move_player = str(request.form['player'])
     if(move_player != str(player)):
         return "other player move"
