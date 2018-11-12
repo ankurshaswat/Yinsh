@@ -270,6 +270,7 @@ def game_loop(args):
 		move['data'] = move['data'].strip()
 		if(move['data'][0]=='#'):
 			print(move['data'])
+			print(time.time())
 			continue
 		print "You played : " + move['data']
 		success = game.execute_move(move['data'])

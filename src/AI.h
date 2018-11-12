@@ -10,7 +10,7 @@ class AI
 private:
   Board *originalBoard;
   bool player;
-  double time;
+  double timeRemaining;
   int moveCount;
   int boardSize;
   int maxRings;

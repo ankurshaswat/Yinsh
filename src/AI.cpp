@@ -1,7 +1,10 @@
 #include <algorithm>
 #include <iostream>
+#include<time.h>
+
 #include "AI.h"
 #include "Util.h"
+
 
 using namespace std;
 
@@ -25,7 +28,7 @@ AI::AI(Board *board, bool player, int time, int n, int k)
     this->maxRings = (n == 5 && k == 5) ? 5 : 6;
     Debug("AI::AI Constructor" << boardSize << maxRings << consecutiveMarkers << endl);
     this->player = player;
-    this->time = 1.0 * time;
+    this->timeRemaining = 1.0 * time;
     if (player)
         this->moveCount = 1;
     else
@@ -66,27 +69,81 @@ string AI::convertMoveToString(Move move)
 
 string AI::playMoveSeq(Move prevMove)
 {
+    time_t start_time,end_time;
+    time(&start_time);
     clock_t startClock = clock();
     Debug("AI::playMoveSeq" << endl);
     pair<vector<Move>, int> returnedMovePair;
-
-    if (this->time < 15.0)
-        returnedMovePair = maxValue(INT_MIN, INT_MAX, 3, *originalBoard, prevMove, player, moveCount);
-    else if (this->time > 15.0 && this->time < 30.0)
-        returnedMovePair = maxValue(INT_MIN, INT_MAX, 4, *originalBoard, prevMove, player, moveCount);
+    // cout<<"# Time remaining: "<<this->timeRemaining<<endl;
+    if (this->timeRemaining < 15.0){
+        if(this->boardSize==6) {
+            cout<<"#CRITICAL- DEPTH: 3\n";
+            returnedMovePair = maxValue(INT_MIN, INT_MAX, 3, *originalBoard, prevMove, player, moveCount);    
+        }
+        else{
+            cout<<"#CRITICAL- Depth: 3\n";           
+            returnedMovePair = maxValue(INT_MIN, INT_MAX, 3, *originalBoard, prevMove, player, moveCount);
+        }
+    }
+    else if (this->timeRemaining > 15.0 && this->timeRemaining < 30.0){
+        if(this->boardSize==6) {
+            cout<<"#CRITICAL- DEPTH: 3\n";
+            returnedMovePair = maxValue(INT_MIN, INT_MAX, 3, *originalBoard, prevMove, player, moveCount);    
+        }
+        else{
+            cout<<"#CRITICAL- Depth: 4\n";           
+            returnedMovePair = maxValue(INT_MIN, INT_MAX, 4, *originalBoard, prevMove, player, moveCount);
+        }
+    }
     else
     {
-        // && this->originalBoard->getRingsCount(player) + this->originalBoard->getRingsCount(!player) >= this->maxRings * 2 - 3)
-        if (moveCount < this->maxRings * 2)
-            returnedMovePair = maxValue(INT_MIN, INT_MAX, 1, *originalBoard, prevMove, player, moveCount);
-        else if (moveCount < this->maxRings * 2 || moveCount < 35)
-            returnedMovePair = maxValue(INT_MIN, INT_MAX, 4, *originalBoard, prevMove, player, moveCount);
-        else if (moveCount < 50 && this->originalBoard->getRingsCount(player) + this->originalBoard->getRingsCount(!player) >= this->maxRings * 2 - 2)
-            returnedMovePair = maxValue(INT_MIN, INT_MAX, 5, *originalBoard, prevMove, player, moveCount);
-        else if (this->originalBoard->getRingsCount(player) + this->originalBoard->getRingsCount(!player) <= this->maxRings * 2 - 3)
-            returnedMovePair = maxValue(INT_MIN, INT_MAX, 6, *originalBoard, prevMove, player, moveCount);
-        else
-            returnedMovePair = maxValue(INT_MIN, INT_MAX, 4, *originalBoard, prevMove, player, moveCount);
+        if(this->consecutiveMarkers==5 && this->boardSize==5){
+            // && this->originalBoard->getRingsCount(player) + this->originalBoard->getRingsCount(!player) >= this->maxRings * 2 - 3)
+            if (moveCount < this->maxRings * 2)
+                returnedMovePair = maxValue(INT_MIN, INT_MAX, 1, *originalBoard, prevMove, player, moveCount);
+            else if (moveCount < 35 || this->originalBoard->getRingsCount(player) + this->originalBoard->getRingsCount(!player) >= this->maxRings * 2 - 1)
+                returnedMovePair = maxValue(INT_MIN, INT_MAX, 4, *originalBoard, prevMove, player, moveCount);
+            else if (moveCount < 50 || this->originalBoard->getRingsCount(player) + this->originalBoard->getRingsCount(!player) >= this->maxRings * 2 - 2)
+                returnedMovePair = maxValue(INT_MIN, INT_MAX, 5, *originalBoard, prevMove, player, moveCount);
+            // else if (moveCount>50 || this->originalBoard->getRingsCount(player) + this->originalBoard->getRingsCount(!player) <= this->maxRings * 2 - 3)
+                // returnedMovePair = maxValue(INT_MIN, INT_MAX, 6, *originalBoard, prevMove, player, moveCount);
+            else
+                returnedMovePair = maxValue(INT_MIN, INT_MAX, 6, *originalBoard, prevMove, player, moveCount);
+        }
+        else if(this->consecutiveMarkers==5 && this->boardSize==6){
+            if (moveCount < this->maxRings * 2)
+            {
+                returnedMovePair = maxValue(INT_MIN, INT_MAX, 1, *originalBoard, prevMove, player, moveCount);
+            }
+            else if (moveCount < 40 || this->originalBoard->getRingsCount(player) + this->originalBoard->getRingsCount(!player) >= this->maxRings * 2 - 1)
+            {
+                cout<<"# Depth: 4\n";             
+                returnedMovePair = maxValue(INT_MIN, INT_MAX, 4, *originalBoard, prevMove, player, moveCount);
+            }
+            else
+            { 
+                cout<<"# Depth: 4..\n";                
+                returnedMovePair = maxValue(INT_MIN, INT_MAX, 4, *originalBoard, prevMove, player, moveCount);
+            }   
+        }
+        else{
+            //consecutiveMarkers=6 & boardSize=6
+            if (moveCount < this->maxRings * 2)
+            {
+                returnedMovePair = maxValue(INT_MIN, INT_MAX, 1, *originalBoard, prevMove, player, moveCount);
+            }
+            else if (moveCount < 40 || this->originalBoard->getRingsCount(player) + this->originalBoard->getRingsCount(!player) >= this->maxRings * 2 - 1)
+            {
+                cout<<"# Depth: 4\n";
+                returnedMovePair = maxValue(INT_MIN, INT_MAX, 4, *originalBoard, prevMove, player, moveCount);
+            }
+            else
+            { 
+                cout<<"# Depth: 5\n";
+                returnedMovePair = maxValue(INT_MIN, INT_MAX, 5, *originalBoard, prevMove, player, moveCount);
+            }
+
+        }
     }
 
     vector<Move> moves = returnedMovePair.first;
@@ -104,9 +161,12 @@ string AI::playMoveSeq(Move prevMove)
     moveString += '\n';
 
     clock_t endClock = clock();
-    double timeTaken = double(endClock - startClock) / CLOCKS_PER_SEC;
-    this->time -= timeTaken;
+    // double timeTaken = double(endClock - startClock) / CLOCKS_PER_SEC;
 
+    time(&end_time);
+    double timeTaken=(end_time-start_time);
+    this->timeRemaining -= timeTaken;
+    // cout<<"# Time taken: "<<timeTaken<<endl;
     moveCount += 2;
 
     return moveString;
@@ -185,6 +245,14 @@ pair<vector<Move>, double> AI::maxValue(int alpha, int beta, int depth, Board &b
             bestMoveSeq = moveSeq.moveSequence;
             bestEval = evaluation;
         }
+        if(bestEval>=2147380000) {
+            if(depth>=5) {
+                cout<<"########## FOUND WIN :)))"<<endl;
+                cout<<"# DEPTH: "<<depth<<endl;
+            }
+
+            break;
+        }
         alpha = max(alpha, evaluation);
         if (alpha > beta)
         {
@@ -261,6 +329,14 @@ pair<vector<Move>, double> AI::minValue(int alpha, int beta, int depth, Board &b
             bestEval = evaluation;
         }
         beta = min(beta, evaluation);
+        if(bestEval<=-2147380000) {
+            // if(depth>=5) {
+            //     cout<<"### FOUND WIN FOR OPPONENT:("<<endl;
+            //     cout<<"# DEPTH: "<<depth<<endl;
+            // }
+            break;
+        }
+        
         if (beta < alpha)
         {
             Debug("AI::maxValue Returning alpha>=beta Alpha=" << alpha << " Beta=" << beta << endl);
